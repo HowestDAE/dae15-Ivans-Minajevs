@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Game.h"
+#include "Ryu.h"
 
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
@@ -14,30 +15,25 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	
+	m_RyuPtr = new Ryu(100.f, 100.f);
 }
 
 void Game::Cleanup( )
 {
+	delete m_RyuPtr;
+	m_RyuPtr = nullptr;
 }
 
 void Game::Update( float elapsedSec )
 {
-	// Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
+	const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
+	m_RyuPtr->Update(elapsedSec, pStates);
 }
 
 void Game::Draw( ) const
 {
 	ClearBackground( );
+	m_RyuPtr->Draw();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
