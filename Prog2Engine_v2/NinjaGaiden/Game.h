@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseGame.h"
+#include <Texture.h>
+class Camera;
 class Ryu;
 class Game : public BaseGame
 {
@@ -22,8 +24,11 @@ public:
 	void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 
+	const float m_MAP_SCALE{ 3.f };
 private:
 	Ryu* m_RyuPtr;
+	Texture* m_MapTexturePtr;
+	Camera* m_Camera;
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );

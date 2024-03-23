@@ -1,5 +1,7 @@
 #pragma once
 #include "Texture.h"
+#include <Vector2f.h>
+
 class Ryu
 {
 public: 
@@ -11,6 +13,9 @@ public:
 	void ChangeDirection(RyuMovementDirection direction);
 	void Draw() const;
 	void Update(float elapsedSec, const Uint8* pStates);
+	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
+
+	Point2f GetPosition();
 
 	const int m_ROWS{ 8 };
 	const int m_COLS{ 4 };
@@ -22,6 +27,9 @@ public:
 	const float	 m_FRAME_WIDTH{ 30.f };
 	const float  m_FRAME_HEIGHT{ 35.f };
 
+	const float m_SPEED{ 200.f };
+	const float m_SCALE{ 2.5f };
+
 private:
 	Ryu::RyuMovementDirection m_MovementDirection;
 	Ryu::RyuState m_State;
@@ -31,20 +39,24 @@ private:
 	Rectf m_SourceRect;
 
 	Point2f m_Position;
-	float m_Scale;
+
+	Vector2f m_Velocity;
+	float m_VerticalPosBeforeJump;
 
 	float m_AccuSec;
 	int	  m_FramesPerSec;
-	int	  m_MaxFramesOfAnimation;
 	float m_FrameTime;
 
-	
 	int m_FrameNr;
+	int	m_MaxFramesOfAnimation;
 
 	void InitializeSourceRect();
 	void UpdateSourceRect();
 	Rectf GetCurrFrameRect() const;
 	void ChangeMaxFramesOfAnimation();
 	void ChangeFrames(float elapsedSec);
+
+	void JumpUpdate(float elapsedSec);
+	
 };
 

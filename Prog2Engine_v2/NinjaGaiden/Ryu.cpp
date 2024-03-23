@@ -12,15 +12,16 @@ Ryu::Ryu(Point2f pos)
 	
 
 	m_Position			= pos;
-	m_Scale				= 2.f;
+	m_VerticalPosBeforeJump = m_Position.y;
 
 	m_AccuSec			= 0;
 	m_FramesPerSec		= 10;
 	m_FrameTime			= 1.f / m_FramesPerSec;
 
-	m_FrameNr			= 0;
-
+	m_FrameNr = 0;
 	m_MaxFramesOfAnimation = 1;
+
+	m_Velocity = Vector2f(0.f, 0.f);
 }
 
 Ryu::Ryu(float posX, float posY) : Ryu(Point2f{posX, posY})
@@ -59,14 +60,14 @@ void Ryu::Draw() const
 	glPushMatrix();
 	if (m_MovementDirection == RyuMovementDirection::left)
 	{
-		glTranslatef(m_Position.x + sourceRect.width * m_Scale, m_Position.y, 0.f);
-		glScalef(-1.f * m_Scale, m_Scale, 1.f);
+		glTranslatef(m_Position.x + sourceRect.width * m_SCALE, m_Position.y, 0.f);
+		glScalef(-1.f * m_SCALE, m_SCALE, 1.f);
 		
 	}
 	else
 	{
 		glTranslatef(m_Position.x, m_Position.y, 0.f);
-		glScalef(m_Scale, m_Scale, 1.f);
+		glScalef(m_SCALE, m_SCALE, 1.f);
 	}
 	m_RyuSpriteSheetPtr->Draw(Point2f{}, sourceRect);
 	glPopMatrix();
@@ -74,22 +75,61 @@ void Ryu::Draw() const
 
 void Ryu::Update(float elapsedSec, const Uint8* pStates)
 {
-	m_State = RyuState::none;
+	if (m_State != RyuState::jumping && m_State != RyuState::attacking && m_State != RyuState::duck_attacking)
+	{
+		m_State = RyuState::none;
+		m_Velocity.x = 0;
+		m_Velocity.y = 0;
+	}
 	if (pStates[SDL_SCANCODE_RIGHT])
 	{
 		ChangeDirection(RyuMovementDirection::right);
-		m_State = RyuState::walking;
+		if (m_State != RyuState::jumping && m_State != RyuState::attacking)
+		{
+			m_State = RyuState::walking;
+		}
+		m_Velocity.x = m_SPEED;
 	}
 	if (pStates[SDL_SCANCODE_LEFT])
 	{
 		ChangeDirection(RyuMovementDirection::left);
-		m_State = RyuState::walking;
+		if (m_State != RyuState::jumping && m_State != RyuState::attacking)
+		{
+			m_State = RyuState::walking;
+		}
+
+		m_Velocity.x = -m_SPEED;
 	}
+	if (pStates[SDL_SCANCODE_DOWN]) 
+	{
+		if (m_State != RyuState::jumping)
+		{
+			if (m_State != RyuState::duck_attacking && m_State != RyuState::walking && m_State != RyuState::attacking)
+			{
+				m_State = RyuState::ducking;
+				m_Velocity.x = 0.f;
+			}
+			
+		}
+	}
+	if (m_State == RyuState::attacking && m_Position.y == m_VerticalPosBeforeJump)
+	{
+		m_Velocity.x = 0.f;
+	}
+
+
+
+	JumpUpdate(elapsedSec);
+	
+	
+	m_Position.x += m_Velocity.x * elapsedSec;
+	m_Position.y += m_Velocity.y * elapsedSec;
 
 	ChangeMaxFramesOfAnimation();
 	ChangeFrames(elapsedSec);
 
 	UpdateSourceRect();
+
 }
 
 
@@ -97,6 +137,38 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates)
 Rectf Ryu::GetCurrFrameRect() const
 {
 	return m_SourceRect;	
+}
+
+
+
+void Ryu::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
+{
+	switch (e.keysym.sym)
+	{
+	case SDLK_x:
+		if (m_State != RyuState::jumping && m_Position.y == m_VerticalPosBeforeJump)
+		{
+			m_State = RyuState::jumping;
+			m_Velocity.y = 700.f;
+		}
+		break;
+
+	case SDLK_z:
+		if (m_State == RyuState::ducking)
+		{
+			m_State = RyuState::duck_attacking;
+		}
+		else
+		{
+			m_State = RyuState::attacking;
+		}
+		break;
+	}
+}
+
+Point2f Ryu::GetPosition()
+{
+	return m_Position;
 }
 
 void Ryu::ChangeMaxFramesOfAnimation()
@@ -113,6 +185,7 @@ void Ryu::ChangeMaxFramesOfAnimation()
 	{
 		m_MaxFramesOfAnimation = m_COLS_JUMPING;
 	}
+	
 }
 
 void Ryu::ChangeFrames(float elapsedSec)
@@ -129,4 +202,20 @@ void Ryu::ChangeFrames(float elapsedSec)
 			m_FrameNr = 0;
 		}
 	}
+}
+
+void Ryu::JumpUpdate(float elapsedSec)
+{
+
+	if (m_Position.y + m_Velocity.y * elapsedSec < m_VerticalPosBeforeJump)
+	{
+		m_Velocity.y = 0;
+		m_Position.y = m_VerticalPosBeforeJump;
+		m_State = RyuState::none;
+	}
+	if (m_Position.y > m_VerticalPosBeforeJump)
+	{
+		m_Velocity.y -= 30.f;
+	}
+	
 }
