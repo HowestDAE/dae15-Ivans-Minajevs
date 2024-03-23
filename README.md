@@ -4,15 +4,15 @@
 <br />
 <div align="center">
 
-  <h1 align="center">NAME OF CHOSEN GAME</h1>
+  <h1 align="center">NINJA GAIDEN NES (1988)</h1>
 
   <p align="center">
-    Short description of the game.
+    Ninja Gaiden is an action-platformer developed by Tecmo for the NES console.
     <br />
     <strong>Original game : </strong>
-    <a href="https://www.google.be/"><strong>General info »</strong></a>
+    <a href="https://en.wikipedia.org/wiki/Ninja_Gaiden_(NES_video_game)"><strong>General info »</strong></a>
     ·
-    <a href="https://www.google.be/"><strong>Youtube video »<strong></a>
+    <a href="https://www.youtube.com/watch?v=V822oMzJQSg&ab_channel=NintendoComplete"><strong>Youtube video »<strong></a>
     <br />
     <br />
   </p>
@@ -61,16 +61,16 @@ TODO: describe why you chose this game
 This section gives a clear and detailed overview of which parts of the original game I planned to make.
 
 ### The minimum I will most certainly develop:
-* .. 
-* .. 
+* Stage 1 level, including boss-fight.
+* Basic combat system.
 
 ### What I will probably make as well:
-* .. 
-* .. 
+* Shuriken throw.
+* Additional character abilities.
 
 ### What I plan to create if I have enough time left:
-* .. 
-* .. 
+* Level transition animation when: 1) character is dead or 2) character moves from one location to another.
+* Cut-scene in the beggining of the game. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
