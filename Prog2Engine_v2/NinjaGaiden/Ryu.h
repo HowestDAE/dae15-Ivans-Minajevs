@@ -1,19 +1,25 @@
 #pragma once
 #include "Texture.h"
 #include <Vector2f.h>
-
+class Katana;
 class Ryu
 {
 public: 
 	enum class RyuMovementDirection { left, right };
-	enum class RyuState { none, walking, attacking, ducking, duck_attacking, hurt, jumping, climbing };
-	Ryu(Point2f pos);
-	Ryu(float posX, float posY);
+	enum class RyuState { none, walking, attacking, ducking, duckAttacking, hurt, jumping, climbing };
+	explicit Ryu(Point2f pos);
+	explicit Ryu(float posX, float posY);
+	Ryu(const Ryu& other);
+	Ryu& operator=(const Ryu& rhs);
+
 	~Ryu();
-	void ChangeDirection(RyuMovementDirection direction);
+
 	void Draw() const;
+	
 	void Update(float elapsedSec, const Uint8* pStates);
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
+
+
 
 	Point2f GetPosition();
 
@@ -28,7 +34,7 @@ public:
 	const float  m_FRAME_HEIGHT{ 35.f };
 
 	const float m_SPEED{ 200.f };
-	const float m_SCALE{ 2.5f };
+	const float m_SCALE{ 3.f };
 
 private:
 	Ryu::RyuMovementDirection m_MovementDirection;
@@ -39,6 +45,8 @@ private:
 	Rectf m_SourceRect;
 
 	Point2f m_Position;
+	Katana* m_KatanaPtr;
+
 
 	Vector2f m_Velocity;
 	float m_VerticalPosBeforeJump;
@@ -52,11 +60,11 @@ private:
 
 	void InitializeSourceRect();
 	void UpdateSourceRect();
-	Rectf GetCurrFrameRect() const;
 	void ChangeMaxFramesOfAnimation();
 	void ChangeFrames(float elapsedSec);
-
-	void JumpUpdate(float elapsedSec);
+	void ChangePosition(float elapsedSec);
+	void UpdateJump(float elapsedSec);
+	void ChangeDirection(RyuMovementDirection direction);
 	
 };
 
