@@ -15,13 +15,11 @@ public:
 	~Ryu();
 
 	void Draw() const;
-	
 	void Update(float elapsedSec, const Uint8* pStates);
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
 
-
-
-	Point2f GetPosition();
+	void SetBorders(float posX);
+	Point2f GetPosition() const;
 
 	const int m_ROWS{ 8 };
 	const int m_COLS{ 4 };

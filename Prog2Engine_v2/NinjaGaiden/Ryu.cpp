@@ -230,9 +230,14 @@ void Ryu::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 }
 
 
-Point2f Ryu::GetPosition()
+Point2f Ryu::GetPosition() const
 {
 	return m_Position;
+}
+
+void Ryu::SetBorders(float posX)
+{
+	m_Position.x = posX;
 }
 
 

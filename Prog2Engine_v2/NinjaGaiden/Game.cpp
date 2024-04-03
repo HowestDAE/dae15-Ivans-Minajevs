@@ -33,10 +33,12 @@ void Game::Cleanup( )
 	m_Camera = nullptr;
 }
 
-void Game::Update( float elapsedSec )
+void Game::Update(float elapsedSec)
 {
-	const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
+	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_RyuPtr->Update(elapsedSec, pStates);
+	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
+	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() - 5.f);
 }
 
 void Game::Draw( ) const
