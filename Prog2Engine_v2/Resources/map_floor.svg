@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="3073"
+   height="208"
+   viewBox="0 0 3073 208"
+   sodipodi:docname="map_floor.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="32"
+     inkscape:cx="2335.1719"
+     inkscape:cy="185.07812"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1"
+     showguides="true">
+    <sodipodi:guide
+       position="2577.6252,24.726761"
+       orientation="0,-1"
+       id="guide7"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="2339.9375,39.28125"
+       orientation="0,-1"
+       id="guide1"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g1">
+    <image
+       width="3073"
+       height="208"
+       preserveAspectRatio="none"
+       xlink:href="PNG%20Before%5Cninja_gaiden_map_stage_floor_stage_2.png"
+       id="image1"
+       style="display:none" />
+    <g
+       id="g2">
+      <path
+         style="fill:#333333;fill-opacity:1"
+         d="m 0,208 v -25 h 707 v -15 h 140 v 15 h 148 v -63 h 124 v 63 h 709 v -15 h 172 v 15 h 117 V 55 h 124 l -0.1364,127.35738 100.1959,0.0598 0.069,-13.65473 234.6562,-0.0312 v 13.66706 l 497.1733,-0.34075 0.04,25.95563 z"
+         id="path2"
+         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+    </g>
+  </g>
+</svg>

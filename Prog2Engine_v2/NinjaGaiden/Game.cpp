@@ -2,7 +2,9 @@
 #include "Game.h"
 #include "Ryu.h"
 #include "Camera.h"
-
+#include "SvgParser.h"
+#include <iostream>
+#include "utils.h"
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
 {
@@ -16,9 +18,22 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_RyuPtr = new Ryu(100.f, 70.f);
-	m_MapTexturePtr = new Texture("ninja_gaiden_map_stage_1.png");
+	m_RyuPtr = new Ryu(1500.f, 70.f);
+	m_MapTexturePtr = new Texture("ninja_gaiden_map_stage_1_8bit.png");
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
+
+	SVGParser::GetVerticesFromSvgFile("map_floor.svg", m_FloorVertices);
+
+	//for (std::vector<Point2f> &vertices : m_FloorVertices)
+	//{
+	//	
+	//}
+	for (Point2f &point : m_FloorVertices[0])
+	{
+		point.x = int(point.x) * m_MAP_SCALE;
+		point.y = int(point.y) * m_MAP_SCALE;
+		std::cout << point.x << " " << point.y << std::endl;
+	}
 }
 
 void Game::Cleanup( )
@@ -36,25 +51,33 @@ void Game::Cleanup( )
 void Game::Update(float elapsedSec)
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	m_RyuPtr->Update(elapsedSec, pStates);
+	m_RyuPtr->Update(elapsedSec, pStates, m_FloorVertices[0]);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
-	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() - 5.f);
+	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
 }
 
 void Game::Draw( ) const
 {
 	ClearBackground( );
+
+
 	m_Camera->Aim(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
 	glPushMatrix();
 	{
 		glScalef(m_MAP_SCALE, m_MAP_SCALE, 1.f);
+
 		m_MapTexturePtr->Draw();
 	}
 	glPopMatrix();
 
-	m_RyuPtr->Draw();
 
+	m_RyuPtr->Draw();
+	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
+	utils::DrawPolygon(m_FloorVertices[0], true, 2.f);
 	m_Camera->Reset();
+
+
+
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )

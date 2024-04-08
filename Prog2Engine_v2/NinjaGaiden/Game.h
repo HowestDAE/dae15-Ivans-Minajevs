@@ -1,6 +1,8 @@
 #pragma once
 #include "BaseGame.h"
-#include <Texture.h>
+#include <vector>
+#include "Texture.h"
+class SvgParser;
 class Camera;
 class Ryu;
 class Game : public BaseGame
@@ -29,6 +31,8 @@ private:
 	Ryu* m_RyuPtr;
 	Texture* m_MapTexturePtr;
 	Camera* m_Camera;
+
+	std::vector<std::vector<Point2f>> m_FloorVertices;
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );
