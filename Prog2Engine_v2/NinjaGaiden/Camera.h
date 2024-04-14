@@ -2,7 +2,10 @@
 class Camera
 {
 public:
-	Camera(float screenWidth, float screenHeight);
+	explicit Camera(float screenWidth, float screenHeight);
+	Camera& operator=(const Camera& rhs) = default;
+	Camera(const Camera& other) = default;
+
 	void Aim(float levelW, float levelH, Point2f trackCenter);
 	void Reset();
 

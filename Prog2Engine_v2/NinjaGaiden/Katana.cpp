@@ -36,13 +36,13 @@ void Katana::Draw(Ryu::RyuMovementDirection state) const
 	glPushMatrix();
 	if (state == Ryu::RyuMovementDirection::left)
 	{
-		glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y, 0.f);
+		glTranslatef(m_Position.x - 3.f, m_Position.y, 0.f);
 		glScalef(-m_SCALE, m_SCALE, 1.f);
 
 	}
 	else
 	{
-		glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y, 0.f);
+		glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE - 10.f, m_Position.y, 0.f);
 		glScalef(m_SCALE, m_SCALE, 1.f);
 	}
 	m_KatanaSpriteSheetPtr->Draw(Point2f(), m_SourceRect);

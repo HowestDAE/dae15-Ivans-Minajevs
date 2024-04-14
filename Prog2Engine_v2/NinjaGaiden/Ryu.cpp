@@ -7,7 +7,6 @@ Ryu::Ryu(Point2f pos)
 {
 	m_MovementDirection = RyuMovementDirection::right;
 	m_State				= RyuState::none;
-	//m_PrevState			= m_State;
 	m_IsMoving			= false;
 
 	m_RyuSpriteSheetPtr	= new Texture("ryu_spritesheet.png");
@@ -15,11 +14,9 @@ Ryu::Ryu(Point2f pos)
 	
 
 	m_Position			= pos;
-	//m_Acceleration = -30.f;
-	//m_VerticalPosBeforeJump = m_Position.y;
 
 	m_AccuSec			= 0;
-	m_FramesPerSec		= 12;
+	m_FramesPerSec		= 10;
 	m_FrameTime			= 1.f / m_FramesPerSec;
 
 	m_FrameNr = 0;
@@ -27,7 +24,7 @@ Ryu::Ryu(Point2f pos)
 
 	m_Velocity = Vector2f(0.f, 0.f);
 
-	m_KatanaPtr = new Katana(Point2f(m_SourceRect.left, m_SourceRect.bottom + m_SourceRect.height));
+	m_KatanaPtr = new Katana(Point2f(m_SourceRect.left + m_SourceRect.bottom, m_SourceRect.bottom + m_SourceRect.height));
 }
 
 Ryu::Ryu(float posX, float posY) : Ryu(Point2f{posX, posY})
@@ -372,7 +369,7 @@ void Ryu::ChangePosition(float elapsedSec)
 		}
 		else
 		{
-			m_KatanaPtr->ChangePosition(Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height));
+			m_KatanaPtr->ChangePosition(Point2f(m_Position.x  + m_SourceRect.width, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height + 10.f));
 		}
 	}
 }
