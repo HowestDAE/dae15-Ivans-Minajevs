@@ -12,7 +12,7 @@
     <strong>Original game : </strong>
     <a href="https://en.wikipedia.org/wiki/Ninja_Gaiden_(NES_video_game)"><strong>General info »</strong></a>
     ·
-    <a href="https://www.youtube.com/watch?v=V822oMzJQSg&ab_channel=NintendoComplete"><strong>Youtube video »<strong></a>
+    <a href="https://www.youtube.com/watch?v=PGjAydD19kY"><strong>Youtube video »<strong></a>
     <br />
     <br />
   </p>
@@ -50,8 +50,8 @@ TODO: add screenshot
 
 Here's why:
 TODO: describe why you chose this game 
-* reason 1
-* reason .. 
+* I am a huge fan of NES console and enjoy japanese setting
+* The game has an immersive gameplay I wanted to recreate
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
