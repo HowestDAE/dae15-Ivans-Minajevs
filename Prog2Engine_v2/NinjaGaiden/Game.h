@@ -33,6 +33,9 @@ private:
 	Camera* m_Camera;
 
 	std::vector<std::vector<Point2f>> m_FloorVertices;
+	std::vector<std::vector<Point2f>> m_PlatformsVertices;
+	std::vector<std::vector<Point2f>> m_SignsVertices;
+	std::vector<std::vector<Point2f>> m_WallsVertices;
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );

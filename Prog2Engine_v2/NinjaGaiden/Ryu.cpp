@@ -250,6 +250,10 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<Point
 		{
 			m_Position.x -= m_SourceRect.width * m_SCALE;
 		}
+		else
+		{
+			m_Position.x ++;
+		}
 
 		if (m_State == RyuState::jumping)
 		{

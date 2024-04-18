@@ -23,6 +23,9 @@ void Game::Initialize( )
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 
 	SVGParser::GetVerticesFromSvgFile("map_floor.svg", m_FloorVertices);
+	SVGParser::GetVerticesFromSvgFile("map_platforms.svg", m_PlatformsVertices);
+	SVGParser::GetVerticesFromSvgFile("map_signs.svg", m_SignsVertices);
+	SVGParser::GetVerticesFromSvgFile("map_walls.svg", m_WallsVertices);
 
 	//for (std::vector<Point2f> &vertices : m_FloorVertices)
 	//{
@@ -32,7 +35,35 @@ void Game::Initialize( )
 	{
 		point.x = int(point.x) * m_MAP_SCALE;
 		point.y = int(point.y) * m_MAP_SCALE;
-		std::cout << point.x << " " << point.y << std::endl;
+		//std::cout << point.x << " " << point.y << std::endl;
+	}
+	for (std::vector<Point2f>& platform : m_PlatformsVertices)
+	{
+		for (Point2f& point : platform)
+		{
+			point.x = int(point.x) * m_MAP_SCALE;
+			point.y = int(point.y) * m_MAP_SCALE;
+			//std::cout << point.x << " " << point.y << std::endl;
+		}
+	}
+	for (std::vector<Point2f>& sign : m_SignsVertices)
+	{
+		for (Point2f& point : sign)
+		{
+			point.x = int(point.x) * m_MAP_SCALE;
+			point.y = int(point.y) * m_MAP_SCALE;
+			//std::cout << point.x << " " << point.y << std::endl;
+		}
+	}
+
+	for (std::vector<Point2f>& wall : m_WallsVertices)
+	{
+		for (Point2f& point : wall)
+		{
+			point.x = int(point.x) * m_MAP_SCALE;
+			point.y = int(point.y) * m_MAP_SCALE;
+			std::cout << point.x << " " << point.y << std::endl;
+		}
 	}
 }
 
@@ -74,6 +105,22 @@ void Game::Draw( ) const
 	m_RyuPtr->Draw();
 	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
 	utils::DrawPolygon(m_FloorVertices[0], true, 2.f);
+
+	//!TODO - fix copying
+	for (std::vector<Point2f> platform : m_PlatformsVertices)
+	{
+		utils::DrawPolygon(platform, true, 2.f);
+	}
+	for (std::vector<Point2f> sign : m_SignsVertices)
+	{
+		utils::DrawPolygon(sign, true, 2.f);
+	}
+
+	for (std::vector<Point2f> wall : m_WallsVertices)
+	{
+		utils::DrawPolygon(wall, true, 2.f);
+	}
+
 	m_Camera->Reset();
 
 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="3073"
+   height="208"
+   viewBox="0 0 3073 208"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="g1">
+    <image
+       width="3073"
+       height="208"
+       preserveAspectRatio="none"
+       xlink:href="../../../PNG%20Before/ninja_gaiden_map_stage_walls.png"
+       id="image1"
+       style="display:none" />
+    <path
+       style="fill:#000000"
+       d="m 2809.0442,30.027728 h 6 V 175.88388 h -6 z"
+       id="path15" />
+    <path
+       style="fill:#000000"
+       d="m 2618,31 h 6 l -0.044,144.88388 h -6 z"
+       id="path14" />
+    <path
+       style="fill:#000000"
+       d="m 2299,31 h 6 v 145 h -6 z"
+       id="path11" />
+    <path
+       style="fill:#000000"
+       d="m 1786,30 h 6 v 129 h -6 z"
+       id="path16" />
+    <path
+       style="fill:#000000"
+       d="m 1561,122 h 6 l -0.031,54.01563 h -6 z"
+       id="path13" />
+    <path
+       style="fill:#000000"
+       d="m 1495,31 h 9 l -0.4427,91.9375 L 1495,123 Z"
+       id="path17" />
+    <path
+       style="fill:#000000"
+       d="m 1179,32 h 4 v 144 h -4 z"
+       id="path10" />
+    <path
+       style="fill:#000000"
+       d="m 890,32 h 6 l -0.13258,143.97227 -5.88952,0.0442 z"
+       id="path12" />
+    <path
+       style="fill:#000000"
+       d="m 506,31 h 6 v 145 h -6 z"
+       id="path9" />
+    <path
+       style="fill:#000000"
+       d="m 27.00261,31.625 3.950515,0.01563 -0.01752,144.35813 h -3.944757 z"
+       id="path8" />
+  </g>
+</svg>
