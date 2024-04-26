@@ -36,6 +36,8 @@ private:
 	std::vector<std::vector<Point2f>> m_PlatformsVertices;
 	std::vector<std::vector<Point2f>> m_SignsVertices;
 	std::vector<std::vector<Point2f>> m_WallsVertices;
+
+	std::vector<std::vector<std::vector<Point2f>>> m_MapVertices;
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );

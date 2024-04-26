@@ -45,6 +45,15 @@ void Game::Initialize( )
 			point.y = int(point.y) * m_MAP_SCALE;
 			//std::cout << point.x << " " << point.y << std::endl;
 		}
+
+		//for (int index{ 0 }; index < platform.size() - 1; ++index)
+		//{
+		//	if (index != 4)
+		//	{
+		//		platform[index].x = int(platform[index].x) * m_MAP_SCALE;
+		//		platform[index].y = int(platform[index].y) * m_MAP_SCALE;
+		//	}
+		//}
 	}
 	for (std::vector<Point2f>& sign : m_SignsVertices)
 	{
@@ -65,6 +74,13 @@ void Game::Initialize( )
 			std::cout << point.x << " " << point.y << std::endl;
 		}
 	}
+
+	//for (std::vector<std::vector<Point2f>>& verticesType : m_MapVertcies)
+
+	m_MapVertices.push_back(m_FloorVertices);
+	m_MapVertices.push_back(m_PlatformsVertices);
+	m_MapVertices.push_back(m_SignsVertices);
+	m_MapVertices.push_back(m_WallsVertices);
 }
 
 void Game::Cleanup( )
@@ -82,7 +98,7 @@ void Game::Cleanup( )
 void Game::Update(float elapsedSec)
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	m_RyuPtr->Update(elapsedSec, pStates, m_FloorVertices[0]);
+	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
 	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
 }
@@ -106,19 +122,27 @@ void Game::Draw( ) const
 	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
 	utils::DrawPolygon(m_FloorVertices[0], true, 2.f);
 
-	//!TODO - fix copying
-	for (std::vector<Point2f> platform : m_PlatformsVertices)
-	{
-		utils::DrawPolygon(platform, true, 2.f);
-	}
-	for (std::vector<Point2f> sign : m_SignsVertices)
-	{
-		utils::DrawPolygon(sign, true, 2.f);
-	}
+	////!TODO - fix copying
+	//for (std::vector<Point2f> platform : m_PlatformsVertices)
+	//{
+	//	utils::DrawPolygon(platform, true, 2.f);
+	//}
+	//for (std::vector<Point2f> sign : m_SignsVertices)
+	//{
+	//	utils::DrawPolygon(sign, true, 2.f);
+	//}
+	//
+	//for (std::vector<Point2f> wall : m_WallsVertices)
+	//{
+	//	utils::DrawPolygon(wall, true, 2.f);
+	//}
 
-	for (std::vector<Point2f> wall : m_WallsVertices)
+	for (const std::vector<std::vector<Point2f>>& verticesType : m_MapVertices)
 	{
-		utils::DrawPolygon(wall, true, 2.f);
+		for (const std::vector<Point2f>& vertices : verticesType)
+		{
+			utils::DrawPolygon(vertices, true, 2.f);
+		}
 	}
 
 	m_Camera->Reset();

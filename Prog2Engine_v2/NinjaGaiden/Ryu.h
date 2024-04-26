@@ -16,7 +16,11 @@ public:
 	~Ryu();
 
 	void Draw() const;
-	void Update(float elapsedSec, const Uint8* pStates, const std::vector<Point2f> &vertices);
+	void Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>> &mapVertices);
+	void HandleFloorCollision(const std::vector<std::vector<Point2f>>& vertices);
+	void HandleSignsCollision(const std::vector<std::vector<Point2f>>& vertices);
+	void HandlePlatformsCollision(const std::vector<std::vector<Point2f>>& vertices);
+	void HandleWallsCollision(const std::vector<std::vector<Point2f>>& vertices);
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
 
 	void SetBorders(float posX);
@@ -37,6 +41,8 @@ public:
 
 private:
 	Ryu::RyuMovementDirection m_MovementDirection;
+	Ryu::RyuMovementDirection m_PlannedJumpDirection;
+
 	Ryu::RyuState m_State;
 	bool m_IsMoving;
 

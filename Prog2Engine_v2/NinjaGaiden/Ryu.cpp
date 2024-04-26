@@ -75,7 +75,6 @@ Ryu& Ryu::operator=(const Ryu& rhs)
 		this->m_FrameTime = rhs.m_FrameTime;
 		this->m_FrameNr = rhs.m_FrameNr;
 		this->m_MaxFramesOfAnimation = rhs.m_MaxFramesOfAnimation;
-
 	}
 	return *this;
 }
@@ -85,6 +84,7 @@ Ryu::~Ryu()
 {
 	delete m_RyuSpriteSheetPtr;
 	m_RyuSpriteSheetPtr = nullptr;
+	delete m_KatanaPtr;
 }
 
 void Ryu::InitializeSourceRect()
@@ -95,8 +95,7 @@ void Ryu::InitializeSourceRect()
 }
 
 void Ryu::UpdateSourceRect()
-{
-	
+{	
 	m_SourceRect.left = (m_FrameNr % m_MaxFramesOfAnimation) * m_RyuSpriteSheetPtr->GetWidth() / m_COLS;
 	
 	if (m_State == RyuState::duckAttacking || m_State == RyuState::ducking)
@@ -123,7 +122,6 @@ void Ryu::UpdateSourceRect()
 	{
 		m_SourceRect.width = m_FRAME_WIDTH * 0.55f;
 	}
-
 }
 
 
@@ -136,15 +134,12 @@ void Ryu::ChangeDirection(RyuMovementDirection direction)
 
 void Ryu::Draw() const
 {
-	//Rectf sourceRect = GetCurrFrameRect();;
-
 	if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr > 0) m_KatanaPtr->Draw(m_MovementDirection);
 	glPushMatrix();
 	if (m_MovementDirection == RyuMovementDirection::left)
 	{
 		glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y, 0.f);
 		glScalef(-m_SCALE, m_SCALE, 1.f);
-		
 	}
 	else
 	{
@@ -159,77 +154,101 @@ void Ryu::Draw() const
 	utils::DrawLine(Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), 2.f);
 
 	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
-	utils::DrawLine(Point2f(m_Position.x - 5.f, m_Position.y + m_SourceRect.height * m_SCALE / 5.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + m_SourceRect.height * m_SCALE / 5.f), 2.f);
-
-
+	utils::DrawLine(Point2f(m_Position.x - 5.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), 2.f);
 }
 
-void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<Point2f>& vertices)
+void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices)
 {
-
-	if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking && m_State != RyuState::climbing)
+	m_PlannedJumpDirection = m_MovementDirection;
+	if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking)
 	{
-		if (m_State != RyuState::jumping)
+		if (m_State != RyuState::jumping && m_State != RyuState::climbing)
 		{
 			m_State = RyuState::none;
 			m_Velocity.x = 0;
 		}
-	
 		if (pStates[SDL_SCANCODE_RIGHT])
 		{
-			m_Velocity.x = m_SPEED;
-			if (m_State != RyuState::jumping)
+			if (m_State != RyuState::climbing)
 			{
-				m_State = RyuState::walking;
+				m_Velocity.x = m_SPEED;
+				if (m_State != RyuState::jumping)
+				{
+					m_State = RyuState::walking;
+				}
+				else
+				{
+					if (m_MovementDirection != RyuMovementDirection::right)
+					{
+						m_Velocity.x = m_SPEED / 2.f;
+					}
+				}
+				ChangeDirection(RyuMovementDirection::right);
 			}
 			else
 			{
-				if (m_MovementDirection != RyuMovementDirection::right)
-				{
-					m_Velocity.x = m_SPEED / 2.f;
-				}
+				m_PlannedJumpDirection = RyuMovementDirection::right;
 			}
-			ChangeDirection(RyuMovementDirection::right);
+	
 			
 		}
 		else if (pStates[SDL_SCANCODE_LEFT])
 		{
-			m_Velocity.x = -m_SPEED;
-			if (m_State != RyuState::jumping)
+			if (m_State != RyuState::climbing)
 			{
-				m_State = RyuState::walking;
+				m_Velocity.x = -m_SPEED;
+				if (m_State != RyuState::jumping)
+				{
+					m_State = RyuState::walking;
+				}
+				else
+				{
+					if (m_MovementDirection != RyuMovementDirection::left)
+					{
+						m_Velocity.x = -m_SPEED / 2.f;
+					}
+				}
+				ChangeDirection(RyuMovementDirection::left);
 			}
 			else
 			{
-				if (m_MovementDirection != RyuMovementDirection::left)
-				{
-					m_Velocity.x = -m_SPEED / 2.f;
-				}
+				m_PlannedJumpDirection = RyuMovementDirection::left;
 			}
-			ChangeDirection(RyuMovementDirection::left);
 		}
 		if (pStates[SDL_SCANCODE_DOWN])
 		{
-			if (m_State != RyuState::walking && m_State != RyuState::jumping)
+			if (m_State != RyuState::climbing)
 			{
-				m_State = RyuState::ducking;
-				m_Velocity.x = 0.f;
+				if (m_State != RyuState::walking && m_State != RyuState::jumping)
+				{
+					m_State = RyuState::ducking;
+					m_Velocity.x = 0.f;
+				}
+			}	
+		}
+		if (pStates[SDL_SCANCODE_X])
+		{
+			if (m_State == RyuState::climbing)
+			{
+				if (m_MovementDirection != m_PlannedJumpDirection)
+				{
+					m_MovementDirection = m_PlannedJumpDirection;
+					m_MovementDirection == RyuMovementDirection::left ? m_Position.x -= 1.f : m_Position.x + 1.f;
+					m_Velocity.y = 500.f;
+					m_State = RyuState::jumping;
+				}
+			}
+
+			if (m_State != RyuState::jumping and m_State != RyuState::climbing)
+			{
+				m_Velocity.y = 730.f;
+				m_State = RyuState::jumping;
 			}
 		}
-		
-		
 	}
+
+	if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking || m_State == RyuState::climbing)) m_Velocity.x = 0.f;
 	
-	if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking || m_State == RyuState::climbing))
-	{
-		m_Velocity.x = 0.f;
-	}
-
-	if (m_State == RyuState::climbing)
-	{
-		m_Velocity.y = 0.f;
-
-	}
 
 	ChangePosition(elapsedSec);
 	ChangeMaxFramesOfAnimation();
@@ -239,31 +258,47 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<Point
 	UpdateSourceRect();
 	m_KatanaPtr->UpdateSourceRect();
 
+	HandleFloorCollision(mapVertices[0]);
+	HandlePlatformsCollision(mapVertices[1]);
+	HandleSignsCollision(mapVertices[2]);
+	HandleWallsCollision(mapVertices[3]);
+
+	if (m_State == RyuState::climbing) m_Velocity.y = 0.f;
+	if (m_Velocity.y != 0) m_State = RyuState::jumping;
+}
+
+#pragma region Handle Collision
+void Ryu::HandleFloorCollision(const std::vector<std::vector<Point2f>>& vertices)
+{
 	utils::HitInfo hitInfoVertical;
 	utils::HitInfo hitInfoHorizontal;
-
-	if (utils::Raycast(vertices, Point2f(m_Position.x - 1.f, m_Position.y + m_SourceRect.height * m_SCALE / 5.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + m_SourceRect.height * m_SCALE / 5.f), hitInfoHorizontal))
+	if (utils::Raycast(vertices[0], Point2f(m_Position.x - 1.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), hitInfoHorizontal))
 	{
-		m_Velocity.x = 0;
-		m_Position.x = hitInfoHorizontal.intersectPoint.x;
-		if (m_MovementDirection == RyuMovementDirection::right)
-		{
-			m_Position.x -= m_SourceRect.width * m_SCALE;
-		}
-		else
-		{
-			m_Position.x ++;
-		}
 
 		if (m_State == RyuState::jumping)
 		{
-			m_Position.y = hitInfoHorizontal.intersectPoint.y;
-			m_State = RyuState::climbing;
+			if (m_Velocity.y < 400.f)
+			{
+				m_Position.y = hitInfoHorizontal.intersectPoint.y - 1.f;
+				m_State = RyuState::climbing;
+			}
+
+		}
+
+		m_Velocity.x = 0;
+		m_Position.x = hitInfoHorizontal.intersectPoint.x;
+
+		if (m_MovementDirection == RyuMovementDirection::right)
+		{
+			m_Position.x -= (m_SourceRect.width * m_SCALE + 1.f);
+		} 
+		else
+		{
+			m_Position.x++;
 		}
 	}
-
-	if (utils::Raycast(vertices, Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x, m_Position.y), hitInfoVertical) ||
-		utils::Raycast(vertices, Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), hitInfoVertical))
+	if (utils::Raycast(vertices[0], Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x, m_Position.y), hitInfoVertical) ||
+		utils::Raycast(vertices[0], Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), hitInfoVertical))
 	{
 		if (m_Velocity.y < 0.f)
 		{
@@ -272,37 +307,164 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<Point
 			m_Velocity.y = 0;
 		}
 	}
-	
 }
+
+void Ryu::HandleSignsCollision(const std::vector<std::vector<Point2f>>& vertices)
+{
+	utils::HitInfo hitInfoHorizontal;
+	utils::HitInfo hitInfoVertical;
+	for (const std::vector<Point2f>& sign : vertices)
+	{
+		if (utils::Raycast(sign, Point2f(m_Position.x - 1.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), hitInfoHorizontal))
+		{
+			if (m_Velocity.x * hitInfoHorizontal.normal.x < 0)
+			{
+				
+				if (m_State == RyuState::jumping)
+				{
+					if (m_Velocity.y < 500.f)
+					{
+						m_Position.y = hitInfoHorizontal.intersectPoint.y - 1.f;
+						m_State = RyuState::climbing;
+					}
+				}
+
+				m_Velocity.x = 0;
+				m_Position.x = hitInfoHorizontal.intersectPoint.x;
+
+				if (m_MovementDirection == RyuMovementDirection::right)
+				{
+					m_Position.x -= (m_SourceRect.width * m_SCALE + 1.f);
+				}
+				else
+				{
+					m_Position.x++;
+				}
+				
+			}
+			
+		}
+		if (utils::Raycast(sign, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) ||
+			utils::Raycast(sign, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f/ 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
+		{
+			if (m_Velocity.y < 0.f)
+			{
+				if (m_Velocity.y * hitInfoVertical.normal.y < 0)
+				{
+					if (hitInfoVertical.lambda > 0.4f)
+					{
+						m_Position.y = hitInfoVertical.intersectPoint.y;
+						if (m_State == RyuState::jumping) m_State = RyuState::none;
+						m_Velocity.y = 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+void Ryu::HandlePlatformsCollision(const std::vector<std::vector<Point2f>>& vertices)
+{
+	utils::HitInfo hitInfoVertical;
+	for (const std::vector<Point2f>& platform : vertices)
+	{
+		if (utils::Raycast(platform, Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x, m_Position.y), hitInfoVertical) ||
+			utils::Raycast(platform, Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), hitInfoVertical))
+		{
+			if (m_Velocity.y < 0.f)
+			{
+				m_Position.y = hitInfoVertical.intersectPoint.y;
+				if (m_State == RyuState::jumping)
+				{
+					m_State = RyuState::none;
+				}
+				m_Velocity.y = 0;
+			}
+		}
+	}
+}
+
+
+
+void Ryu::HandleWallsCollision(const std::vector<std::vector<Point2f>>& vertices)
+{
+	utils::HitInfo hitInfoHorizontal;
+	for (const std::vector<Point2f>& walls : vertices)
+	if (m_MovementDirection == RyuMovementDirection::left)
+	{
+
+		if (utils::Raycast(walls, Point2f(m_Position.x - 1.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), hitInfoHorizontal))
+		{
+			if (m_Velocity.x * hitInfoHorizontal.normal.x < 0.f)
+			{
+				if (m_State == RyuState::jumping)
+				{
+					m_Position.y = hitInfoHorizontal.intersectPoint.y - 1.f;
+					m_State = RyuState::climbing;
+				}
+				m_Velocity.x = 0;
+				m_Position.x = hitInfoHorizontal.intersectPoint.x;
+
+				if (m_MovementDirection == RyuMovementDirection::right)
+				{
+					m_Position.x -= (m_SourceRect.width * m_SCALE + 1.f);
+				}
+				else
+				{
+					m_Position.x++;
+				}
+			}
+			
+		}
+	}
+}
+#pragma endregion
+
 
 void Ryu::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 {
 	switch (e.keysym.sym)
 	{
-	case SDLK_x:
-		if (m_State != RyuState::jumping)
-		{
-			m_State = RyuState::jumping;
-			m_Velocity.y = 700.f;
-		}
-		break;
-
+	//case SDLK_x:
+	//	if (m_State != RyuState::jumping)
+	//	{
+	//		if (m_State == RyuState::climbing)
+	//		{
+	//			if (m_MovementDirection != m_PlannedJumpDirection)
+	//			{
+	//				m_MovementDirection = m_PlannedJumpDirection;
+	//			}
+	//			else
+	//			{
+	//				break;
+	//			}
+	//		}
+	//		m_State = RyuState::jumping;
+	//		m_Velocity.y = 730.f;
+	//	}
+	//	break;
+	//
 	case SDLK_z:
-		m_FrameNr = 0;
-		if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking)
+		if (m_State != RyuState::climbing)
 		{
-			if (m_State == RyuState::ducking)
+			m_FrameNr = 0;
+			if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking)
 			{
-				m_State = RyuState::duckAttacking;
+				if (m_State == RyuState::ducking)
+				{
+					m_State = RyuState::duckAttacking;
+				}
+				else
+				{
+					m_State = RyuState::attacking;
+				}
 			}
-			else
-			{
-				m_State = RyuState::attacking;
-			}
+			break;
 		}
-		break;
 	}
 }
+
+
 
 
 Point2f Ryu::GetPosition() const
@@ -380,5 +542,5 @@ void Ryu::ChangePosition(float elapsedSec)
 
 void Ryu::UpdateJump(float elapsedSec)
 {
-	m_Velocity.y -= 30.f;
+	m_Velocity.y -= 32.f;
 }
