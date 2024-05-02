@@ -1,7 +1,7 @@
 #pragma once
 #include <Texture.h>
 #include "Ryu.h"
-class Katana
+class Katana final
 {
 public:
 

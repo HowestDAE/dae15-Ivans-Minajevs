@@ -3,7 +3,7 @@
 #include <Vector2f.h>
 #include <vector>
 class Katana;
-class Ryu
+class Ryu final
 {
 public: 
 	enum class RyuMovementDirection { left, right };
@@ -37,6 +37,8 @@ public:
 	const float  m_FRAME_HEIGHT{ 35.f };
 
 	const float m_SPEED{ 250.f };
+	const float m_INIT_JUMP_SPEED{ 500.f };
+
 	const float m_SCALE{ 3.f };
 
 private:

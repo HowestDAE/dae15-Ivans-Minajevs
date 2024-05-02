@@ -3,10 +3,14 @@
 #include "Ryu.h"
 #include "Camera.h"
 #include "SvgParser.h"
+#include "SoundStream.h"
+#include "TestingDot.h"
+#include "ParticlesManager.h"
+#include "ParticleType.h"
 #include <iostream>
 #include "utils.h"
-Game::Game( const Window& window ) 
-	:BaseGame{ window }
+Game::Game( const Window& window )
+	: BaseGame{ window }
 {
 	Initialize();
 }
@@ -18,7 +22,12 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_RyuPtr = new Ryu(1500.f, 70.f);
+	m_TestingDotPtr = new TestingDot(Point2f(500.f, 150.f), 20.f);
+	m_BackgroundMusicPtr = new SoundStream("background_music.mp3");
+
+	m_ParticlesManagerPtr = new ParticlesManager();
+
+	m_RyuPtr = new Ryu(80.f, 70.f);
 	m_MapTexturePtr = new Texture("ninja_gaiden_map_stage_1_8bit.png");
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 
@@ -26,34 +35,20 @@ void Game::Initialize( )
 	SVGParser::GetVerticesFromSvgFile("map_platforms.svg", m_PlatformsVertices);
 	SVGParser::GetVerticesFromSvgFile("map_signs.svg", m_SignsVertices);
 	SVGParser::GetVerticesFromSvgFile("map_walls.svg", m_WallsVertices);
-
-	//for (std::vector<Point2f> &vertices : m_FloorVertices)
-	//{
-	//	
-	//}
+	
 	for (Point2f &point : m_FloorVertices[0])
 	{
 		point.x = int(point.x) * m_MAP_SCALE;
 		point.y = int(point.y) * m_MAP_SCALE;
-		//std::cout << point.x << " " << point.y << std::endl;
 	}
+	
 	for (std::vector<Point2f>& platform : m_PlatformsVertices)
 	{
 		for (Point2f& point : platform)
 		{
 			point.x = int(point.x) * m_MAP_SCALE;
 			point.y = int(point.y) * m_MAP_SCALE;
-			//std::cout << point.x << " " << point.y << std::endl;
 		}
-
-		//for (int index{ 0 }; index < platform.size() - 1; ++index)
-		//{
-		//	if (index != 4)
-		//	{
-		//		platform[index].x = int(platform[index].x) * m_MAP_SCALE;
-		//		platform[index].y = int(platform[index].y) * m_MAP_SCALE;
-		//	}
-		//}
 	}
 	for (std::vector<Point2f>& sign : m_SignsVertices)
 	{
@@ -61,7 +56,6 @@ void Game::Initialize( )
 		{
 			point.x = int(point.x) * m_MAP_SCALE;
 			point.y = int(point.y) * m_MAP_SCALE;
-			//std::cout << point.x << " " << point.y << std::endl;
 		}
 	}
 
@@ -71,11 +65,8 @@ void Game::Initialize( )
 		{
 			point.x = int(point.x) * m_MAP_SCALE;
 			point.y = int(point.y) * m_MAP_SCALE;
-			std::cout << point.x << " " << point.y << std::endl;
 		}
 	}
-
-	//for (std::vector<std::vector<Point2f>>& verticesType : m_MapVertcies)
 
 	m_MapVertices.push_back(m_FloorVertices);
 	m_MapVertices.push_back(m_PlatformsVertices);
@@ -93,10 +84,35 @@ void Game::Cleanup( )
 
 	delete m_Camera;
 	m_Camera = nullptr;
+
+	delete m_BackgroundMusicPtr;
+	m_BackgroundMusicPtr = nullptr;
+
+	delete m_TestingDotPtr;
+	m_TestingDotPtr = nullptr;
 }
 
 void Game::Update(float elapsedSec)
 {
+	if (m_TestingDotPtr != nullptr)
+	{
+		if (!m_TestingDotPtr->GetIsAlive())
+		{
+			m_ParticlesManagerPtr->Add(ParticleType::enemyDeath, m_TestingDotPtr->GetPosition(), 0.5f);
+			delete m_TestingDotPtr;
+			m_TestingDotPtr = nullptr;
+		}
+	
+	}
+	
+
+	m_ParticlesManagerPtr->Update(elapsedSec);
+	if (!m_BackgroundMusicPtr->IsPlaying())
+	{
+		m_BackgroundMusicPtr->Play(true);
+	}
+	
+
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
@@ -107,7 +123,7 @@ void Game::Draw( ) const
 {
 	ClearBackground( );
 
-
+	
 	m_Camera->Aim(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
 	glPushMatrix();
 	{
@@ -147,7 +163,12 @@ void Game::Draw( ) const
 
 	m_Camera->Reset();
 
-
+	if (m_TestingDotPtr != nullptr)
+	{
+		m_TestingDotPtr->Draw();
+	}
+	
+	m_ParticlesManagerPtr->Draw();
 
 }
 
@@ -182,6 +203,11 @@ void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 {
+
+	if (m_TestingDotPtr != nullptr)
+	{
+		m_TestingDotPtr-> ProcessMouseDownEvent(e);
+	}
 	//std::cout << "MOUSEBUTTONDOWN event: ";
 	//switch ( e.button )
 	//{

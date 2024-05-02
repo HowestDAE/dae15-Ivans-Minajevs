@@ -5,6 +5,9 @@
 class SvgParser;
 class Camera;
 class Ryu;
+class TestingDot;
+class SoundStream;
+class ParticlesManager;
 class Game : public BaseGame
 {
 public:
@@ -31,6 +34,9 @@ private:
 	Ryu* m_RyuPtr;
 	Texture* m_MapTexturePtr;
 	Camera* m_Camera;
+	TestingDot* m_TestingDotPtr;
+	SoundStream* m_BackgroundMusicPtr;
+	ParticlesManager* m_ParticlesManagerPtr;
 
 	std::vector<std::vector<Point2f>> m_FloorVertices;
 	std::vector<std::vector<Point2f>> m_PlatformsVertices;
@@ -38,6 +44,8 @@ private:
 	std::vector<std::vector<Point2f>> m_WallsVertices;
 
 	std::vector<std::vector<std::vector<Point2f>>> m_MapVertices;
+
+	
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );

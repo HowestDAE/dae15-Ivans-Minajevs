@@ -234,12 +234,12 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 				{
 					m_MovementDirection = m_PlannedJumpDirection;
 					m_MovementDirection == RyuMovementDirection::left ? m_Position.x -= 1.f : m_Position.x + 1.f;
-					m_Velocity.y = 500.f;
+					m_Velocity.y = m_INIT_JUMP_SPEED;
 					m_State = RyuState::jumping;
 				}
 			}
 
-			if (m_State != RyuState::jumping and m_State != RyuState::climbing)
+			if (m_State != RyuState::jumping && m_State != RyuState::climbing && m_State != RyuState::attacking)
 			{
 				m_Velocity.y = 730.f;
 				m_State = RyuState::jumping;
@@ -258,13 +258,14 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 	UpdateSourceRect();
 	m_KatanaPtr->UpdateSourceRect();
 
+
 	HandleFloorCollision(mapVertices[0]);
 	HandlePlatformsCollision(mapVertices[1]);
 	HandleSignsCollision(mapVertices[2]);
 	HandleWallsCollision(mapVertices[3]);
 
 	if (m_State == RyuState::climbing) m_Velocity.y = 0.f;
-	if (m_Velocity.y != 0) m_State = RyuState::jumping;
+	if (m_Velocity.y != 0 && (m_State!=RyuState::attacking)) m_State = RyuState::jumping;
 }
 
 #pragma region Handle Collision
@@ -272,41 +273,49 @@ void Ryu::HandleFloorCollision(const std::vector<std::vector<Point2f>>& vertices
 {
 	utils::HitInfo hitInfoVertical;
 	utils::HitInfo hitInfoHorizontal;
-	if (utils::Raycast(vertices[0], Point2f(m_Position.x - 1.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), hitInfoHorizontal))
-	{
 
+	if (utils::Raycast(vertices[0], Point2f(m_Position.x - 1.f, m_Position.y + 10.f),
+		Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 10.f), hitInfoHorizontal))
+	{
 		if (m_State == RyuState::jumping)
 		{
-			if (m_Velocity.y < 400.f)
+			if (m_Velocity.y < 440.f)
 			{
-				m_Position.y = hitInfoHorizontal.intersectPoint.y - 1.f;
+				m_Position.y = hitInfoHorizontal.intersectPoint.y - 10.f;
 				m_State = RyuState::climbing;
 			}
-
 		}
 
-		m_Velocity.x = 0;
 		m_Position.x = hitInfoHorizontal.intersectPoint.x;
-
 		if (m_MovementDirection == RyuMovementDirection::right)
 		{
+			//m_State = RyuState::walking;
 			m_Position.x -= (m_SourceRect.width * m_SCALE + 1.f);
-		} 
-		else
-		{
-			m_Position.x++;
 		}
+		else if (m_MovementDirection == RyuMovementDirection::left)
+		{
+			m_Position.x += 1.f;
+		}
+		m_Velocity.x = 0;
 	}
-	if (utils::Raycast(vertices[0], Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x, m_Position.y), hitInfoVertical) ||
-		utils::Raycast(vertices[0], Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), hitInfoVertical))
+
+	if (utils::Raycast(vertices[0], Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE),
+		Point2f(m_Position.x, m_Position.y), hitInfoVertical) ||
+		utils::Raycast(vertices[0], Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE),
+		Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), hitInfoVertical))
 	{
-		if (m_Velocity.y < 0.f)
+		if (m_Velocity.y <= 1.f)
 		{
-			m_Position.y = hitInfoVertical.intersectPoint.y;
-			if (m_State == RyuState::jumping) m_State = RyuState::none;
 			m_Velocity.y = 0;
+			m_Position.y = hitInfoVertical.intersectPoint.y;
+			if (m_State == RyuState::jumping || m_State == RyuState::climbing)
+			{
+				m_State = RyuState::none;
+			}
 		}
-	}
+	}	
+
+	
 }
 
 void Ryu::HandleSignsCollision(const std::vector<std::vector<Point2f>>& vertices)
@@ -315,16 +324,16 @@ void Ryu::HandleSignsCollision(const std::vector<std::vector<Point2f>>& vertices
 	utils::HitInfo hitInfoVertical;
 	for (const std::vector<Point2f>& sign : vertices)
 	{
-		if (utils::Raycast(sign, Point2f(m_Position.x - 1.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), hitInfoHorizontal))
+		if (utils::Raycast(sign, Point2f(m_Position.x - 1.f, m_Position.y + 10.f), 
+								 Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 10.f), hitInfoHorizontal))
 		{
 			if (m_Velocity.x * hitInfoHorizontal.normal.x < 0)
 			{
-				
 				if (m_State == RyuState::jumping)
 				{
 					if (m_Velocity.y < 500.f)
 					{
-						m_Position.y = hitInfoHorizontal.intersectPoint.y - 1.f;
+						m_Position.y = hitInfoHorizontal.intersectPoint.y - 10.f;
 						m_State = RyuState::climbing;
 					}
 				}
@@ -344,8 +353,10 @@ void Ryu::HandleSignsCollision(const std::vector<std::vector<Point2f>>& vertices
 			}
 			
 		}
-		if (utils::Raycast(sign, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) ||
-			utils::Raycast(sign, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f/ 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
+		if (utils::Raycast(sign, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+								 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) ||
+			utils::Raycast(sign, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f/ 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+								 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
 		{
 			if (m_Velocity.y < 0.f)
 			{
@@ -368,8 +379,10 @@ void Ryu::HandlePlatformsCollision(const std::vector<std::vector<Point2f>>& vert
 	utils::HitInfo hitInfoVertical;
 	for (const std::vector<Point2f>& platform : vertices)
 	{
-		if (utils::Raycast(platform, Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x, m_Position.y), hitInfoVertical) ||
-			utils::Raycast(platform, Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), hitInfoVertical))
+		if (utils::Raycast(platform, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 8.f), 
+									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y), hitInfoVertical) ||
+			utils::Raycast(platform, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 8.f), 
+									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y), hitInfoVertical))
 		{
 			if (m_Velocity.y < 0.f)
 			{
@@ -393,13 +406,14 @@ void Ryu::HandleWallsCollision(const std::vector<std::vector<Point2f>>& vertices
 	if (m_MovementDirection == RyuMovementDirection::left)
 	{
 
-		if (utils::Raycast(walls, Point2f(m_Position.x - 1.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), hitInfoHorizontal))
+		if (utils::Raycast(walls, Point2f(m_Position.x - 1.f, m_Position.y + 10.f), 
+								  Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 10.f), hitInfoHorizontal))
 		{
 			if (m_Velocity.x * hitInfoHorizontal.normal.x < 0.f)
 			{
 				if (m_State == RyuState::jumping)
 				{
-					m_Position.y = hitInfoHorizontal.intersectPoint.y - 1.f;
+					m_Position.y = hitInfoHorizontal.intersectPoint.y - 10.f;
 					m_State = RyuState::climbing;
 				}
 				m_Velocity.x = 0;
@@ -425,25 +439,6 @@ void Ryu::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 {
 	switch (e.keysym.sym)
 	{
-	//case SDLK_x:
-	//	if (m_State != RyuState::jumping)
-	//	{
-	//		if (m_State == RyuState::climbing)
-	//		{
-	//			if (m_MovementDirection != m_PlannedJumpDirection)
-	//			{
-	//				m_MovementDirection = m_PlannedJumpDirection;
-	//			}
-	//			else
-	//			{
-	//				break;
-	//			}
-	//		}
-	//		m_State = RyuState::jumping;
-	//		m_Velocity.y = 730.f;
-	//	}
-	//	break;
-	//
 	case SDLK_z:
 		if (m_State != RyuState::climbing)
 		{
@@ -465,8 +460,6 @@ void Ryu::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 }
 
 
-
-
 Point2f Ryu::GetPosition() const
 {
 	return m_Position;
@@ -476,8 +469,6 @@ void Ryu::SetBorders(float posX)
 {
 	m_Position.x = posX;
 }
-
-
 
 void Ryu::ChangeMaxFramesOfAnimation()
 {
