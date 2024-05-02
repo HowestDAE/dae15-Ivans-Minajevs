@@ -35,43 +35,23 @@ void Game::Initialize( )
 	SVGParser::GetVerticesFromSvgFile("map_platforms.svg", m_PlatformsVertices);
 	SVGParser::GetVerticesFromSvgFile("map_signs.svg", m_SignsVertices);
 	SVGParser::GetVerticesFromSvgFile("map_walls.svg", m_WallsVertices);
-	
-	for (Point2f &point : m_FloorVertices[0])
-	{
-		point.x = int(point.x) * m_MAP_SCALE;
-		point.y = int(point.y) * m_MAP_SCALE;
-	}
-	
-	for (std::vector<Point2f>& platform : m_PlatformsVertices)
-	{
-		for (Point2f& point : platform)
-		{
-			point.x = int(point.x) * m_MAP_SCALE;
-			point.y = int(point.y) * m_MAP_SCALE;
-		}
-	}
-	for (std::vector<Point2f>& sign : m_SignsVertices)
-	{
-		for (Point2f& point : sign)
-		{
-			point.x = int(point.x) * m_MAP_SCALE;
-			point.y = int(point.y) * m_MAP_SCALE;
-		}
-	}
-
-	for (std::vector<Point2f>& wall : m_WallsVertices)
-	{
-		for (Point2f& point : wall)
-		{
-			point.x = int(point.x) * m_MAP_SCALE;
-			point.y = int(point.y) * m_MAP_SCALE;
-		}
-	}
 
 	m_MapVertices.push_back(m_FloorVertices);
 	m_MapVertices.push_back(m_PlatformsVertices);
 	m_MapVertices.push_back(m_SignsVertices);
 	m_MapVertices.push_back(m_WallsVertices);
+
+	for (std::vector<std::vector<Point2f>>& verticesType : m_MapVertices)
+	{
+		for (std::vector<Point2f>& vertices : verticesType)
+		{
+			for (Point2f &point : vertices)
+			{
+				point.x = int(point.x) * m_MAP_SCALE;
+				point.y = int(point.y) * m_MAP_SCALE;
+			}
+		}
+	}
 }
 
 void Game::Cleanup( )
@@ -102,17 +82,12 @@ void Game::Update(float elapsedSec)
 			delete m_TestingDotPtr;
 			m_TestingDotPtr = nullptr;
 		}
-	
 	}
-	
-
 	m_ParticlesManagerPtr->Update(elapsedSec);
 	if (!m_BackgroundMusicPtr->IsPlaying())
 	{
 		m_BackgroundMusicPtr->Play(true);
 	}
-	
-
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
@@ -132,26 +107,10 @@ void Game::Draw( ) const
 		m_MapTexturePtr->Draw();
 	}
 	glPopMatrix();
-
-
+	
 	m_RyuPtr->Draw();
+	
 	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
-	utils::DrawPolygon(m_FloorVertices[0], true, 2.f);
-
-	////!TODO - fix copying
-	//for (std::vector<Point2f> platform : m_PlatformsVertices)
-	//{
-	//	utils::DrawPolygon(platform, true, 2.f);
-	//}
-	//for (std::vector<Point2f> sign : m_SignsVertices)
-	//{
-	//	utils::DrawPolygon(sign, true, 2.f);
-	//}
-	//
-	//for (std::vector<Point2f> wall : m_WallsVertices)
-	//{
-	//	utils::DrawPolygon(wall, true, 2.f);
-	//}
 
 	for (const std::vector<std::vector<Point2f>>& verticesType : m_MapVertices)
 	{
@@ -161,8 +120,6 @@ void Game::Draw( ) const
 		}
 	}
 
-	m_Camera->Reset();
-
 	if (m_TestingDotPtr != nullptr)
 	{
 		m_TestingDotPtr->Draw();
@@ -170,6 +127,10 @@ void Game::Draw( ) const
 	
 	m_ParticlesManagerPtr->Draw();
 
+
+	m_Camera->Reset();
+
+	
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
