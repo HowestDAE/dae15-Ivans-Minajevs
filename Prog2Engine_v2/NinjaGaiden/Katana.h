@@ -13,7 +13,7 @@ public:
 	void Draw(MovementDirection state) const;
 	void ChangePosition(Point2f pos);
 
-	void Update( EnemiesManager* enemiesManagerPtr) const;
+	void Update( EnemiesManager* enemiesManagerPtr, MovementDirection state) const;
 
 	Rectf GetSourceRect() const;
 
@@ -22,12 +22,12 @@ public:
 	void ChangeFrames(int frameNr);
 
 	void SetIsActive(bool isActive);
-	void CheckEnemiesHit( EnemiesManager* enemiesManagerPtr) const;
+	void CheckEnemiesHit( EnemiesManager* enemiesManagerPtr, MovementDirection state) const;
 
 	//~Katana();
 
 	const int m_MAX_FRAMES_OF_ANIMATION{ 2 };
-	const float m_SCALE{ 0.5 };
+	const float m_SCALE{ 0.5f };
 	//const std::string m_FILE_NAME{ "katana_spritesheet.png" };
 	
 private:

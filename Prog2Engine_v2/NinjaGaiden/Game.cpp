@@ -30,9 +30,8 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-
 	
-	m_TestingDotPtr = new TestingDot(Point2f(200.f, 150.f), 15.f);
+	//m_TestingDotPtr = new TestingDot(Point2f(200.f, 150.f), 15.f);
 	m_BackgroundMusicPtr = new SoundStream("background_music.mp3");
 
 	m_ParticlesManagerPtr = new ParticlesManager();
@@ -86,27 +85,33 @@ void Game::Cleanup( )
 	delete m_BackgroundMusicPtr;
 	m_BackgroundMusicPtr = nullptr;
 
-	delete m_TestingDotPtr;
-	m_TestingDotPtr = nullptr;
+	//delete m_TestingDotPtr;
+	//m_TestingDotPtr = nullptr;
 
 	m_TexturesManagerPtr->DeleteTextures();
+	m_EnemiesManagerPtr->DeleteEnemies();
+	
 	delete m_TexturesManagerPtr;
 }
 
 void Game::Update(float elapsedSec)
 {
+	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr);
 
-	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec);
-	if (m_TestingDotPtr != nullptr)
-	{
-		if (!m_TestingDotPtr->GetIsAlive())
-		{
-			m_ParticlesManagerPtr->Add(m_TexturesManagerPtr, ParticleType::enemyDeath, m_TestingDotPtr->GetPosition(), 0.5f);
-			delete m_TestingDotPtr;
-			m_TestingDotPtr = nullptr;
-		}
-	}
+	//for (Enemy*& enemyPtr : m_EnemiesManagerPtr->GetEnemiesArray())
+	//{
+	//	if (enemyPtr != nullptr)
+	//	{
+	//		if (!enemyPtr->GetIsAlive())
+	//		{
+	//			m_ParticlesManagerPtr->Add(m_TexturesManagerPtr, ParticleType::enemyDeath, enemyPtr->GetPosition(), 0.5f);
+	//			m_EnemiesManagerPtr->DeleteEnemy(enemyPtr);
+	//		}
+	//	}
+	//}
+	
 	m_ParticlesManagerPtr->Update(elapsedSec);
+	
 	if (!m_BackgroundMusicPtr->IsPlaying())
 	{
 		m_BackgroundMusicPtr->Play(true);
@@ -146,10 +151,10 @@ void Game::Draw( ) const
 
 	m_EnemiesManagerPtr->Draw();
 	
-	if (m_TestingDotPtr != nullptr)
-	{
-		m_TestingDotPtr->Draw();
-	}
+	//if (m_TestingDotPtr != nullptr)
+	//{
+	//	m_TestingDotPtr->Draw();
+	//}
 	
 	m_ParticlesManagerPtr->Draw();
 
@@ -191,10 +196,10 @@ void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 {
 
-	if (m_TestingDotPtr != nullptr)
-	{
-		m_TestingDotPtr-> ProcessMouseDownEvent(e);
-	}
+	//if (m_TestingDotPtr != nullptr)
+	//{
+	//	m_TestingDotPtr-> ProcessMouseDownEvent(e);
+	//}
 	//std::cout << "MOUSEBUTTONDOWN event: ";
 	//switch ( e.button )
 	//{

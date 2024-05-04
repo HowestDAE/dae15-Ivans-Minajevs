@@ -36,7 +36,7 @@ private:
 	Ryu* m_RyuPtr;
 	Texture* m_MapTexturePtr;
 	Camera* m_Camera;
-	TestingDot* m_TestingDotPtr;
+	//TestingDot* m_TestingDotPtr;
 	SoundStream* m_BackgroundMusicPtr;
 	ParticlesManager* m_ParticlesManagerPtr;
 	TexturesManager* m_TexturesManagerPtr;

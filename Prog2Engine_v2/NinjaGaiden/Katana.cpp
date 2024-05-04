@@ -55,17 +55,28 @@ void Katana::Draw(MovementDirection state) const
 	glPushMatrix();
 	if (state == MovementDirection::left)
 	{
-		glTranslatef(m_Position.x - 3.f, m_Position.y, 0.f);
+		glTranslatef(m_Position.x, m_Position.y, 0.f);
 		glScalef(-m_SCALE, m_SCALE, 1.f);
 
 	}
 	else
 	{
-		glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE - 10.f, m_Position.y, 0.f);
+		glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y, 0.f);
 		glScalef(m_SCALE, m_SCALE, 1.f);
 	}
 	m_KatanaSpriteSheetPtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
+
+	utils::SetColor(Color4f(0.f, 1.f, 0.f, 1.f));
+
+	if (state == MovementDirection::right)
+	{
+		utils::DrawRect(Rectf(m_Position.x, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE), 2.f);
+	}
+	else
+	{
+		utils::DrawRect(Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE), 2.f);
+	}
 
 }
 
@@ -73,11 +84,11 @@ void Katana::ChangePosition(Point2f pos)
 {
 	m_Position = pos;
 }
-void Katana::Update(EnemiesManager* enemiesManagerPtr) const
+void Katana::Update(EnemiesManager* enemiesManagerPtr, MovementDirection state) const
 {
 	if (m_IsActive)
 	{
-		CheckEnemiesHit(enemiesManagerPtr);
+		CheckEnemiesHit(enemiesManagerPtr, state);
 	}
 }
 
@@ -85,8 +96,6 @@ Rectf Katana::GetSourceRect() const
 {
 	return m_SourceRect;
 }
-
-
 
 void Katana::UpdateSourceRect()
 {
@@ -104,14 +113,22 @@ void Katana::SetIsActive(bool isActive)
 	m_IsActive = isActive;
 }
 
-void Katana::CheckEnemiesHit( EnemiesManager* enemiesManagerPtr) const
+void Katana::CheckEnemiesHit( EnemiesManager* enemiesManagerPtr, MovementDirection state) const
 {
 	for (Enemy* enemyPtr : enemiesManagerPtr->GetEnemiesArray())
 	{
 		if (enemyPtr != nullptr)
 		{
-			if (utils::IsOverlapping(enemyPtr->GetSourceRect(),
-			Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE)))
+			Rectf sourceRect;
+			if (state == MovementDirection::right)
+			{
+				sourceRect = Rectf(m_Position.x, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE);
+			}
+			else
+			{
+				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE);
+			}
+			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 			{
 				enemyPtr->SetIsAlive(false);
 			}

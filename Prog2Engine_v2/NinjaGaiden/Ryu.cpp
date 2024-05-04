@@ -17,7 +17,7 @@ Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 
 	m_AccuSec			= 0;
 	m_FramesPerSec		= 10;
-	m_FrameTime			= 1.f / m_FramesPerSec;
+	m_FrameTime			= 1.f / float(m_FramesPerSec);
 
 	m_FrameNr = 0;
 	m_MaxFramesOfAnimation = 1;
@@ -112,15 +112,19 @@ void Ryu::UpdateSourceRect()
 
 	if (m_State == RyuState::attacking || m_State == RyuState::duckAttacking)
 	{
-		m_SourceRect.width = m_FRAME_WIDTH;
+		m_SourceRect.width = m_FRAME_WIDTH * 0.9f;
+	}
+	else if (m_State == RyuState::climbing || m_State == RyuState::jumping)
+	{
+		m_SourceRect.width = m_FRAME_WIDTH * 0.55f;
+	}
+	else if (m_State == RyuState::walking)
+	{
+		m_SourceRect.width = m_FRAME_WIDTH * 0.7f;
 	}
 	else
 	{
-		m_SourceRect.width = m_FRAME_WIDTH * 0.75f;
-	}
-	if (m_State == RyuState::climbing || m_State == RyuState::jumping)
-	{
-		m_SourceRect.width = m_FRAME_WIDTH * 0.55f;
+		m_SourceRect.width = m_FRAME_WIDTH * 0.6f;
 	}
 }
 
@@ -164,25 +168,30 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 	Rectf sourceRect {Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE)};
 	for (Enemy* enemyPtr: enemiesManagerPtr->GetEnemiesArray())
 	{
-		if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
+		if (enemyPtr != nullptr)
 		{
-			if (m_State != RyuState::hurt)
+			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 			{
-				m_State = RyuState::hurt;
-				m_Velocity.y = 500.f;
-				float intersectMin, intersectMax;
-				utils::IntersectRectLine(enemyPtr->GetSourceRect(), Point2f(m_Position.x - 1.f, m_Position.y),
-										Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y), intersectMin, intersectMax);
-				std::cout << intersectMin << "\n";
-				if ( intersectMin >= 0)
+				if (m_State != RyuState::hurt)
 				{
-					m_Velocity.x = -150.f;
-				} else if (intersectMin < 0)
-				{
-					m_Velocity.x = 150.f;
+					m_State = RyuState::hurt;
+					m_Velocity.y = 500.f;
+					float intersectMin, intersectMax;
+					utils::IntersectRectLine(enemyPtr->GetSourceRect(), Point2f(m_Position.x - 1.f, m_Position.y),
+											Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y), intersectMin, intersectMax);
+					std::cout << intersectMin << "\n";
+					if ( intersectMin >= 0)
+					{
+						m_Velocity.x = -150.f;
+					} else if (intersectMin < 0)
+					{
+						m_Velocity.x = 150.f;
+					}
 				}
-			}
+			}	
 		}
+		
+		
 	}
 
 	if (m_State != RyuState::hurt)
@@ -293,6 +302,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 
 	UpdateJump(elapsedSec);
 	UpdateSourceRect();
+	m_KatanaPtr->Update(enemiesManagerPtr, m_MovementDirection);
 	m_KatanaPtr->UpdateSourceRect();
 
 
@@ -570,11 +580,11 @@ void Ryu::ChangePosition(float elapsedSec)
 	{
 		if (m_FrameNr == 1)
 		{
-			m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height - 5.f));
+			m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width / 2.f, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height - 5.f));
 		}
 		else
 		{
-			m_KatanaPtr->ChangePosition(Point2f(m_Position.x  + m_SourceRect.width, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height + 10.f));
+			m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width / 2.f, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height + 10.f));
 		}
 	}
 }

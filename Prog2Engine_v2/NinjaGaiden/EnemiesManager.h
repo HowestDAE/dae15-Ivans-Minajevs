@@ -1,13 +1,20 @@
 ﻿#pragma once
 #include <vector>
+
+#include "ParticlesManager.h"
 class Enemy;
 class EnemiesManager
 {
 public:
-	void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec);
+	void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec,
+				ParticlesManager* particlesManagerPtr, const TexturesManager* texturesManagerPtr);
 	void Draw() const;
 
 	void Add(Enemy* enemyPtr);
+
+	void DeleteEnemy(Enemy* enemy);
+
+	void DeleteEnemies();
 
 	std::vector<Enemy*>& GetEnemiesArray();
 	
