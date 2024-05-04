@@ -3,7 +3,7 @@
 class Biker : public Enemy
 {
 public:
-	Biker(float startPosX, float endPosX,const Ryu* ryuPtr, TexturesManager* texturesManager, Point2f position, Point2f velocity, Rectf sourceRect);
+	Biker(float startPosX, float endPosX,const Ryu* ryuPtr, TexturesManager* texturesManager, Point2f position, Point2f velocity);
 	//void Draw() const override;
 	void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
 	void UpdateSourceRect() override;
