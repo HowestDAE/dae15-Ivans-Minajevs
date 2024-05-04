@@ -22,7 +22,7 @@ void Biker::UpdateSourceRect()
 {
 	float sourceRectWidth {m_EnemiesTexturePtr->GetWidth() / m_COLS};
 	float sourceRectHeight { m_EnemiesTexturePtr->GetHeight() / m_ROWS};
-	if (m_FrameNr == 3)
+	if (m_FrameNr == 2)
 	{
 		m_SourceRect.height = sourceRectHeight;
 		m_SourceRect.width = sourceRectWidth * 0.5f;

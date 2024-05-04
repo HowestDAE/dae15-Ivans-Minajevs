@@ -25,6 +25,7 @@ Enemy::Enemy(float startPosX, float endPosX,const Ryu* ryuPtr, const TexturesMan
 }
 void Enemy::Draw( ) const
 {
+	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
 	glPushMatrix();
 	if (m_MovementDirection == MovementDirection::left)
 	{
@@ -38,6 +39,7 @@ void Enemy::Draw( ) const
 	}
 	m_EnemiesTexturePtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
+	utils::DrawRect(GetSourceRect(), 2.f);
 }
 
 
@@ -128,7 +130,7 @@ Point2f Enemy::GetPosition( ) const
 }
 Rectf Enemy::GetSourceRect( ) const
 {
-	return m_SourceRect;
+	return Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
 }
 
 bool Enemy::GetIsAlive( ) const
@@ -139,5 +141,9 @@ bool Enemy::GetIsAlive( ) const
 void Enemy::SetIsAlive(bool isAlive)
 {
 	m_IsAlive = isAlive;
+}
+MovementDirection Enemy::GetDirection( ) const
+{
+	return m_MovementDirection;
 }
 

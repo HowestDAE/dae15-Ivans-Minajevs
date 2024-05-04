@@ -112,7 +112,7 @@ void Game::Update(float elapsedSec)
 		m_BackgroundMusicPtr->Play(true);
 	}
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices);
+	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_EnemiesManagerPtr);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
 	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
 }

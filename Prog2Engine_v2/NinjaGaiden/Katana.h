@@ -13,16 +13,16 @@ public:
 	void Draw(MovementDirection state) const;
 	void ChangePosition(Point2f pos);
 
-	void Update( std::vector<Enemy*>& enemyArrPtr) const;
+	void Update( EnemiesManager* enemiesManagerPtr) const;
 
-	Rectf GetSourceRect();
+	Rectf GetSourceRect() const;
 
 	void InitializeSourceRect();
 	void UpdateSourceRect();
 	void ChangeFrames(int frameNr);
 
 	void SetIsActive(bool isActive);
-	void CheckEnemiesHit(std::vector<Enemy*>& enemyArrPtr) const;
+	void CheckEnemiesHit( EnemiesManager* enemiesManagerPtr) const;
 
 	//~Katana();
 

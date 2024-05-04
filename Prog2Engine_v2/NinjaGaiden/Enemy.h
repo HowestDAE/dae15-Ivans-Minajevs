@@ -35,6 +35,7 @@ public:
     Rectf GetSourceRect() const;
     bool GetIsAlive() const;
     void SetIsAlive(bool isAlive);
+    MovementDirection GetDirection() const;
     
     const float m_SCALE { 3.f };
     const int m_COLS{ 6 };

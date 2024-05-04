@@ -73,15 +73,15 @@ void Katana::ChangePosition(Point2f pos)
 {
 	m_Position = pos;
 }
-void Katana::Update(std::vector<Enemy*>& enemyArrPtr ) const
+void Katana::Update(EnemiesManager* enemiesManagerPtr) const
 {
 	if (m_IsActive)
 	{
-		CheckEnemiesHit(enemyArrPtr);
+		CheckEnemiesHit(enemiesManagerPtr);
 	}
 }
 
-Rectf Katana::GetSourceRect()
+Rectf Katana::GetSourceRect() const
 {
 	return m_SourceRect;
 }
@@ -104,13 +104,14 @@ void Katana::SetIsActive(bool isActive)
 	m_IsActive = isActive;
 }
 
-void Katana::CheckEnemiesHit(std::vector<Enemy*>& enemyArrPtr) const
+void Katana::CheckEnemiesHit( EnemiesManager* enemiesManagerPtr) const
 {
-	for (Enemy* enemyPtr : enemyArrPtr)
+	for (Enemy* enemyPtr : enemiesManagerPtr->GetEnemiesArray())
 	{
 		if (enemyPtr != nullptr)
 		{
-			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), m_SourceRect))
+			if (utils::IsOverlapping(enemyPtr->GetSourceRect(),
+			Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE)))
 			{
 				enemyPtr->SetIsAlive(false);
 			}

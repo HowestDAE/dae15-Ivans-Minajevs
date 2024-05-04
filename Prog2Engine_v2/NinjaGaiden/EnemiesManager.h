@@ -9,6 +9,8 @@ public:
 
 	void Add(Enemy* enemyPtr);
 
+	std::vector<Enemy*>& GetEnemiesArray();
+	
 	//const std::string m_FILE_PATH { "enemies_spritesheet.png" };
 private:
 	std::vector<Enemy*> m_EnemiesPtrArr;

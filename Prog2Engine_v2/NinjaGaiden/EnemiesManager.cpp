@@ -33,3 +33,7 @@ void EnemiesManager::Add( Enemy* enemyPtr )
 {
 	m_EnemiesPtrArr.push_back(enemyPtr);
 }
+std::vector<Enemy*>& EnemiesManager::GetEnemiesArray( )
+{
+	return m_EnemiesPtrArr;
+}
