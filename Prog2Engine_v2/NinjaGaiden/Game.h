@@ -2,12 +2,14 @@
 #include "BaseGame.h"
 #include <vector>
 #include "Texture.h"
+class EnemiesManager;
 class SvgParser;
 class Camera;
 class Ryu;
 class TestingDot;
 class SoundStream;
 class ParticlesManager;
+class TexturesManager;
 class Game : public BaseGame
 {
 public:
@@ -28,7 +30,7 @@ public:
 	void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
 	void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
-
+	
 	const float m_MAP_SCALE{ 3.f };
 private:
 	Ryu* m_RyuPtr;
@@ -37,6 +39,8 @@ private:
 	TestingDot* m_TestingDotPtr;
 	SoundStream* m_BackgroundMusicPtr;
 	ParticlesManager* m_ParticlesManagerPtr;
+	TexturesManager* m_TexturesManagerPtr;
+	EnemiesManager* m_EnemiesManagerPtr;
 
 	std::vector<std::vector<Point2f>> m_FloorVertices;
 	std::vector<std::vector<Point2f>> m_PlatformsVertices;

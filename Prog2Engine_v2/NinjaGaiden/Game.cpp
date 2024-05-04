@@ -8,7 +8,15 @@
 #include "ParticlesManager.h"
 #include "ParticleType.h"
 #include <iostream>
+
+#include "Biker.h"
+#include "EnemiesManager.h"
+#include "Enemy.h"
+#include "TextureManager.h"
 #include "utils.h"
+
+
+
 Game::Game( const Window& window )
 	: BaseGame{ window }
 {
@@ -22,14 +30,27 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_TestingDotPtr = new TestingDot(Point2f(500.f, 150.f), 20.f);
+
+	
+	m_TestingDotPtr = new TestingDot(Point2f(200.f, 150.f), 15.f);
 	m_BackgroundMusicPtr = new SoundStream("background_music.mp3");
 
 	m_ParticlesManagerPtr = new ParticlesManager();
+	m_TexturesManagerPtr = new TexturesManager();
+	m_EnemiesManagerPtr = new EnemiesManager();
 
-	m_RyuPtr = new Ryu(80.f, 70.f);
-	m_MapTexturePtr = new Texture("ninja_gaiden_map_stage_1_8bit.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::ryu, "ryu_spritesheet.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::katana, "katana_spritesheet.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::map, "ninja_gaiden_map_stage_1_8bit.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::particles, "death_particle.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
+
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 80.f, 70.f);
+	//m_MapTexturePtr = new Texture("ninja_gaiden_map_stage_1_8bit.png");
+	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
+
+	m_EnemiesManagerPtr->Add(new Biker(200.f, 400.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(250.f, 70.f), Point2f(50.f, 0.f)));
 
 	SVGParser::GetVerticesFromSvgFile("map_floor.svg", m_FloorVertices);
 	SVGParser::GetVerticesFromSvgFile("map_platforms.svg", m_PlatformsVertices);
@@ -59,9 +80,6 @@ void Game::Cleanup( )
 	delete m_RyuPtr;
 	m_RyuPtr = nullptr;
 
-	delete m_MapTexturePtr;
-	m_MapTexturePtr = nullptr;
-
 	delete m_Camera;
 	m_Camera = nullptr;
 
@@ -70,15 +88,20 @@ void Game::Cleanup( )
 
 	delete m_TestingDotPtr;
 	m_TestingDotPtr = nullptr;
+
+	m_TexturesManagerPtr->DeleteTextures();
+	delete m_TexturesManagerPtr;
 }
 
 void Game::Update(float elapsedSec)
 {
+
+	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec);
 	if (m_TestingDotPtr != nullptr)
 	{
 		if (!m_TestingDotPtr->GetIsAlive())
 		{
-			m_ParticlesManagerPtr->Add(ParticleType::enemyDeath, m_TestingDotPtr->GetPosition(), 0.5f);
+			m_ParticlesManagerPtr->Add(m_TexturesManagerPtr, ParticleType::enemyDeath, m_TestingDotPtr->GetPosition(), 0.5f);
 			delete m_TestingDotPtr;
 			m_TestingDotPtr = nullptr;
 		}
@@ -120,6 +143,9 @@ void Game::Draw( ) const
 		}
 	}
 
+
+	m_EnemiesManagerPtr->Draw();
+	
 	if (m_TestingDotPtr != nullptr)
 	{
 		m_TestingDotPtr->Draw();

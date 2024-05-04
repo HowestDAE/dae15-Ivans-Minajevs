@@ -1,11 +1,11 @@
 ﻿#pragma once
 #include "Texture.h"
 #include "ParticleType.h"
+#include "TextureManager.h"
 class Particle final
 {
 public:
-	Particle(ParticleType type, Point2f pos, float timeAlive);
-	~Particle();
+	Particle(const TexturesManager* texturesManager, ParticleType particleType, Point2f pos, float timeAlive);
 	
 	void Draw() const;
 	void Update(float elpasedSec);
@@ -15,7 +15,7 @@ public:
 	const int m_FRAMES_OF_ANIMATION{ 5 };
 	const float m_FRAME_SIZE { 48 };
 	const float m_SCALE { 2.f };
-	const std::string m_FILE_PATH {"death_particle.png"};
+	//const std::string m_FILE_PATH {"death_particle.png"};
 
 	
 private:

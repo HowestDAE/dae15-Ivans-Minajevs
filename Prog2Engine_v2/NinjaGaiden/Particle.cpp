@@ -3,10 +3,11 @@
 #include "ParticleType.h"
 #include "Texture.h"
 
-Particle::Particle(ParticleType type, Point2f pos, float timeAlive) :
-		m_Type(type), m_Position(pos), m_TimeAlive(timeAlive) 
+Particle::Particle(const TexturesManager* texturesManager, ParticleType particleType, Point2f pos, float timeAlive
+) :
+		m_Type(particleType), m_TimeAlive(timeAlive), m_Position(pos)
 {
-	m_DeathParticleSpriteSheetPtr = new Texture(m_FILE_PATH);
+	m_DeathParticleSpriteSheetPtr = texturesManager->GetTexture(TextureType::particles);
 	InitSourceRect();
 	
 	m_AccuSec = 0;
@@ -15,11 +16,6 @@ Particle::Particle(ParticleType type, Point2f pos, float timeAlive) :
 	m_FrameNr = 0;
 };
 
-Particle::~Particle()
-{
-	delete m_DeathParticleSpriteSheetPtr;
-	m_DeathParticleSpriteSheetPtr = nullptr;
-}
 
 void Particle::InitSourceRect()
 {
@@ -31,7 +27,7 @@ void Particle::InitSourceRect()
 void Particle::UpdateSourceRect()
 {
 	m_SourceRect.left = float(m_FrameNr % m_FRAMES_OF_ANIMATION) * m_DeathParticleSpriteSheetPtr->GetWidth() / m_FRAMES_OF_ANIMATION;
-	m_SourceRect.bottom = m_FRAME_SIZE * float(static_cast<int>(m_Type) + 1) - m_FRAME_SIZE;	//check if can be optimised
+	m_SourceRect.bottom = m_FRAME_SIZE * float(static_cast<int>(m_Type));	//check if can be optimised
 }
 
 void Particle::Update(float elapsedSec)

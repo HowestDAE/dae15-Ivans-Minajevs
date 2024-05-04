@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include "ParticleType.h"
+#include "TextureManager.h"
 
 class Particle;
 class ParticlesManager
@@ -9,7 +10,7 @@ public:
 	void Update(float elapsedSec);
 	void Draw() const;
 
-	void Add(ParticleType type, Point2f pos, float timeAlive);
+	void Add(const TexturesManager* texturesManager, ParticleType particleType, Point2f pos, float timeAlive);
 
 private:
 	std::vector<Particle*> m_ParticlesArr;

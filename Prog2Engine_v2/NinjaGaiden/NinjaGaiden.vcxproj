@@ -147,7 +147,9 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Biker.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="EnemiesManager.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -157,9 +159,14 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Ryu.cpp" />
     <ClCompile Include="TestingDot.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Biker.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EnemiesManager.h" />
+    <ClInclude Include="EnemyAreaBorders.h" />
+    <ClInclude Include="MovementDirection.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
@@ -169,6 +176,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Ryu.h" />
     <ClInclude Include="TestingDot.h" />
+    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TextureType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

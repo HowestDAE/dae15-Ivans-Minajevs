@@ -7,7 +7,7 @@ Camera::Camera(float screenWidth, float screenHeight)
 	m_ScreenHeight = screenHeight;
 }
 
-void Camera::Aim(float levelW, float levelH, Point2f trackCenter)
+void Camera::Aim(float levelW, float levelH, Point2f trackCenter) const
 {
 	float cameraX{ trackCenter.x - m_ScreenWidth / 2.f };
 

@@ -2,18 +2,21 @@
 #include "Texture.h"
 #include <Vector2f.h>
 #include <vector>
+
+#include "EnemiesManager.h"
+#include "MovementDirection.h"
+#include "TextureManager.h"
 class Katana;
 class Ryu final
 {
 public: 
-	enum class RyuMovementDirection { left, right };
 	enum class RyuState { none, walking, attacking, ducking, duckAttacking, hurt, jumping, climbing };
-	explicit Ryu(Point2f pos);
-	explicit Ryu(float posX, float posY);
-	Ryu(const Ryu& other);
-	Ryu& operator=(const Ryu& rhs);
+	explicit Ryu(const TexturesManager* texturesManager, Point2f pos);
+	explicit Ryu(const TexturesManager* texturesManager, float posX, float posY);
+	//Ryu(const Ryu& other) = default;
+	//Ryu& operator=(const Ryu& rhs) = default;
 
-	~Ryu();
+	//~Ryu();
 
 	void Draw() const;
 	void Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>> &mapVertices);
@@ -25,6 +28,7 @@ public:
 
 	void SetBorders(float posX);
 	Point2f GetPosition() const;
+	MovementDirection GetMovementDirection() const;
 
 	const int m_ROWS{ 8 };
 	const int m_COLS{ 4 };
@@ -42,8 +46,8 @@ public:
 	const float m_SCALE{ 3.f };
 
 private:
-	Ryu::RyuMovementDirection m_MovementDirection;
-	Ryu::RyuMovementDirection m_PlannedJumpDirection;
+	MovementDirection m_MovementDirection;
+	MovementDirection m_PlannedJumpDirection;
 
 	Ryu::RyuState m_State;
 	bool m_IsMoving;
@@ -72,7 +76,7 @@ private:
 	void ChangeFrames(float elapsedSec);
 	void ChangePosition(float elapsedSec);
 	void UpdateJump(float elapsedSec);
-	void ChangeDirection(RyuMovementDirection direction);
+	void ChangeDirection(MovementDirection direction);
 	
 };
 

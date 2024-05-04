@@ -6,7 +6,7 @@ public:
 	Camera& operator=(const Camera& rhs) = default;
 	Camera(const Camera& other) = default;
 
-	void Aim(float levelW, float levelH, Point2f trackCenter);
+	void Aim(float levelW, float levelH, Point2f trackCenter) const;
 	void Reset();
 
 private:

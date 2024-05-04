@@ -30,7 +30,7 @@ void ParticlesManager::Draw( ) const
 	}
 }
 
-void ParticlesManager::Add(ParticleType type, Point2f pos, float timeAlive) 
+void ParticlesManager::Add(const TexturesManager* texturesManager, ParticleType particleType, Point2f pos, float timeAlive) 
 {
-	m_ParticlesArr.push_back(new Particle(type, pos, timeAlive));
+	m_ParticlesArr.push_back(new Particle(texturesManager, particleType, pos, timeAlive));
 }
