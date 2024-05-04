@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "Biker.h"
+#include "Boxer.h"
 #include "EnemiesManager.h"
 #include "Enemy.h"
 #include "TextureManager.h"
@@ -50,6 +51,7 @@ void Game::Initialize( )
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 
 	m_EnemiesManagerPtr->Add(new Biker(200.f, 400.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(250.f, 70.f), Point2f(50.f, 0.f)));
+	m_EnemiesManagerPtr->Add(new Boxer(800.f, 1200.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(900.f, 70.f), Point2f(30.f, 0.f)));
 
 	SVGParser::GetVerticesFromSvgFile("map_floor.svg", m_FloorVertices);
 	SVGParser::GetVerticesFromSvgFile("map_platforms.svg", m_PlatformsVertices);

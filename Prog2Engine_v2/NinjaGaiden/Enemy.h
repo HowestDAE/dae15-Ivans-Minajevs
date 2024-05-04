@@ -11,7 +11,7 @@ class Enemy
 public:
     enum class EnemyType
     {
-        biker, boxer, dog, knifeMan
+        biker, knifeMan, boxer, dog
     };
     
     Enemy(float startPosX, float endPosX, const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, Point2f position, Point2f velocity);
