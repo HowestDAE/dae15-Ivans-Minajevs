@@ -11,6 +11,7 @@
 #include "Dog.h"
 #include "EnemiesManager.h"
 #include "Enemy.h"
+#include "KnifeMan.h"
 #include "TextureManager.h"
 #include "utils.h"
 
@@ -49,8 +50,9 @@ void Game::Initialize( )
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 
 	m_EnemiesManagerPtr->Add(new Biker(200.f, 400.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(250.f, 70.f), Point2f(50.f, 0.f)));
-	m_EnemiesManagerPtr->Add(new Boxer(800.f, 1200.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(900.f, 70.f), Point2f(30.f, 0.f)));
-	m_EnemiesManagerPtr->Add(new Dog(300.f, 1800.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(1000.f, 70.f), Point2f(100.f, 0.f)));
+	m_EnemiesManagerPtr->Add(new Boxer(800.f, 1200.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(900.f, 70.f), Point2f(50.f, 0.f)));
+	m_EnemiesManagerPtr->Add(new Dog(300.f, 1800.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(1000.f, 70.f), Point2f(250.f, 0.f)));
+	m_EnemiesManagerPtr->Add(new KnifeMan(1200.f, 2000.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(1300.f, 70.f), Point2f(30.f, 0.f)));
 	
 
 	SVGParser::GetVerticesFromSvgFile("map_floor.svg", m_FloorVertices);
