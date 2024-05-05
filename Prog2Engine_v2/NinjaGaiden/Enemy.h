@@ -18,7 +18,7 @@ public:
     //virtual ~Enemy() = default;
     
     virtual void Draw() const;
-    virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) = 0;
+    virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec);
     
     void HandleVerticalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
     virtual void HandleHorizontalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);

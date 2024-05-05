@@ -41,6 +41,18 @@ void Enemy::Draw( ) const
 	glPopMatrix();
 	utils::DrawRect(GetSourceRect(), 2.f);
 }
+void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
+{
+	ChangeFrames(elapsedSec);
+	UpdateSourceRect();
+	
+	ChangePosition(elapsedSec);
+	UpdateJump(elapsedSec);
+	
+	HandleVerticalCollision(mapVertices);
+	HandleHorizontalCollision(mapVertices);
+	HandleBorders();
+}
 
 
 void Enemy::ChangePosition(float elapsedSec)

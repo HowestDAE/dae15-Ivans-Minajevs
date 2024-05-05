@@ -67,17 +67,6 @@ void Katana::Draw(MovementDirection state) const
 	m_KatanaSpriteSheetPtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
 
-	utils::SetColor(Color4f(0.f, 1.f, 0.f, 1.f));
-
-	if (state == MovementDirection::right)
-	{
-		utils::DrawRect(Rectf(m_Position.x, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE), 2.f);
-	}
-	else
-	{
-		utils::DrawRect(Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE), 2.f);
-	}
-
 }
 
 void Katana::ChangePosition(Point2f pos)
@@ -122,11 +111,11 @@ void Katana::CheckEnemiesHit( EnemiesManager* enemiesManagerPtr, MovementDirecti
 			Rectf sourceRect;
 			if (state == MovementDirection::right)
 			{
-				sourceRect = Rectf(m_Position.x, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE);
+				sourceRect = Rectf(m_Position.x, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width * 1.3f, m_SourceRect.height);
 			}
 			else
 			{
-				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y, m_SourceRect.width, m_SourceRect.height * m_SCALE);
+				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width * 1.3f, m_SourceRect.height);
 			}
 			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 			{
