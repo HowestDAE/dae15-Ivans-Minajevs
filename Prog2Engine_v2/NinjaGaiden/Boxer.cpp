@@ -1,9 +1,13 @@
 ﻿#include "pch.h"
 #include "Boxer.h"
-Boxer::Boxer( float startPosX, float endPosX, const Ryu* ryuPtr, TexturesManager* texturesManager, Point2f position, Point2f velocity ) :
-		Biker(startPosX, endPosX, ryuPtr, texturesManager, position, velocity) 
+
+#include "EnemyType.h"
+Boxer::Boxer(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+	Biker(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
+	//m_Velocity = Point2f( 30.f, m_VERTICAL_VELOCITY);
 }
+
 void Boxer::UpdateSourceRect( )
 {
 	float sourceRectWidth {m_EnemiesTexturePtr->GetWidth() / m_COLS};

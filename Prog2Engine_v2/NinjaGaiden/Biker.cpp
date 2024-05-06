@@ -1,8 +1,11 @@
 ﻿#include "pch.h"
 #include "Biker.h"
-Biker::Biker(float startPosX, float endPosX,const Ryu* ryuPtr, const TexturesManager* texturesManager, Point2f position, Point2f velocity) :
-	Enemy(startPosX, endPosX, ryuPtr, texturesManager, position, velocity) 
+
+#include "EnemyType.h"
+Biker::Biker(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+	Enemy(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
+	//m_Velocity = Point2f( );
 }
 void Biker::UpdateSourceRect()
 {
@@ -38,3 +41,4 @@ void Biker::ChangeFrames( float elapsedSec )
 		}
 	}
 }
+

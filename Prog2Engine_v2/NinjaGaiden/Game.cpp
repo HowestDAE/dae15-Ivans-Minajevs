@@ -13,6 +13,7 @@
 #include "Enemy.h"
 #include "KnifeMan.h"
 #include "TextureManager.h"
+#include "TriggersManager.h"
 #include "utils.h"
 
 
@@ -37,6 +38,7 @@ void Game::Initialize( )
 	m_ParticlesManagerPtr = new ParticlesManager();
 	m_TexturesManagerPtr = new TexturesManager();
 	m_EnemiesManagerPtr = new EnemiesManager();
+	m_TriggersManagerPtr = new TriggersManager();
 
 	m_TexturesManagerPtr->AddTexture(TextureType::ryu, "ryu_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::katana, "katana_spritesheet.png");
@@ -44,15 +46,18 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::particles, "death_particle.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
 
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 80.f, 70.f);
+	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(850.f, 75.f), EnemyType::biker));
+	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(900.f, 75.f), EnemyType::biker));
+
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
 	//m_MapTexturePtr = new Texture("ninja_gaiden_map_stage_1_8bit.png");
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 
-	m_EnemiesManagerPtr->Add(new Biker(200.f, 400.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(250.f, 70.f), Point2f(50.f, 0.f)));
-	m_EnemiesManagerPtr->Add(new Boxer(800.f, 1200.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(900.f, 70.f), Point2f(50.f, 0.f)));
-	m_EnemiesManagerPtr->Add(new Dog(300.f, 1800.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(1000.f, 70.f), Point2f(250.f, 0.f)));
-	m_EnemiesManagerPtr->Add(new KnifeMan(1200.f, 2000.f, m_RyuPtr, m_TexturesManagerPtr, Point2f(1300.f, 70.f), Point2f(30.f, 0.f)));
+	//m_EnemiesManagerPtr->Add(new Biker(m_RyuPtr, TexturesManager::GetInstance(), Point2f(250.f, 70.f), Point2f(50.f, 0.f)));
+	//m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, Point2f(900.f, 70.f), Point2f(50.f, 0.f)));
+	//m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, Point2f(1000.f, 70.f), Point2f(400.f, 0.f)));
+	//m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, Point2f(1300.f, 70.f), Point2f(30.f, 0.f)));
 	
 
 	SVGParser::GetVerticesFromSvgFile("map_floor.svg", m_FloorVertices);
@@ -73,6 +78,7 @@ void Game::Initialize( )
 			{
 				point.x = int(point.x) * m_MAP_SCALE;
 				point.y = int(point.y) * m_MAP_SCALE;
+				std::cout << point.x << " " << point.y << std::endl;
 			}
 		}
 	}
@@ -94,25 +100,59 @@ void Game::Cleanup( )
 
 	m_TexturesManagerPtr->DeleteTextures();
 	m_EnemiesManagerPtr->DeleteEnemies();
-	
+	m_TriggersManagerPtr->DeleteTriggers();
+
 	delete m_TexturesManagerPtr;
 }
 
 void Game::Update(float elapsedSec)
 {
-	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr);
+	m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
+	m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect());
 
-	//for (Enemy*& enemyPtr : m_EnemiesManagerPtr->GetEnemiesArray())
-	//{
-	//	if (enemyPtr != nullptr)
-	//	{
-	//		if (!enemyPtr->GetIsAlive())
-	//		{
-	//			m_ParticlesManagerPtr->Add(m_TexturesManagerPtr, ParticleType::enemyDeath, enemyPtr->GetPosition(), 0.5f);
-	//			m_EnemiesManagerPtr->DeleteEnemy(enemyPtr);
-	//		}
-	//	}
-	//}
+	//std::cout << m_Camera->GetViewRect().bottom << " " << m_Camera->GetViewRect().left << std::endl;
+
+	bool isCopyFound { false };
+	for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
+	{
+		
+		if (triggerPtr != nullptr)
+		{
+			if (triggerPtr->GetIsActivated())
+			{
+				for (Enemy* enemyPtr : m_EnemiesManagerPtr->GetEnemiesArray())
+				{
+					if (enemyPtr != nullptr)
+					{
+						if (enemyPtr->GetTriggerPointer() == triggerPtr)
+						{
+							isCopyFound = true;
+							break;
+						}
+					}
+				}
+				if (!isCopyFound)
+				{
+					switch (triggerPtr->GetEnemyType())
+					{
+					case EnemyType::biker:
+						m_EnemiesManagerPtr->Add(new Biker(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 50.f));
+						break;
+					case EnemyType::boxer:
+						m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 40.f));
+						break;
+					case EnemyType::dog:
+						m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 250.f));
+						break;
+					case EnemyType::knifeMan:
+						m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 30.f));
+						break;
+					}
+				}
+			}
+		}
+	}
+	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
 	
 	m_ParticlesManagerPtr->Update(elapsedSec);
 	
@@ -120,6 +160,7 @@ void Game::Update(float elapsedSec)
 	{
 		m_BackgroundMusicPtr->Play(true);
 	}
+	
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_EnemiesManagerPtr);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
@@ -129,9 +170,7 @@ void Game::Update(float elapsedSec)
 void Game::Draw( ) const
 {
 	ClearBackground( );
-
 	
-	m_Camera->Aim(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
 	glPushMatrix();
 	{
 		glScalef(m_MAP_SCALE, m_MAP_SCALE, 1.f);
@@ -141,8 +180,18 @@ void Game::Draw( ) const
 	glPopMatrix();
 	
 	m_RyuPtr->Draw();
+
 	
 	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
+
+	for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
+	{
+		std::cout << triggerPtr->GetIsActivated();
+		if (triggerPtr != nullptr)
+		{
+			utils::DrawPoint(triggerPtr->GetPosition(), 4.f);
+		}
+	}
 
 	for (const std::vector<std::vector<Point2f>>& verticesType : m_MapVertices)
 	{
@@ -155,16 +204,9 @@ void Game::Draw( ) const
 
 	m_EnemiesManagerPtr->Draw();
 	
-	//if (m_TestingDotPtr != nullptr)
-	//{
-	//	m_TestingDotPtr->Draw();
-	//}
-	
 	m_ParticlesManagerPtr->Draw();
 
-
 	m_Camera->Reset();
-
 	
 }
 

@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "Enemy.h"
 
+#include "Trigger.h"
 #include "utils.h"
 
-Enemy::Enemy(float startPosX, float endPosX,const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, Point2f pos, Point2f vel) :
-	m_Velocity(vel), m_Position(pos), m_IsAlive(true), m_RyuPtr(ryuPtr)
+Enemy::Enemy(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+			m_TriggerPtr(triggerPtr), m_IsAlive(true), m_RyuPtr(ryuPtr), m_Velocity( Point2f(horizontalVelocity, m_VERTICAL_VELOCITY) )
 {
-	m_AreaBorders.startPosX = startPosX;
-	m_AreaBorders.endPosX = endPosX;
-	m_RyuPtr = ryuPtr;
+	m_EnemyType = m_TriggerPtr->GetEnemyType();
+	m_Position = m_TriggerPtr->GetPosition();
 	
 	if (m_RyuPtr->GetMovementDirection() == MovementDirection::left)
 	{
@@ -18,7 +18,7 @@ Enemy::Enemy(float startPosX, float endPosX,const Ryu* ryuPtr, const TexturesMan
 	{
 		m_MovementDirection = MovementDirection::left;
 	}
-	
+
 	m_EnemiesTexturePtr = texturesManagerPtr->GetTexture(TextureType::enemies);
 
 	m_SourceRect = Rectf();
@@ -50,10 +50,9 @@ void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVer
 	UpdateJump(elapsedSec);
 	
 	HandleVerticalCollision(mapVertices);
-	HandleHorizontalCollision(mapVertices);
-	HandleBorders();
+	//HandleHorizontalCollision(mapVertices);
+	//HandleBorders();
 }
-
 
 void Enemy::ChangePosition(float elapsedSec)
 {
@@ -87,36 +86,38 @@ void Enemy::HandleVerticalCollision(const std::vector<std::vector<std::vector<Po
 						m_Position.y = hitInfoVertical.intersectPoint.y;
 					}
 				}
-			}
-		}
-	}
-}
-void Enemy::HandleHorizontalCollision( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices )
-{
-	utils::HitInfo hitInfoHorizontal;
-	for (int index { 0 }; index < int(mapVertices.size()); ++index)
-	{
-		if (index < 2)
-		{
-			for (const std::vector<Point2f>& vertices : mapVertices[index])
-			{
-				if (utils::Raycast(vertices, Point2f(m_Position.x - 1.f, m_Position.y + 5.f),
-				Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 5.f), hitInfoHorizontal))
+
+				if (utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+								 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) !=
+					utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f/ 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+								 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
 				{
 					ChangeDirection();
 				}
 			}
 		}
-	}	
-
-}
-void Enemy::HandleBorders( )
-{
-	if (m_Position.x <= m_AreaBorders.startPosX || m_Position.x >= m_AreaBorders.endPosX)
-	{
-		ChangeDirection();
 	}
 }
+//void Enemy::HandleHorizontalCollision( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices )
+//{
+//	utils::HitInfo hitInfoHorizontal;
+//	for (int index { 0 }; index < int(mapVertices.size()); ++index)
+//	{
+//		if (index < 2)
+//		{
+//			for (const std::vector<Point2f>& vertices : mapVertices[index])
+//			{
+//				if (utils::Raycast(vertices, Point2f(m_Position.x - 1.f, m_Position.y + 5.f),
+//				Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 5.f), hitInfoHorizontal))
+//				{
+//					ChangeDirection();
+//				}
+//			}
+//		}
+//	}	
+//
+//}
+//
 void Enemy::ChangeDirection( )
 {
 	if (m_MovementDirection == MovementDirection::left)
@@ -134,6 +135,10 @@ void Enemy::ChangeDirection( )
 void Enemy::UpdateJump(float elapsedSec)
 {
 	m_Velocity.y -= 32.f;
+}
+const Trigger * Enemy::GetTriggerPointer( ) const
+{
+	return m_TriggerPtr;
 }
 
 Point2f Enemy::GetPosition( ) const

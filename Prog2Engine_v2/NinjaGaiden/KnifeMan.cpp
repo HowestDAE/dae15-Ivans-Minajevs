@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include "KnifeMan.h"
-KnifeMan::KnifeMan( float startPosX, float endPosX, const Ryu* ryuPtr, const TexturesManager* texturesManager, Point2f position, Point2f velocity ) :
-				Enemy(startPosX, endPosX, ryuPtr, texturesManager, position, velocity)
+
+#include "EnemyType.h"
+KnifeMan::KnifeMan(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+	Enemy(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
 }
 void KnifeMan::UpdateSourceRect( )

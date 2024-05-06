@@ -16,6 +16,7 @@ struct Point2f
 {
 	Point2f( );
 	explicit Point2f( float x, float y );
+	explicit Point2f( float x );
 
 	float x;
 	float y;

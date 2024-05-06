@@ -163,6 +163,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Ryu.cpp" />
     <ClCompile Include="TestingDot.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="TriggersManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Biker.h" />
@@ -171,6 +173,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Dog.h" />
     <ClInclude Include="EnemiesManager.h" />
     <ClInclude Include="EnemyAreaBorders.h" />
+    <ClInclude Include="EnemyType.h" />
     <ClInclude Include="KnifeMan.h" />
     <ClInclude Include="MovementDirection.h" />
     <ClInclude Include="Particle.h" />
@@ -184,6 +187,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="TestingDot.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TextureType.h" />
+    <ClInclude Include="Trigger.h" />
+    <ClInclude Include="TriggersManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,12 +3,14 @@
 class Biker : public Enemy
 {
 public:
-	Biker(float startPosX, float endPosX,const Ryu* ryuPtr, const TexturesManager* texturesManager, Point2f position, Point2f velocity);
+	Biker(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
 	void UpdateSourceRect() override;
 	void ChangeFrames(float elapsedSec) override;
 	
+	
 	const int m_FRAMES_COUNT{ 3 };
 
+	const float m_HORIZONTAL_VELOCITY_BIKER{ 40.f };
 	const float m_FRAMES_PER_SEC { 5 };
 	const float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
 protected:

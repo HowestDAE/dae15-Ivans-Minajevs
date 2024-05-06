@@ -2,6 +2,7 @@
 #include "BaseGame.h"
 #include <vector>
 #include "Texture.h"
+class TriggersManager;
 class EnemiesManager;
 class SvgParser;
 class Camera;
@@ -37,6 +38,7 @@ private:
 	Texture* m_MapTexturePtr;
 	Camera* m_Camera;
 	//TestingDot* m_TestingDotPtr;
+	TriggersManager* m_TriggersManagerPtr;
 	SoundStream* m_BackgroundMusicPtr;
 	ParticlesManager* m_ParticlesManagerPtr;
 	TexturesManager* m_TexturesManagerPtr;

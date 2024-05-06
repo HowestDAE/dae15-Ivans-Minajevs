@@ -1,13 +1,13 @@
 ﻿#include "pch.h"
 #include "Dog.h"
-Dog::Dog( float startPosX, float endPosX, const Ryu* ryuPtr, const TexturesManager* texturesManager, Point2f position, Point2f velocity ) :
-		Enemy(startPosX, endPosX, ryuPtr, texturesManager, position, velocity)
+
+#include "EnemyType.h"
+#include "utils.h"
+Dog::Dog(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+	Enemy(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
 }
-//void Dog::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
-//{
-//	
-//}
+
 void Dog::UpdateSourceRect( )
 {
 	float sourceRectWidth {m_EnemiesTexturePtr->GetWidth() / m_COLS};

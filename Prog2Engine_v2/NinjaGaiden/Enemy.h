@@ -6,31 +6,30 @@
 #include "Ryu.h"
 #include "Texture.h"
 #include "TextureManager.h"
+#include "Trigger.h"
 class Enemy
 {
 public:
-    enum class EnemyType
-    {
-        biker, knifeMan, boxer, dog
-    };
     
-    Enemy(float startPosX, float endPosX, const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, Point2f position, Point2f velocity);
+    Enemy(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
     //virtual ~Enemy() = default;
     
     virtual void Draw() const;
     virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec);
     
     void HandleVerticalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
-    virtual void HandleHorizontalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
-    void HandleBorders();
+    //virtual void HandleHorizontalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
     void ChangeDirection();
     
     virtual void UpdateSourceRect() = 0;
     virtual void ChangeFrames(float elapsedSec) = 0;
+
+
     
     void ChangePosition(float elapsedSec);
     void UpdateJump(float elapsedSec);
 
+    const Trigger * GetTriggerPointer( ) const;
     Point2f GetPosition() const;
     Rectf GetSourceRect() const;
     bool GetIsAlive() const;
@@ -38,21 +37,24 @@ public:
     MovementDirection GetDirection() const;
     
     const float m_SCALE { 3.f };
+    const float m_VERTICAL_VELOCITY { -32.f };
     const int m_COLS{ 6 };
     const int m_ROWS { 4 };
 
 protected:
+    EnemyType m_EnemyType;
+    Point2f m_Position;
     Point2f m_Velocity;
+    
     Rectf m_SourceRect;
     MovementDirection m_MovementDirection;
     Texture* m_EnemiesTexturePtr;
-
+   
     float m_AccuSec { 0 };
     
 private:
-    Point2f m_Position;
+    const Trigger* m_TriggerPtr;
     bool m_IsAlive;
     const Ryu* m_RyuPtr;
-    EnemyAreaBorders m_AreaBorders;
 };
 
