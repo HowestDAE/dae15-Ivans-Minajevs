@@ -127,16 +127,16 @@ Explain where you applied inheritance (mandatory).
 - [x] Accept / set up github project
 - [x] week 01 topics applied
     - [x] const keyword applied proactively (variables, functions,..)
-    - [ ] static keyword applied proactively (class variables, static functions,..)
+    - [x] static keyword applied proactively (class variables, static functions,..)
     - [x] object composition (optional)
 - [x] week 02 topics applied
-- [ ] week 03 topics applied
-- [ ] week 04 topics applied
+- [x] week 03 topics applied
+- [x] week 04 topics applied
 - [x] week 05 topics applied
 - [x] week 06 topics applied
 - [ ] week 07 topics applied
 - [ ] week 08 topics applied
-- [ ] week 09 topics applied (optional)
+- [x] week 09 topics applied (optional)
 - [ ] week 10 topics applied (optional)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -144,7 +144,7 @@ Explain where you applied inheritance (mandatory).
 <!-- CONTACT -->
 ## Contact
 
-Your Name - email@student.howest.be
+Ivans Minajevs - ivans.minajevs@student.howest.be
 
 Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
 
@@ -157,7 +157,7 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 Use this space to list resources you find helpful and would like to give credit to. 
 
 * [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
-* ..
+* [Example 2: cpp reference on std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
