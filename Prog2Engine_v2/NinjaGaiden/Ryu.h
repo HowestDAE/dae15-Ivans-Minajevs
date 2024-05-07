@@ -13,6 +13,7 @@ public:
 	enum class RyuState { none, walking, attacking, ducking, duckAttacking, hurt, jumping, climbing };
 	explicit Ryu(const TexturesManager* texturesManager, Point2f pos);
 	explicit Ryu(const TexturesManager* texturesManager, float posX, float posY);
+	~Ryu();
 	//Ryu(const Ryu& other) = default;
 	//Ryu& operator=(const Ryu& rhs) = default;
 

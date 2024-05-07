@@ -34,3 +34,15 @@ void ParticlesManager::Add(const TexturesManager* texturesManager, ParticleType 
 {
 	m_ParticlesArr.push_back(new Particle(texturesManager, particleType, pos, timeAlive));
 }
+
+void ParticlesManager::DeleteParticles()
+{
+	for (Particle*& particlePtr : m_ParticlesArr)
+	{
+		if (particlePtr != nullptr)
+		{
+			delete particlePtr;
+			particlePtr = nullptr;
+		}
+	}
+}

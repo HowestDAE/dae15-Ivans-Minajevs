@@ -48,18 +48,14 @@ void Game::Initialize( )
 
 	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(850.f, 75.f), EnemyType::biker));
 	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(900.f, 75.f), EnemyType::biker));
-
+	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(950.f, 75.f), EnemyType::biker));
+	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(1300.f, 75.f), EnemyType::biker));
+	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(1600.f, 75.f), EnemyType::knifeMan));
+	
 	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
-	//m_MapTexturePtr = new Texture("ninja_gaiden_map_stage_1_8bit.png");
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
-
-	//m_EnemiesManagerPtr->Add(new Biker(m_RyuPtr, TexturesManager::GetInstance(), Point2f(250.f, 70.f), Point2f(50.f, 0.f)));
-	//m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, Point2f(900.f, 70.f), Point2f(50.f, 0.f)));
-	//m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, Point2f(1000.f, 70.f), Point2f(400.f, 0.f)));
-	//m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, Point2f(1300.f, 70.f), Point2f(30.f, 0.f)));
 	
-
 	SVGParser::GetVerticesFromSvgFile("map_floor.svg", m_FloorVertices);
 	SVGParser::GetVerticesFromSvgFile("map_platforms.svg", m_PlatformsVertices);
 	SVGParser::GetVerticesFromSvgFile("map_signs.svg", m_SignsVertices);
@@ -101,8 +97,12 @@ void Game::Cleanup( )
 	m_TexturesManagerPtr->DeleteTextures();
 	m_EnemiesManagerPtr->DeleteEnemies();
 	m_TriggersManagerPtr->DeleteTriggers();
+	m_ParticlesManagerPtr->DeleteParticles();
 
 	delete m_TexturesManagerPtr;
+	delete m_ParticlesManagerPtr;
+	delete m_EnemiesManagerPtr;
+	delete m_TriggersManagerPtr;
 }
 
 void Game::Update(float elapsedSec)
@@ -186,7 +186,6 @@ void Game::Draw( ) const
 
 	for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
 	{
-		std::cout << triggerPtr->GetIsActivated();
 		if (triggerPtr != nullptr)
 		{
 			utils::DrawPoint(triggerPtr->GetPosition(), 4.f);

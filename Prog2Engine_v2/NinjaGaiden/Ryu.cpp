@@ -31,6 +31,12 @@ Ryu::Ryu(const TexturesManager* texturesManager, float posX, float posY) : Ryu(t
 {
 }
 
+Ryu::~Ryu()
+{
+
+	delete m_KatanaPtr;
+}
+
 //Ryu::Ryu(const Ryu& other) :
 //	m_MovementDirection{ other.m_MovementDirection },
 //	m_State{ other.m_State },

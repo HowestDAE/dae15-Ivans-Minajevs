@@ -23,6 +23,9 @@ Enemy::Enemy(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const
 
 	m_SourceRect = Rectf();
 }
+Enemy::~Enemy()
+{
+}
 void Enemy::Draw( ) const
 {
 	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));

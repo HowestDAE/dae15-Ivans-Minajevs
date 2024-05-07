@@ -43,7 +43,6 @@ void TriggersManager::UpdateTrigger( Rectf sourceRect ) const
 				{
 					triggerPtr->SetActivated(false);
 				}
-				
 			}
 		}
 	}

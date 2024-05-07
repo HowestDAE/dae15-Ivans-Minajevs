@@ -12,7 +12,7 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 		{
 			enemyPtr->Update(mapVertices, elapsedSec);
 			
-			if (!utils::IsPointInRect(enemyPtr->GetPosition(), sourceRect))
+			if (!utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 			{
 				enemyPtr->SetIsAlive(false);
 			}
