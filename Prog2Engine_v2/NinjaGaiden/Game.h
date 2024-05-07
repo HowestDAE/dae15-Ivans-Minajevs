@@ -1,6 +1,10 @@
 #pragma once
+#include <unordered_map>
+
 #include "BaseGame.h"
 #include <vector>
+
+#include "EnemyType.h"
 #include "Texture.h"
 class TriggersManager;
 class EnemiesManager;
@@ -33,6 +37,8 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 	
 	const float m_MAP_SCALE{ 3.f };
+
+	static std::unordered_map<std::string, EnemyType> const m_ENEMY_TABLE;
 private:
 	Ryu* m_RyuPtr;
 	Texture* m_MapTexturePtr;
@@ -53,6 +59,7 @@ private:
 
 	
 	// FUNCTIONS
+	void ReadEnemyDataFromFile(const std::string& filename);
 	void Initialize();
 	void Cleanup( );
 	void ClearBackground( ) const;

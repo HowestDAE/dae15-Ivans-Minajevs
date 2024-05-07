@@ -185,7 +185,6 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 					float intersectMin, intersectMax;
 					utils::IntersectRectLine(enemyPtr->GetSourceRect(), Point2f(m_Position.x - 1.f, m_Position.y),
 											Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y), intersectMin, intersectMax);
-					std::cout << intersectMin << "\n";
 					if ( intersectMin >= 0)
 					{
 						m_Velocity.x = -150.f;

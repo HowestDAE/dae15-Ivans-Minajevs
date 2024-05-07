@@ -12,7 +12,6 @@ class Enemy
 public:
     
     Enemy(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
-    ~Enemy();
     
     virtual void Draw() const;
     virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec);

@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Game.h"
+
+#include <fstream>
+
 #include "Ryu.h"
 #include "Camera.h"
 #include "SvgParser.h"
@@ -16,7 +19,8 @@
 #include "TriggersManager.h"
 #include "utils.h"
 
-
+const std::unordered_map<std::string, EnemyType> Game::m_ENEMY_TABLE {{"biker", EnemyType::biker}, {"boxer",EnemyType::boxer},
+																		{"knifeMan",EnemyType::knifeMan},{"dog",EnemyType::dog} };
 
 Game::Game( const Window& window )
 	: BaseGame{ window }
@@ -31,7 +35,6 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	
 	//m_TestingDotPtr = new TestingDot(Point2f(200.f, 150.f), 15.f);
 	m_BackgroundMusicPtr = new SoundStream("background_music.mp3");
 
@@ -40,17 +43,13 @@ void Game::Initialize( )
 	m_EnemiesManagerPtr = new EnemiesManager();
 	m_TriggersManagerPtr = new TriggersManager();
 
+	ReadEnemyDataFromFile("enemies_triggers.txt");
+
 	m_TexturesManagerPtr->AddTexture(TextureType::ryu, "ryu_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::katana, "katana_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::map, "ninja_gaiden_map_stage_1_8bit.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::particles, "death_particle.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
-
-	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(850.f, 75.f), EnemyType::biker));
-	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(900.f, 75.f), EnemyType::biker));
-	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(950.f, 75.f), EnemyType::biker));
-	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(1300.f, 75.f), EnemyType::biker));
-	m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(1600.f, 75.f), EnemyType::knifeMan));
 	
 	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
@@ -78,6 +77,71 @@ void Game::Initialize( )
 			}
 		}
 	}
+}
+
+void Game::ReadEnemyDataFromFile(const std::string& filename) {
+	std::vector<Enemy> enemies;
+	std::ifstream file(filename);
+
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filename << std::endl;
+	}
+
+	std::string line;
+	while (std::getline(file, line)) {
+		std::istringstream iss(line);
+		std::string token;
+
+		// Retrive position
+		float posX;
+		if (std::getline(iss, token, ',')) {
+			posX = std::stof(token);
+		} else {
+			std::cerr << "Invalid file format: position missing" << std::endl;
+			continue;
+		}
+
+		float posY;
+		if (std::getline(iss, token, ',')) {
+			posY = std::stof(token);
+		} else {
+			std::cerr << "Invalid file format: position missing" << std::endl;
+			continue;
+		}
+
+		// Read type
+		EnemyType enemyType;
+		if (std::getline(iss, token, ',')) {
+			auto it = m_ENEMY_TABLE.find(token);
+			if (it != m_ENEMY_TABLE.end()) {
+				enemyType = it->second;
+			} else {
+				std::cout << "Enemy type not found!" << std::endl;
+			}
+		} else {
+			std::cerr << "Invalid file format: type missing" << std::endl;
+			continue;
+		}
+
+		// Read direction
+		MovementDirection direction;
+		if (std::getline(iss, token, ',')) {
+			if (token == "left")
+			{
+				direction = MovementDirection::left;
+			} else if (token == "right")
+			{
+				direction = MovementDirection::right;
+			}
+		} else {
+			std::cerr << "Invalid file format: direction missing" << std::endl;
+			continue;
+		}
+
+		std::cout << posX << " " << posY << " " << static_cast<int>(enemyType) << " " <<  static_cast<int>(direction) << "\n";
+		m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(posX, posY), enemyType, direction));
+	} 
+	file.close();
 }
 
 void Game::Cleanup( )
@@ -142,7 +206,7 @@ void Game::Update(float elapsedSec)
 						m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 40.f));
 						break;
 					case EnemyType::dog:
-						m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 250.f));
+						m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 300.f));
 						break;
 					case EnemyType::knifeMan:
 						m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 30.f));

@@ -5,27 +5,17 @@
 #include "utils.h"
 
 Enemy::Enemy(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-			m_TriggerPtr(triggerPtr), m_IsAlive(true), m_RyuPtr(ryuPtr), m_Velocity( Point2f(horizontalVelocity, m_VERTICAL_VELOCITY) )
+	m_Velocity(Point2f(horizontalVelocity, m_VERTICAL_VELOCITY)), m_TriggerPtr(triggerPtr), m_IsAlive(true), m_RyuPtr(ryuPtr)
 {
 	m_EnemyType = m_TriggerPtr->GetEnemyType();
 	m_Position = m_TriggerPtr->GetPosition();
-	
-	if (m_RyuPtr->GetMovementDirection() == MovementDirection::left)
-	{
-		m_MovementDirection = MovementDirection::right;
-	}
-	else
-	{
-		m_MovementDirection = MovementDirection::left;
-	}
+	m_MovementDirection = m_TriggerPtr->GetInitMovementDirection();
 
 	m_EnemiesTexturePtr = texturesManagerPtr->GetTexture(TextureType::enemies);
 
 	m_SourceRect = Rectf();
 }
-Enemy::~Enemy()
-{
-}
+
 void Enemy::Draw( ) const
 {
 	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
@@ -44,6 +34,7 @@ void Enemy::Draw( ) const
 	glPopMatrix();
 	utils::DrawRect(GetSourceRect(), 2.f);
 }
+
 void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
 {
 	ChangeFrames(elapsedSec);
@@ -67,6 +58,8 @@ void Enemy::ChangePosition(float elapsedSec)
 	{
 		m_Position.x += m_Velocity.x * elapsedSec;
 	}
+
+	m_Position.y += m_Velocity.y * elapsedSec;
 }
 
 void Enemy::HandleVerticalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices)
@@ -89,13 +82,15 @@ void Enemy::HandleVerticalCollision(const std::vector<std::vector<std::vector<Po
 						m_Position.y = hitInfoVertical.intersectPoint.y;
 					}
 				}
-
-				if (utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
-								 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) !=
-					utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f/ 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
-								 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
+				if (m_EnemyType != EnemyType::dog)
 				{
-					ChangeDirection();
+					if (utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) !=
+						utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f/ 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
+					{
+						ChangeDirection();
+					}
 				}
 			}
 		}

@@ -14,10 +14,10 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 			
 			if (!utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 			{
-				enemyPtr->SetIsAlive(false);
+				DeleteEnemy(enemyPtr);
 			}
 			
-			if (!enemyPtr->GetIsAlive())
+			else if (!enemyPtr->GetIsAlive())
 			{
 				particlesManagerPtr->Add(texturesManagerPtr, ParticleType::enemyDeath,
 									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width / 2.f,

@@ -39,4 +39,8 @@ void KnifeMan::ChangeFrames( float elapsedSec )
 		}
 	}
 }
+void KnifeMan::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
+{
+	Enemy::Update(mapVertices, elapsedSec);
+}
 
