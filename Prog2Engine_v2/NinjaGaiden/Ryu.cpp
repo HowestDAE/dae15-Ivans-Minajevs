@@ -5,6 +5,8 @@
 #include <iostream>
 Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 {
+	m_JumpActionsCounter = 0;
+	m_AttackActionCounter = 0;
 	m_MovementDirection = MovementDirection::right;
 	m_State				= RyuState::none;
 	m_IsMoving			= false;
@@ -118,7 +120,7 @@ void Ryu::UpdateSourceRect()
 
 	if (m_State == RyuState::attacking || m_State == RyuState::duckAttacking)
 	{
-		m_SourceRect.width = m_FRAME_WIDTH * 0.7f;
+		m_SourceRect.width = m_FRAME_WIDTH * 0.8f;
 	}
 	else if (m_State == RyuState::climbing || m_State == RyuState::jumping)
 	{
@@ -126,7 +128,7 @@ void Ryu::UpdateSourceRect()
 	}
 	else if (m_State == RyuState::walking)
 	{
-		m_SourceRect.width = m_FRAME_WIDTH * 0.7f;
+		m_SourceRect.width = m_FRAME_WIDTH * 0.8f;
 	}
 	else
 	{
@@ -158,18 +160,20 @@ void Ryu::Draw() const
 	}
 	m_RyuSpriteSheetPtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
-
-	utils::SetColor(Color4f(0.f, 1.f, 0.f, 1.f));
-	utils::DrawLine(Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x, m_Position.y), 2.f);
-	utils::DrawLine(Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y + m_SourceRect.height * m_SCALE), Point2f(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y), 2.f);
-
-	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
-	utils::DrawLine(Point2f(m_Position.x - 5.f, m_Position.y + 1.f), Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 1.f), 2.f);
-	utils::DrawRect(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
 }
 
 void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, EnemiesManager* enemiesManagerPtr)
 {
+	if (m_State == RyuState::attacking || m_State == RyuState::duckAttacking)
+	{
+		m_FramesPerSec = 8;
+	}
+	else
+	{
+		m_FramesPerSec = 12;
+	}
+	
+	m_FrameTime			= 1.f / float(m_FramesPerSec);
 	
 	Rectf sourceRect {Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE)};
 	for (Enemy* enemyPtr: enemiesManagerPtr->GetEnemiesArray())
@@ -269,8 +273,11 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 					}
 				}
 			}
+		
 			if (pStates[SDL_SCANCODE_X])
 			{
+				
+					
 				if (m_State == RyuState::climbing)
 				{
 					if (m_MovementDirection != m_PlannedJumpDirection)
@@ -286,14 +293,17 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 						{
 							m_Position.x += 2.f;
 						}
-
+						m_JumpActionsCounter += 1;
 					}
 				}
-
-				if (m_State != RyuState::jumping && m_State != RyuState::climbing && m_State != RyuState::attacking)
+				if (m_JumpActionsCounter == 0)
 				{
-					m_Velocity.y = 893.f;
-					m_State = RyuState::jumping;
+					if (m_State != RyuState::jumping && m_State != RyuState::climbing && m_State != RyuState::attacking)
+					{
+						m_Velocity.y = 893.f;
+						m_State = RyuState::jumping;
+					}
+					m_JumpActionsCounter += 1;
 				}
 			}
 		}
@@ -435,9 +445,9 @@ void Ryu::HandlePlatformsCollision(const std::vector<std::vector<Point2f>>& vert
 	utils::HitInfo hitInfoVertical;
 	for (const std::vector<Point2f>& platform : vertices)
 	{
-		if (utils::Raycast(platform, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 8.f), 
+		if (utils::Raycast(platform, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 10.f), 
 									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y), hitInfoVertical) ||
-			utils::Raycast(platform, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 8.f), 
+			utils::Raycast(platform, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 10.f), 
 									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y), hitInfoVertical))
 		{
 			if (m_Velocity.y < 0.f)
@@ -498,20 +508,38 @@ void Ryu::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 	case SDLK_z:
 		if (m_State != RyuState::climbing && m_State != RyuState::hurt)
 		{
-			m_FrameNr = 0;
-			if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking)
+			if (m_AttackActionCounter == 0)
 			{
-				if (m_State == RyuState::ducking)
+				if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking)
 				{
-					m_State = RyuState::duckAttacking;
-				}
-				else
-				{
-					m_State = RyuState::attacking;
+					m_FrameNr = 0;
+					if (m_State == RyuState::ducking)
+					{
+						m_State = RyuState::duckAttacking;
+					}
+					else
+					{
+						m_State = RyuState::attacking;
+					}
+					m_AttackActionCounter += 1;
 				}
 			}
+			
 			break;
 		}
+	}
+}
+void Ryu::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
+{
+	if (e.keysym.sym == SDLK_x)
+	{
+		m_JumpActionsCounter = 0;
+		std::cout << m_JumpActionsCounter << std::endl;
+		
+	}
+	if (e.keysym.sym == SDLK_z)
+	{
+		m_AttackActionCounter = 0;
 	}
 }
 
@@ -586,11 +614,29 @@ void Ryu::ChangePosition(float elapsedSec)
 	{
 		if (m_FrameNr == 1)
 		{
-			m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width / 2.f, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height - 5.f));
+			if (m_MovementDirection == MovementDirection::right)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 1.f,
+										                 m_Position.y + m_SourceRect.height * m_SCALE * 3.f / 5.f));	
+			} else if (m_MovementDirection == MovementDirection::left)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x ,
+													 m_Position.y + m_SourceRect.height * m_SCALE * 3.f / 5.f));	
+			}
+			
 		}
-		else
+		else 
 		{
-			m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width / 2.f, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height + 10.f));
+			//m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width / 2.f, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height + 10.f));
+			if (m_MovementDirection == MovementDirection::right)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 0.7f,
+														 m_Position.y + m_SourceRect.height * m_SCALE * 2.f / 3.f));	
+			} else if (m_MovementDirection == MovementDirection::left)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 0.3f ,
+													 m_Position.y + m_SourceRect.height * m_SCALE * 2.f / 3.f));	
+			}
 		}
 	}
 }

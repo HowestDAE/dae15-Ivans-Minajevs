@@ -17,7 +17,7 @@ public:
     virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec);
     
     void HandleVerticalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
-    //virtual void HandleHorizontalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
+    void HandleHorizontalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
     void ChangeDirection();
     
     virtual void UpdateSourceRect() = 0;

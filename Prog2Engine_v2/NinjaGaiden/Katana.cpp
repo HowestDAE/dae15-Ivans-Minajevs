@@ -53,17 +53,20 @@ void Katana::InitializeSourceRect()
 void Katana::Draw(MovementDirection state) const
 {
 	glPushMatrix();
+	glTranslatef(m_Position.x, m_Position.y, 0.f);
+	
 	if (state == MovementDirection::left)
 	{
-		glTranslatef(m_Position.x, m_Position.y, 0.f);
+		glRotatef(10.f, 0.f, 0.f, 1.f);
 		glScalef(-m_SCALE, m_SCALE, 1.f);
-
 	}
 	else
 	{
-		glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y, 0.f);
+		glRotatef(-10.f, 0.f, 0.f, 1.f);
 		glScalef(m_SCALE, m_SCALE, 1.f);
+		//glTranslatef(m_Position.x + m_SourceRect.width * m_SCALE, m_Position.y, 0.f);
 	}
+	
 	m_KatanaSpriteSheetPtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
 
@@ -84,6 +87,10 @@ void Katana::Update(EnemiesManager* enemiesManagerPtr, MovementDirection state) 
 Rectf Katana::GetSourceRect() const
 {
 	return m_SourceRect;
+}
+float Katana::GetScale( ) const
+{
+	return m_SCALE;
 }
 
 void Katana::UpdateSourceRect()
@@ -111,11 +118,11 @@ void Katana::CheckEnemiesHit( EnemiesManager* enemiesManagerPtr, MovementDirecti
 			Rectf sourceRect;
 			if (state == MovementDirection::right)
 			{
-				sourceRect = Rectf(m_Position.x, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width , m_SourceRect.height);
+				sourceRect = Rectf(m_Position.x, m_Position.y - m_SourceRect.height, m_SourceRect.width , m_SourceRect.height);
 			}
 			else
 			{
-				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width, m_SourceRect.height);
+				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y - m_SourceRect.height, m_SourceRect.width, m_SourceRect.height);
 			}
 			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 			{

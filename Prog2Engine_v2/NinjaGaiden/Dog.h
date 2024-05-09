@@ -10,7 +10,7 @@ public:
 	void UpdateSourceRect() override;
 	void ChangeFrames(float elapsedSec) override;
 	
-	//void HandleHorizontalCollision(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices) override;
+	//void HandleHorizontalCollision(const std::vector<std::vector<Point2f>>& mapVertices) override;
 	
 	const int m_FRAMES_COUNT{ 2 };
 

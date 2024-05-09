@@ -7,7 +7,7 @@
 2250,410,biker,left
 2300,410,biker,left
 2250,120,dog,left
-2940,75,knifeMan,left
+2900,75,knifeMan,left
 3300,270,boxer,left
 3495,75,dog,right
 3960,75,biker,left

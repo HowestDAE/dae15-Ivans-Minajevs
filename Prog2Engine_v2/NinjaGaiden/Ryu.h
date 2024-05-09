@@ -26,6 +26,7 @@ public:
 	void HandlePlatformsCollision(const std::vector<std::vector<Point2f>>& vertices);
 	void HandleWallsCollision(const std::vector<std::vector<Point2f>>& vertices);
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
+	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e);
 
 	void SetBorders(float posX);
 	Point2f GetPosition() const;
@@ -70,6 +71,9 @@ private:
 
 	int m_FrameNr;
 	int	m_MaxFramesOfAnimation;
+
+	int m_JumpActionsCounter;
+	int m_AttackActionCounter;
 
 	void InitializeSourceRect();
 	void UpdateSourceRect();

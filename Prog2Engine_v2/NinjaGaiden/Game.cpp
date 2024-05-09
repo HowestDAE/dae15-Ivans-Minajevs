@@ -243,21 +243,21 @@ void Game::Draw( ) const
 	
 	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
 
-	for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
-	{
-		if (triggerPtr != nullptr)
-		{
-			utils::DrawPoint(triggerPtr->GetPosition(), 4.f);
-		}
-	}
+	//for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
+	//{
+	//	if (triggerPtr != nullptr)
+	//	{
+	//		utils::DrawPoint(triggerPtr->GetPosition(), 4.f);
+	//	}
+	//}
 
-	for (const std::vector<std::vector<Point2f>>& verticesType : m_MapVertices)
-	{
-		for (const std::vector<Point2f>& vertices : verticesType)
-		{
-			utils::DrawPolygon(vertices, true, 2.f);
-		}
-	}
+	//for (const std::vector<std::vector<Point2f>>& verticesType : m_MapVertices)
+	//{
+	//	for (const std::vector<Point2f>& vertices : verticesType)
+	//	{
+	//		utils::DrawPolygon(vertices, true, 2.f);
+	//	}
+	//}
 
 
 	m_EnemiesManagerPtr->Draw();
@@ -276,6 +276,7 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
+	m_RyuPtr->ProcessKeyUpEvent(e);
 	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
 	//switch ( e.keysym.sym )
 	//{

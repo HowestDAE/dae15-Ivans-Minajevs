@@ -42,3 +42,4 @@ void Dog::ChangeFrames( float elapsedSec )
 		}
 	}
 }
+

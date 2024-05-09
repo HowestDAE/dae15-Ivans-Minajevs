@@ -32,7 +32,7 @@ void Enemy::Draw( ) const
 	}
 	m_EnemiesTexturePtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
-	utils::DrawRect(GetSourceRect(), 2.f);
+	//utils::DrawRect(GetSourceRect(), 2.f);
 }
 
 void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
@@ -44,7 +44,7 @@ void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVer
 	UpdateJump(elapsedSec);
 	
 	HandleVerticalCollision(mapVertices);
-	//HandleHorizontalCollision(mapVertices);
+	HandleHorizontalCollision(mapVertices);
 	//HandleBorders();
 }
 
@@ -84,10 +84,10 @@ void Enemy::HandleVerticalCollision(const std::vector<std::vector<std::vector<Po
 				}
 				if (m_EnemyType != EnemyType::dog)
 				{
-					if (utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
-									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) !=
-						utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f/ 4.f, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
-									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE) * 3.f / 4.f, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
+					if (utils::Raycast(vertices, Point2f(m_Position.x, m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+									 Point2f(m_Position.x, m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical) !=
+						utils::Raycast(vertices, Point2f(m_Position.x + (m_SourceRect.width * m_SCALE), m_Position.y + m_SourceRect.height * m_SCALE / 2.f), 
+									 Point2f(m_Position.x + (m_SourceRect.width * m_SCALE), m_Position.y - m_SourceRect.height * m_SCALE / 2.f), hitInfoVertical))
 					{
 						ChangeDirection();
 					}
@@ -96,26 +96,22 @@ void Enemy::HandleVerticalCollision(const std::vector<std::vector<std::vector<Po
 		}
 	}
 }
-//void Enemy::HandleHorizontalCollision( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices )
-//{
-//	utils::HitInfo hitInfoHorizontal;
-//	for (int index { 0 }; index < int(mapVertices.size()); ++index)
-//	{
-//		if (index < 2)
-//		{
-//			for (const std::vector<Point2f>& vertices : mapVertices[index])
-//			{
-//				if (utils::Raycast(vertices, Point2f(m_Position.x - 1.f, m_Position.y + 5.f),
-//				Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y + 5.f), hitInfoHorizontal))
-//				{
-//					ChangeDirection();
-//				}
-//			}
-//		}
-//	}	
-//
-//}
-//
+void Enemy::HandleHorizontalCollision( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices )
+{
+	utils::HitInfo hitInfoHorizontal;
+	for (const std::vector<std::vector<Point2f>>& vertices : mapVertices)
+	{
+		for (const std::vector<Point2f> vertice : vertices)
+		{
+			if (utils::Raycast(vertice, Point2f(m_Position.x - 3.f, m_Position.y + 10.f),
+		Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 3.f, m_Position.y + 10.f), hitInfoHorizontal))
+			{
+				ChangeDirection();
+			}
+		}
+	}
+}
+
 void Enemy::ChangeDirection( )
 {
 	if (m_MovementDirection == MovementDirection::left)

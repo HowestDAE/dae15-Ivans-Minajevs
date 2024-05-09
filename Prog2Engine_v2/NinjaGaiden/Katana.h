@@ -16,6 +16,7 @@ public:
 	void Update( EnemiesManager* enemiesManagerPtr, MovementDirection state) const;
 
 	Rectf GetSourceRect() const;
+	float GetScale() const;
 
 	void InitializeSourceRect();
 	void UpdateSourceRect();
