@@ -8,7 +8,7 @@ class TriggersManager
 public:
 	void AddTrigger(Trigger* triggerPtr);
 	void DeleteTriggers();
-	void UpdateTrigger(Rectf sourceRect) const;
+	void UpdateTrigger(Rectf sourceRect, MovementDirection ryuDirection) const;
 	std::vector<Trigger*>& GetTriggersArray();
 
 private:

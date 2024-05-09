@@ -23,21 +23,32 @@ void TriggersManager::DeleteTriggers()
 	}
 }
 
-void TriggersManager::UpdateTrigger( Rectf sourceRect ) const
+void TriggersManager::UpdateTrigger( Rectf sourceRect, MovementDirection ryuDirection ) const
 {
 	for (Trigger* triggerPtr : m_TriggersPtrArr)
 	{
 		if (triggerPtr != nullptr)
 		{
+
+			//if ()
+			//{
+			//	if (utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left + sourceRect.width - 10.f, sourceRect.bottom, 10.f, sourceRect.height )))
+			//	{
+			//		
+			//	}
+			//}
+			
+			
 			if (
 			(triggerPtr->GetEnemyType() != EnemyType::dog &&
-			(utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left, sourceRect.bottom, 10.f, sourceRect.height ) )
-			|| utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left + sourceRect.width - 10.f, sourceRect.bottom, 10.f, sourceRect.height ))))
+			(ryuDirection == MovementDirection::left && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left, sourceRect.bottom, 10.f, sourceRect.height ) )
+			|| ryuDirection == MovementDirection::right && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left + sourceRect.width - 10.f, sourceRect.bottom, 10.f, sourceRect.height ))))
 			|| triggerPtr->GetEnemyType() == EnemyType::dog &&
 			(triggerPtr->GetInitMovementDirection() == MovementDirection::right && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left, sourceRect.bottom, 10.f, sourceRect.height ) ))
 			|| (triggerPtr->GetInitMovementDirection() == MovementDirection::left && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left + sourceRect.width - 10.f, sourceRect.bottom, 10.f, sourceRect.height )))
 			)
 			{
+				
 				if (!triggerPtr->GetIsActivated())
 				{
 					triggerPtr->SetActivated(true);

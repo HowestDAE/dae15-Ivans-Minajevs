@@ -155,9 +155,6 @@ void Game::Cleanup( )
 	delete m_BackgroundMusicPtr;
 	m_BackgroundMusicPtr = nullptr;
 
-	//delete m_TestingDotPtr;
-	//m_TestingDotPtr = nullptr;
-
 	m_TexturesManagerPtr->DeleteTextures();
 	m_EnemiesManagerPtr->DeleteEnemies();
 	m_TriggersManagerPtr->DeleteTriggers();
@@ -171,15 +168,10 @@ void Game::Cleanup( )
 
 void Game::Update(float elapsedSec)
 {
-	m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
-	m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect());
-
-	//std::cout << m_Camera->GetViewRect().bottom << " " << m_Camera->GetViewRect().left << std::endl;
 
 	bool isCopyFound { false };
 	for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
 	{
-		
 		if (triggerPtr != nullptr)
 		{
 			if (triggerPtr->GetIsActivated())
@@ -206,7 +198,7 @@ void Game::Update(float elapsedSec)
 						m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 40.f));
 						break;
 					case EnemyType::dog:
-						m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 300.f));
+						m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 400.f));
 						break;
 					case EnemyType::knifeMan:
 						m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 30.f));
@@ -229,6 +221,9 @@ void Game::Update(float elapsedSec)
 	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_EnemiesManagerPtr);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
 	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
+
+	m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
+	m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect(), m_RyuPtr->GetMovementDirection());
 }
 
 void Game::Draw( ) const

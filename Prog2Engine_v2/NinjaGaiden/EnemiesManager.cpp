@@ -21,7 +21,7 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 			{
 				particlesManagerPtr->Add(texturesManagerPtr, ParticleType::enemyDeath,
 									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width / 2.f,
-										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height / 2.f), 0.5f);
+										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height / 2.f), 0.25f);
 				DeleteEnemy(enemyPtr);
 			}
 		}
