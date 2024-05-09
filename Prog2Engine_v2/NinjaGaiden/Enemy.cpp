@@ -120,13 +120,15 @@ void Enemy::ChangeDirection( )
 {
 	if (m_MovementDirection == MovementDirection::left)
 	{
+		m_Position.x += 3.f;
 		m_MovementDirection = MovementDirection::right;
-		m_Position.x += 2.f;
+		
 	}
 	else if (m_MovementDirection == MovementDirection::right)
 	{
+		m_Position.x -= 3.f;
 		m_MovementDirection = MovementDirection::left;
-		m_Position.x -= 2.f;
+		
 	}
 }
 

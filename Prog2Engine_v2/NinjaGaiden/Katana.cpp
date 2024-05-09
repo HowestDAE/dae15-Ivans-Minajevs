@@ -111,11 +111,11 @@ void Katana::CheckEnemiesHit( EnemiesManager* enemiesManagerPtr, MovementDirecti
 			Rectf sourceRect;
 			if (state == MovementDirection::right)
 			{
-				sourceRect = Rectf(m_Position.x, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width * 1.3f, m_SourceRect.height);
+				sourceRect = Rectf(m_Position.x, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width , m_SourceRect.height);
 			}
 			else
 			{
-				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width * 1.3f, m_SourceRect.height);
+				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y - m_SourceRect.height * m_SCALE, m_SourceRect.width, m_SourceRect.height);
 			}
 			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 			{

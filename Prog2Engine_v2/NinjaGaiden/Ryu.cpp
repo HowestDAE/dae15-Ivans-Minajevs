@@ -16,7 +16,7 @@ Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 	m_Position			= pos;
 
 	m_AccuSec			= 0;
-	m_FramesPerSec		= 10;
+	m_FramesPerSec		= 12;
 	m_FrameTime			= 1.f / float(m_FramesPerSec);
 
 	m_FrameNr = 0;
@@ -118,7 +118,7 @@ void Ryu::UpdateSourceRect()
 
 	if (m_State == RyuState::attacking || m_State == RyuState::duckAttacking)
 	{
-		m_SourceRect.width = m_FRAME_WIDTH * 0.9f;
+		m_SourceRect.width = m_FRAME_WIDTH * 0.7f;
 	}
 	else if (m_State == RyuState::climbing || m_State == RyuState::jumping)
 	{
@@ -207,8 +207,9 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 			if (m_State != RyuState::jumping && m_State != RyuState::climbing)
 			{
 				m_State = RyuState::none;
-				m_Velocity.x = 0;
+				
 			}
+		m_Velocity.x = 0;
 			if (pStates[SDL_SCANCODE_RIGHT])
 			{
 				if (m_State != RyuState::climbing)
@@ -291,7 +292,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 
 				if (m_State != RyuState::jumping && m_State != RyuState::climbing && m_State != RyuState::attacking)
 				{
-					m_Velocity.y = 730.f;
+					m_Velocity.y = 893.f;
 					m_State = RyuState::jumping;
 				}
 			}
@@ -596,5 +597,5 @@ void Ryu::ChangePosition(float elapsedSec)
 
 void Ryu::UpdateJump(float elapsedSec)
 {
-	m_Velocity.y -= 32.f;
+	m_Velocity.y -= 2500.f * (elapsedSec);
 }

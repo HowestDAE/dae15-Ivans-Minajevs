@@ -41,7 +41,7 @@ public:
 	const float	 m_FRAME_WIDTH{ 30.f };
 	const float  m_FRAME_HEIGHT{ 35.f };
 
-	const float m_SPEED{ 250.f };
+	const float m_SPEED{ 278.f };
 	const float m_INIT_JUMP_SPEED{ 500.f };
 
 	const float m_SCALE{ 3.f };
