@@ -6,6 +6,7 @@
 
 #include "EnemyType.h"
 #include "Texture.h"
+class LanternsManager;
 class TriggersManager;
 class EnemiesManager;
 class SvgParser;
@@ -49,6 +50,7 @@ private:
 	ParticlesManager* m_ParticlesManagerPtr;
 	TexturesManager* m_TexturesManagerPtr;
 	EnemiesManager* m_EnemiesManagerPtr;
+	LanternsManager* m_LanternsManagerPtr;
 
 	std::vector<std::vector<Point2f>> m_FloorVertices;
 	std::vector<std::vector<Point2f>> m_PlatformsVertices;

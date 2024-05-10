@@ -15,6 +15,7 @@
 #include "EnemiesManager.h"
 #include "Enemy.h"
 #include "KnifeMan.h"
+#include "LanternsManager.h"
 #include "TextureManager.h"
 #include "TriggersManager.h"
 #include "utils.h"
@@ -42,6 +43,7 @@ void Game::Initialize( )
 	m_TexturesManagerPtr = new TexturesManager();
 	m_EnemiesManagerPtr = new EnemiesManager();
 	m_TriggersManagerPtr = new TriggersManager();
+	m_LanternsManagerPtr = new LanternsManager();
 
 	ReadEnemyDataFromFile("enemies_triggers.txt");
 
@@ -50,6 +52,9 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::map, "ninja_gaiden_map_stage_1_8bit.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::particles, "death_particle.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::collectibles, "collectibles_spritesheet.png");
+
+	m_LanternsManagerPtr->Add(new Lantern(Point2f(900.f, 160.f), CollectibleType::BonusBlue, m_TexturesManagerPtr));
 	
 	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
@@ -159,7 +164,9 @@ void Game::Cleanup( )
 	m_EnemiesManagerPtr->DeleteEnemies();
 	m_TriggersManagerPtr->DeleteTriggers();
 	m_ParticlesManagerPtr->DeleteParticles();
+	m_LanternsManagerPtr->DeleteLanterns();
 
+	delete m_LanternsManagerPtr;
 	delete m_TexturesManagerPtr;
 	delete m_ParticlesManagerPtr;
 	delete m_EnemiesManagerPtr;
@@ -209,7 +216,8 @@ void Game::Update(float elapsedSec)
 		}
 	}
 	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
-	
+
+	m_LanternsManagerPtr->Update(elapsedSec,  m_TexturesManagerPtr, m_Camera->GetViewRect());
 	m_ParticlesManagerPtr->Update(elapsedSec);
 	
 	if (!m_BackgroundMusicPtr->IsPlaying())
@@ -264,6 +272,7 @@ void Game::Draw( ) const
 	
 	m_ParticlesManagerPtr->Draw();
 
+	m_LanternsManagerPtr->Draw();
 	m_Camera->Reset();
 	
 }

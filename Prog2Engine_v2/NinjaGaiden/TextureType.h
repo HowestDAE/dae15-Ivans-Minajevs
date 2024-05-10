@@ -6,6 +6,7 @@ enum class TextureType
 	particles,
 	katana,
 	map,
-	count
+	collectibles,
+	count //keep it last
 };
 

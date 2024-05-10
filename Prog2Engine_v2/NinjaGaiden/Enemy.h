@@ -54,6 +54,5 @@ protected:
 private:
     const Trigger* m_TriggerPtr;
     bool m_IsAlive;
-    const Ryu* m_RyuPtr;
 };
 
