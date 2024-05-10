@@ -11,5 +11,6 @@ enum class CollectibleType
 	TheArtOfTheFireWheel,
 	InvincibleFireWheel,
 	JumpAndSlashTechnique,
+	none
 };
 

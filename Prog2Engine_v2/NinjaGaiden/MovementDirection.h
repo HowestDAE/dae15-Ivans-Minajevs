@@ -1,6 +1,6 @@
 ﻿#pragma once
 enum class MovementDirection
 {
-	left, right
+	none, left, right
 };
 

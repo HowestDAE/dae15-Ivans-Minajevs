@@ -152,8 +152,10 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collectible.cpp" />
     <ClCompile Include="CollectiblesManager.cpp" />
+    <ClCompile Include="CollectibleTrigger.cpp" />
     <ClCompile Include="Dog.cpp" />
     <ClCompile Include="EnemiesManager.cpp" />
+    <ClCompile Include="EnemyTrigger.cpp" />
     <ClCompile Include="KnifeMan.cpp" />
     <ClCompile Include="Lantern.cpp" />
     <ClCompile Include="LanternsManager.cpp" />
@@ -176,10 +178,12 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collectible.h" />
     <ClInclude Include="CollectiblesManager.h" />
+    <ClInclude Include="CollectibleTrigger.h" />
     <ClInclude Include="CollectibleType.h" />
     <ClInclude Include="Dog.h" />
     <ClInclude Include="EnemiesManager.h" />
     <ClInclude Include="EnemyAreaBorders.h" />
+    <ClInclude Include="EnemyTrigger.h" />
     <ClInclude Include="EnemyType.h" />
     <ClInclude Include="KnifeMan.h" />
     <ClInclude Include="Lantern.h" />
@@ -198,6 +202,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="TextureType.h" />
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TriggersManager.h" />
+    <ClInclude Include="TriggerType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

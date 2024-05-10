@@ -144,7 +144,7 @@ void Game::ReadEnemyDataFromFile(const std::string& filename) {
 		}
 
 		std::cout << posX << " " << posY << " " << static_cast<int>(enemyType) << " " <<  static_cast<int>(direction) << "\n";
-		m_TriggersManagerPtr->AddTrigger(new Trigger(Point2f(posX, posY), enemyType, direction));
+		m_TriggersManagerPtr->AddTrigger(new EnemyTrigger(Point2f(posX, posY), enemyType, direction));
 	} 
 	file.close();
 }
@@ -215,6 +215,21 @@ void Game::Update(float elapsedSec)
 			}
 		}
 	}
+
+
+	//for (Lantern* lanternPtr: m_LanternsManagerPtr->GetLanternsArray())
+	//{
+	//	if (lanternPtr != nullptr)
+	//	{
+	//		if (lanternPtr->GetIsExisting())
+	//		{
+	//			
+	//		}
+	//	}
+	//}
+
+	
+	
 	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
 
 	m_LanternsManagerPtr->Update(elapsedSec,  m_TexturesManagerPtr, m_Camera->GetViewRect());
@@ -245,6 +260,8 @@ void Game::Draw( ) const
 		m_MapTexturePtr->Draw();
 	}
 	glPopMatrix();
+
+	m_LanternsManagerPtr->Draw();
 	
 	m_RyuPtr->Draw();
 
@@ -272,7 +289,7 @@ void Game::Draw( ) const
 	
 	m_ParticlesManagerPtr->Draw();
 
-	m_LanternsManagerPtr->Draw();
+	
 	m_Camera->Reset();
 	
 }
