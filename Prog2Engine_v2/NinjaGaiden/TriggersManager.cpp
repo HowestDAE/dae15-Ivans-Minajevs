@@ -15,7 +15,6 @@ std::vector<Trigger*>& TriggersManager::GetTriggersArray( )
 
 void TriggersManager::DeleteTriggers(  )
 {
-	
 	for (Trigger*& triggerPtr : m_TriggersPtrArr)
 	{
 		if (triggerPtr != nullptr)
@@ -26,6 +25,20 @@ void TriggersManager::DeleteTriggers(  )
 	}
 	
 }
+void TriggersManager::DeleteTrigger(const Trigger* triggerPtr )
+{
+	for (Trigger*& enemyPtr : m_TriggersPtrArr)
+	{
+		if (enemyPtr != nullptr && triggerPtr != nullptr)
+		{
+			if (enemyPtr == triggerPtr)
+			{
+				delete triggerPtr;
+				triggerPtr = nullptr;
+			}
+		}
+	}
+}
 
 void TriggersManager::UpdateTrigger( Rectf sourceRect, MovementDirection ryuDirection) const
 {
@@ -33,7 +46,6 @@ void TriggersManager::UpdateTrigger( Rectf sourceRect, MovementDirection ryuDire
 	{
 		if (triggerPtr != nullptr)
 		{
-
 			if (triggerPtr->GetTriggerType() == TriggerType::enemy)
 			{
 				if (
@@ -60,10 +72,8 @@ void TriggersManager::UpdateTrigger( Rectf sourceRect, MovementDirection ryuDire
 						triggerPtr->SetActivated(false);
 					}
 				}
-
-
-				
-			} else if (triggerPtr->GetTriggerType() == TriggerType::collectible)
+			}
+			else if (triggerPtr->GetTriggerType() == TriggerType::collectible)
 			{
 				if (ryuDirection == MovementDirection::left && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left, sourceRect.bottom, 10.f, sourceRect.height ) )||
 				   ryuDirection == MovementDirection::right && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left + sourceRect.width - 10.f, sourceRect.bottom, 10.f, sourceRect.height )))
@@ -80,7 +90,6 @@ void TriggersManager::UpdateTrigger( Rectf sourceRect, MovementDirection ryuDire
 						triggerPtr->SetActivated(false);
 					}
 				}
-				
 			}
 		}
 	}

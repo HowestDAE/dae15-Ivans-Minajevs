@@ -8,8 +8,18 @@ void LanternsManager::Update( float elapsedSec, const TexturesManager* texturesM
 	{
 		if (lanternPtr != nullptr)
 		{
+			
 			lanternPtr->Update(elapsedSec);
 			
+			if (!utils::IsOverlapping(lanternPtr->GetSourceRect(), sourceRect))
+			{
+				DeleteLantern(lanternPtr);
+			}
+			
+			else if (!lanternPtr->GetIsExisting())
+			{
+				DeleteLantern(lanternPtr);
+			}
 		}
 	}
 }

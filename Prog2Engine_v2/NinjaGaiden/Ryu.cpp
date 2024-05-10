@@ -162,7 +162,7 @@ void Ryu::Draw() const
 	glPopMatrix();
 }
 
-void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, EnemiesManager* enemiesManagerPtr)
+void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, EnemiesManager* enemiesManagerPtr,  LanternsManager* lanternsManagerPtr)
 {
 	if (m_State == RyuState::attacking || m_State == RyuState::duckAttacking)
 	{
@@ -318,7 +318,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 
 	UpdateJump(elapsedSec);
 	UpdateSourceRect();
-	m_KatanaPtr->Update(enemiesManagerPtr, m_MovementDirection);
+	m_KatanaPtr->Update(lanternsManagerPtr, enemiesManagerPtr, m_MovementDirection);
 	m_KatanaPtr->UpdateSourceRect();
 
 

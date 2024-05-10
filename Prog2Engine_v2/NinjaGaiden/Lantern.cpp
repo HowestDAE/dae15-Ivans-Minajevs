@@ -2,8 +2,8 @@
 #include "Lantern.h"
 
 #include "utils.h"
-Lantern::Lantern( Point2f position, CollectibleType collectibleType,  const TexturesManager* texturesManagerPtr )
-	: m_Position(position), m_CollectibleType(collectibleType)
+Lantern::Lantern( Point2f position, CollectibleType collectibleType, Trigger* triggerPtr, const TexturesManager* texturesManagerPtr )
+	: m_Position(position), m_CollectibleType(collectibleType), m_TriggerPtr(triggerPtr)
 {
 	m_LanternTexturePtr = texturesManagerPtr->GetTexture(TextureType::collectibles);
 	UpdateSourceRect( );
@@ -70,6 +70,11 @@ bool Lantern::GetIsExisting( ) const
 Rectf Lantern::GetSourceRect( ) const
 {
 	return Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
+}
+
+Trigger* Lantern::GetTriggerPointer( ) const
+{
+	return m_TriggerPtr;
 }
 
 

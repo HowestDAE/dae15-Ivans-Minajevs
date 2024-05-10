@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Game.h"
-
 #include <fstream>
-
 #include "Ryu.h"
 #include "Camera.h"
 #include "SvgParser.h"
@@ -20,8 +18,24 @@
 #include "TriggersManager.h"
 #include "utils.h"
 
-const std::unordered_map<std::string, EnemyType> Game::m_ENEMY_TABLE {{"biker", EnemyType::biker}, {"boxer",EnemyType::boxer},
-																		{"knifeMan",EnemyType::knifeMan},{"dog",EnemyType::dog} };
+const std::unordered_map<std::string, EnemyType> Game::m_ENEMY_TABLE{
+		{"biker", EnemyType::biker},
+		{"boxer",EnemyType::boxer},
+		{"knifeMan",EnemyType::knifeMan},
+		{"dog",EnemyType::dog} };
+
+	const std::unordered_map<std::string, CollectibleType> Game::m_COLLECTIBLE_TABLE {
+		{ "bonusBlue", CollectibleType::bonusBlue},
+		{ "bonusRed", CollectibleType::bonusRed},
+		{ "spiritualStrengthBlue", CollectibleType::spiritualStrengthBlue},
+		{ "spiritualStrengthRed", CollectibleType::spiritualStrengthRed},
+		{ "timeFreeze", CollectibleType::timeFreeze},
+		{ "throwingStar", CollectibleType::throwingStar},
+		{ "windmillThrowingStar", CollectibleType::windmillThrowingStar},
+		{ "theArtOfTheFireWheel", CollectibleType::theArtOfTheFireWheel},
+		{ "invincibleFireWheel", CollectibleType::invincibleFireWheel},
+		{ "jumpAndSlashTechnique", CollectibleType::jumpAndSlashTechnique},
+		{ "none", CollectibleType::none}};
 
 Game::Game( const Window& window )
 	: BaseGame{ window }
@@ -36,7 +50,6 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	//m_TestingDotPtr = new TestingDot(Point2f(200.f, 150.f), 15.f);
 	m_BackgroundMusicPtr = new SoundStream("background_music.mp3");
 
 	m_ParticlesManagerPtr = new ParticlesManager();
@@ -54,7 +67,9 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::collectibles, "collectibles_spritesheet.png");
 
-	m_LanternsManagerPtr->Add(new Lantern(Point2f(900.f, 160.f), CollectibleType::BonusBlue, m_TexturesManagerPtr));
+	//m_LanternsManagerPtr->Add(new Lantern(Point2f(900.f, 160.f), CollectibleType::BonusBlue, m_TexturesManagerPtr));
+
+	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
 	
 	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
@@ -84,12 +99,13 @@ void Game::Initialize( )
 	}
 }
 
-void Game::ReadEnemyDataFromFile(const std::string& filename) {
+void Game::ReadEnemyDataFromFile(const std::string& filename) const
+{
 	std::vector<Enemy> enemies;
 	std::ifstream file(filename);
 
 	if (!file.is_open()) {
-		std::cerr << "Failed to open file: " << filename << std::endl;
+		std::cerr << "Failed to open file: " << filename << '\n';
 	}
 
 	std::string line;
@@ -97,12 +113,26 @@ void Game::ReadEnemyDataFromFile(const std::string& filename) {
 		std::istringstream iss(line);
 		std::string token;
 
+		TriggerType triggerType;
+		if (std::getline(iss, token, ',')) {
+			if (token == "enemy")
+			{
+				 triggerType = TriggerType::enemy;
+			} else if (token == "collectible")
+			{
+				triggerType = TriggerType::collectible;
+			}
+		} else {
+			std::cerr << "Invalid file format: direction missing" << '\n';
+			continue;
+		}
+		
 		// Retrive position
 		float posX;
 		if (std::getline(iss, token, ',')) {
 			posX = std::stof(token);
 		} else {
-			std::cerr << "Invalid file format: position missing" << std::endl;
+			std::cerr << "Invalid file format: position missing" << '\n';
 			continue;
 		}
 
@@ -110,41 +140,58 @@ void Game::ReadEnemyDataFromFile(const std::string& filename) {
 		if (std::getline(iss, token, ',')) {
 			posY = std::stof(token);
 		} else {
-			std::cerr << "Invalid file format: position missing" << std::endl;
+			std::cerr << "Invalid file format: position missing" << '\n';
 			continue;
 		}
 
 		// Read type
-		EnemyType enemyType;
-		if (std::getline(iss, token, ',')) {
-			auto it = m_ENEMY_TABLE.find(token);
-			if (it != m_ENEMY_TABLE.end()) {
-				enemyType = it->second;
+		if ( triggerType == TriggerType::enemy )
+		{
+			EnemyType enemyType;
+			if (std::getline(iss, token, ',')) {
+				auto it = m_ENEMY_TABLE.find(token);
+				if (it != m_ENEMY_TABLE.end()) {
+					enemyType = it->second;
+				} else {
+					std::cout << "Enemy type not found!" << '\n';
+				}
 			} else {
-				std::cout << "Enemy type not found!" << std::endl;
+				std::cerr << "Invalid file format: type missing" << '\n';
+				continue;
 			}
-		} else {
-			std::cerr << "Invalid file format: type missing" << std::endl;
-			continue;
-		}
 
-		// Read direction
-		MovementDirection direction;
-		if (std::getline(iss, token, ',')) {
-			if (token == "left")
-			{
-				direction = MovementDirection::left;
-			} else if (token == "right")
-			{
-				direction = MovementDirection::right;
+			// Read direction
+			MovementDirection direction;
+			if (std::getline(iss, token, ',')) {
+				if (token == "left")
+				{
+					direction = MovementDirection::left;
+				} else if (token == "right")
+				{
+					direction = MovementDirection::right;
+				}
+			} else {
+				std::cerr << "Invalid file format: direction missing" << '\n';
+				continue;
 			}
-		} else {
-			std::cerr << "Invalid file format: direction missing" << std::endl;
-			continue;
+			//std::cout << posX << " " << posY << " " << static_cast<int>(enemyType) << " " <<  static_cast<int>(direction) << "\n";
+			m_TriggersManagerPtr->AddTrigger(new EnemyTrigger(Point2f(posX, posY), enemyType, direction));
+		} else if (triggerType == TriggerType::collectible)
+		{
+			CollectibleType collectibleType;
+			if (std::getline(iss, token, ',')) {
+				auto it = m_COLLECTIBLE_TABLE.find(token);
+				if (it != m_COLLECTIBLE_TABLE.end()) {
+					collectibleType = it->second;
+				} else {
+					std::cout << "Enemy type not found!" << '\n';
+				}
+			} else {
+				std::cerr << "Invalid file format: type missing" << '\n';
+				continue;
+			}
+			m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(posX, posY), collectibleType));
 		}
-
-		std::cout << posX << " " << posY << " " << static_cast<int>(enemyType) << " " <<  static_cast<int>(direction) << "\n";
-		m_TriggersManagerPtr->AddTrigger(new EnemyTrigger(Point2f(posX, posY), enemyType, direction));
 	} 
 	file.close();
 }
@@ -176,59 +223,74 @@ void Game::Cleanup( )
 void Game::Update(float elapsedSec)
 {
 
-	bool isCopyFound { false };
+	bool isEnemyCopyFound { false };
+	bool isCollectibleCopyFound { false };
+	
 	for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
 	{
 		if (triggerPtr != nullptr)
 		{
 			if (triggerPtr->GetIsActivated())
 			{
-				for (Enemy* enemyPtr : m_EnemiesManagerPtr->GetEnemiesArray())
+				if(triggerPtr->GetTriggerType() == TriggerType::enemy)
 				{
-					if (enemyPtr != nullptr)
+					for (Enemy* enemyPtr : m_EnemiesManagerPtr->GetEnemiesArray())
 					{
-						if (enemyPtr->GetTriggerPointer() == triggerPtr)
+						if (enemyPtr != nullptr)
 						{
-							isCopyFound = true;
+							if (enemyPtr->GetTriggerPointer() == triggerPtr)
+							{
+								isEnemyCopyFound = true;
+								break;
+							}
+						}
+					}
+					if (!isEnemyCopyFound)
+					{
+						switch (triggerPtr->GetEnemyType())
+						{
+						case EnemyType::biker:
+							m_EnemiesManagerPtr->Add(new Biker(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 50.f));
+							break;
+						case EnemyType::boxer:
+							m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 40.f));
+							break;
+						case EnemyType::dog:
+							m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 400.f));
+							break;
+						case EnemyType::knifeMan:
+							m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 30.f));
+							break;
+						case EnemyType::none:
 							break;
 						}
 					}
 				}
-				if (!isCopyFound)
+				if (triggerPtr->GetTriggerType() == TriggerType::collectible)
 				{
-					switch (triggerPtr->GetEnemyType())
+					for (Lantern* lanternPtr : m_LanternsManagerPtr->GetLanternsArray())
 					{
-					case EnemyType::biker:
-						m_EnemiesManagerPtr->Add(new Biker(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 50.f));
-						break;
-					case EnemyType::boxer:
-						m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 40.f));
-						break;
-					case EnemyType::dog:
-						m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 400.f));
-						break;
-					case EnemyType::knifeMan:
-						m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 30.f));
-						break;
+						if (lanternPtr != nullptr)
+						{
+							if (lanternPtr->GetTriggerPointer() == triggerPtr)
+							{
+								isCollectibleCopyFound = true;
+								break;
+							}
+							
+						}
+					}
+					if (!isCollectibleCopyFound)
+					{
+						if (triggerPtr->GetIsAvailable())
+						{
+							m_LanternsManagerPtr->Add(new Lantern(triggerPtr->GetPosition(), triggerPtr->GetCollectibleType(), triggerPtr, m_TexturesManagerPtr));
+						}
 					}
 				}
 			}
 		}
 	}
-
-
-	//for (Lantern* lanternPtr: m_LanternsManagerPtr->GetLanternsArray())
-	//{
-	//	if (lanternPtr != nullptr)
-	//	{
-	//		if (lanternPtr->GetIsExisting())
-	//		{
-	//			
-	//		}
-	//	}
-	//}
-
-	
 	
 	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
 
@@ -241,7 +303,7 @@ void Game::Update(float elapsedSec)
 	}
 	
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_EnemiesManagerPtr);
+	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_EnemiesManagerPtr, m_LanternsManagerPtr);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
 	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
 
@@ -267,24 +329,7 @@ void Game::Draw( ) const
 
 	
 	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
-
-	//for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
-	//{
-	//	if (triggerPtr != nullptr)
-	//	{
-	//		utils::DrawPoint(triggerPtr->GetPosition(), 4.f);
-	//	}
-	//}
-
-	//for (const std::vector<std::vector<Point2f>>& verticesType : m_MapVertices)
-	//{
-	//	for (const std::vector<Point2f>& vertices : verticesType)
-	//	{
-	//		utils::DrawPolygon(vertices, true, 2.f);
-	//	}
-	//}
-
-
+	
 	m_EnemiesManagerPtr->Draw();
 	
 	m_ParticlesManagerPtr->Draw();
@@ -297,26 +342,11 @@ void Game::Draw( ) const
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	m_RyuPtr->ProcessKeyDownEvent(e);
-	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
 	m_RyuPtr->ProcessKeyUpEvent(e);
-	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
-	//switch ( e.keysym.sym )
-	//{
-	//case SDLK_LEFT:
-	//	//std::cout << "Left arrow key released\n";
-	//	break;
-	//case SDLK_RIGHT:
-	//	//std::cout << "`Right arrow key released\n";
-	//	break;
-	//case SDLK_1:
-	//case SDLK_KP_1:
-	//	//std::cout << "Key 1 released\n";
-	//	break;
-	//}
 }
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )

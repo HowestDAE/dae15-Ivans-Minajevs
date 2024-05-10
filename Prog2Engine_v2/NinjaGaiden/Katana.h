@@ -2,6 +2,7 @@
 #include <Texture.h>
 #include "Ryu.h"
 #include "Enemy.h"
+#include "LanternsManager.h"
 class Katana final
 {
 public:
@@ -13,7 +14,7 @@ public:
 	void Draw(MovementDirection state) const;
 	void ChangePosition(Point2f pos);
 
-	void Update( EnemiesManager* enemiesManagerPtr, MovementDirection state) const;
+	void Update( LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state) const;
 
 	Rectf GetSourceRect() const;
 	float GetScale() const;
@@ -23,7 +24,8 @@ public:
 	void ChangeFrames(int frameNr);
 
 	void SetIsActive(bool isActive);
-	void CheckEnemiesHit( EnemiesManager* enemiesManagerPtr, MovementDirection state) const;
+	void CheckEnemiesHit(Enemy* enemyPtr, Rectf sourceRectr) const;
+	void CheckLanternsHit(Lantern* lanternPtr,  Rectf sourceRect) const;
 
 	//~Katana();
 

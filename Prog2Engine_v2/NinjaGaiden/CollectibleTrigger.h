@@ -13,4 +13,5 @@ public:
 	CollectibleType GetCollectibleType() const override;
 private:
 	CollectibleType m_Type;
+	
 };

@@ -4,6 +4,7 @@
 #include "BaseGame.h"
 #include <vector>
 
+#include "CollectibleType.h"
 #include "EnemyType.h"
 #include "Texture.h"
 class LanternsManager;
@@ -40,6 +41,7 @@ public:
 	const float m_MAP_SCALE{ 3.f };
 
 	static std::unordered_map<std::string, EnemyType> const m_ENEMY_TABLE;
+	static std::unordered_map<std::string, CollectibleType> const m_COLLECTIBLE_TABLE;
 private:
 	Ryu* m_RyuPtr;
 	Texture* m_MapTexturePtr;
@@ -61,7 +63,7 @@ private:
 
 	
 	// FUNCTIONS
-	void ReadEnemyDataFromFile(const std::string& filename);
+	void ReadEnemyDataFromFile(const std::string& filename) const;
 	void Initialize();
 	void Cleanup( );
 	void ClearBackground( ) const;

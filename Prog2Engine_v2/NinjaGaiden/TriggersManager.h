@@ -4,6 +4,7 @@
 
 #include "CollectibleTrigger.h"
 #include "EnemyTrigger.h"
+#include "LanternsManager.h"
 #include "Trigger.h"
 #include "TriggerType.h"
 
@@ -14,8 +15,9 @@ public:
 
 	
 	void DeleteTriggers( );
+	void DeleteTrigger(const Trigger* triggerPtr);
 	
-	void UpdateTrigger(Rectf sourceRect, MovementDirection) const;
+	void UpdateTrigger(Rectf sourceRect, MovementDirection ryuDirection) const;
 
 	std::vector<Trigger*>& GetTriggersArray(  );
 

@@ -2,12 +2,13 @@
 #include "CollectibleType.h"
 #include "Texture.h"
 #include "TextureManager.h"
+#include "Trigger.h"
 
 class Lantern
 {
 public:
 
-	Lantern(Point2f position, CollectibleType collectibleType, const TexturesManager* texturesManagerPtr);
+	Lantern(Point2f position, CollectibleType collectibleType, Trigger* triggerPtr, const TexturesManager* texturesManagerPtr);
 
 	void Update(float elapsedSec);
 	void Draw() const;
@@ -21,7 +22,10 @@ public:
 	CollectibleType GetCollectibleType() const;
 	bool GetIsExisting() const;
 	Rectf GetSourceRect() const;
+
+
 	
+	Trigger* GetTriggerPointer( ) const;
 
 	const float m_SCALE{ 2.5f };
 	const int m_FRAMES_PER_SEC { 4 };
@@ -30,6 +34,7 @@ public:
 	const int m_ROWS { 2 };
 	const int m_FRAMES_COUNT { 2 };
 private:
+	Trigger* m_TriggerPtr;
 	Point2f m_Position;
 	CollectibleType m_CollectibleType;
 	bool m_IsExisting { true };

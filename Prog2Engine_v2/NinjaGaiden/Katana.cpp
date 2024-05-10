@@ -76,11 +76,35 @@ void Katana::ChangePosition(Point2f pos)
 {
 	m_Position = pos;
 }
-void Katana::Update(EnemiesManager* enemiesManagerPtr, MovementDirection state) const
+void Katana::Update(LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state) const
 {
+	Rectf sourceRect;
+	if (state == MovementDirection::right)
+	{
+		sourceRect = Rectf(m_Position.x, m_Position.y - m_SourceRect.height, m_SourceRect.width * m_SCALE , m_SourceRect.height * m_SCALE);
+	}
+	else
+	{
+		sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y - m_SourceRect.height, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
+	}
 	if (m_IsActive)
 	{
-		CheckEnemiesHit(enemiesManagerPtr, state);
+		for (Enemy* enemyPtr : enemiesManagerPtr->GetEnemiesArray())
+		{
+			if (enemyPtr != nullptr)
+			{
+				
+				CheckEnemiesHit(enemyPtr, sourceRect);
+			}
+		}
+		for (Lantern* lanternPtr : lanternsManagerPtr->GetLanternsArray())
+		{
+			if ( lanternPtr != nullptr)
+			{
+				
+				CheckLanternsHit( lanternPtr, sourceRect);
+			}
+		}	
 	}
 }
 
@@ -109,26 +133,22 @@ void Katana::SetIsActive(bool isActive)
 	m_IsActive = isActive;
 }
 
-void Katana::CheckEnemiesHit( EnemiesManager* enemiesManagerPtr, MovementDirection state) const
+void Katana::CheckEnemiesHit( Enemy* enemyPtr, Rectf sourceRect) const
 {
-	for (Enemy* enemyPtr : enemiesManagerPtr->GetEnemiesArray())
+	
+	if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 	{
-		if (enemyPtr != nullptr)
-		{
-			Rectf sourceRect;
-			if (state == MovementDirection::right)
-			{
-				sourceRect = Rectf(m_Position.x, m_Position.y - m_SourceRect.height, m_SourceRect.width , m_SourceRect.height);
-			}
-			else
-			{
-				sourceRect = Rectf(m_Position.x - m_SourceRect.width * m_SCALE, m_Position.y - m_SourceRect.height, m_SourceRect.width, m_SourceRect.height);
-			}
-			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
-			{
-				enemyPtr->SetIsAlive(false);
-			}
-		}
+		enemyPtr->SetIsAlive(false);
+	}
+}
+	
+
+void Katana::CheckLanternsHit( Lantern* lanternPtr, Rectf sourceRect ) const 
+{
+	if (utils::IsOverlapping(lanternPtr->GetSourceRect(), sourceRect))
+	{
+		lanternPtr->SetIsExisting(false);
+		lanternPtr->GetTriggerPointer()->SetIsAvailable(false);
 	}
 }
 

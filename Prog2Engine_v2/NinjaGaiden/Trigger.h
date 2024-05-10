@@ -11,14 +11,13 @@ public:
 
 	void SetActivated(bool isActivated);
 
-	//virtual EnemyType GetEnemyType() const  = 0;
-	//virtual MovementDirection GetInitMovementDirection() const = 0;
-	//virtual CollectibleType GetCollectibleType() const = 0;
-//
 	TriggerType GetTriggerType() const;
 	bool GetIsActivated() const;
-	Point2f GetPosition() const;
+
+	bool GetIsAvailable() const;
+	void SetIsAvailable(bool isAvailable);
 	
+	Point2f GetPosition() const;
 	virtual EnemyType GetEnemyType( ) const = 0;
 	virtual MovementDirection GetInitMovementDirection( ) const = 0;
 	
@@ -29,4 +28,6 @@ private:
 	TriggerType m_Type;
 	Point2f m_Position;
 	bool m_IsActivated;
+	bool m_IsAvailable { true };
+
 };
