@@ -27,7 +27,7 @@ public:
 	
 	Trigger* GetTriggerPointer( ) const;
 
-	const float m_SCALE{ 2.5f };
+	const float m_SCALE{ 2.8f };
 	const int m_FRAMES_PER_SEC { 4 };
 	const float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
 	const int m_COLS { 10 };
