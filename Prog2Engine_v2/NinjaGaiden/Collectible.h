@@ -19,6 +19,10 @@ public:
 	void UpdateSourceRect( );
 
 	bool GetIsExisting() const;
+	void SetIsExisting(bool isExisting);
+	void SetIsCollected(bool isCollected);
+
+	Rectf GetRect() const;
 	
 	const float m_SCALE{ 2.5f };
 

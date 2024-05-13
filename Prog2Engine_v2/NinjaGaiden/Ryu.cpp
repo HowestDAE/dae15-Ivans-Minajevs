@@ -164,6 +164,18 @@ void Ryu::Draw() const
 
 void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, CollectiblesManager*  collectiblesManagerPtr, EnemiesManager* enemiesManagerPtr,  LanternsManager* lanternsManagerPtr)
 {
+	Rectf sourceRect {Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE)};
+	
+	for (Collectible* collectiblePtr: collectiblesManagerPtr->GetCollectiblesArray())
+	{
+		if (collectiblePtr != nullptr)
+		{
+			if (utils::IsOverlapping(sourceRect, collectiblePtr->GetRect()))
+			{
+				collectiblePtr->SetIsExisting(false);
+			}
+		}
+	}
 	if (m_State == RyuState::attacking || m_State == RyuState::duckAttacking)
 	{
 		m_FramesPerSec = 8;
@@ -175,7 +187,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 	
 	m_FrameTime			= 1.f / float(m_FramesPerSec);
 	
-	Rectf sourceRect {Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE)};
+	
 	for (Enemy* enemyPtr: enemiesManagerPtr->GetEnemiesArray())
 	{
 		if (enemyPtr != nullptr)

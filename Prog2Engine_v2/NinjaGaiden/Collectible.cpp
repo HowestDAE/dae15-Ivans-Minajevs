@@ -89,3 +89,15 @@ bool Collectible::GetIsExisting( ) const
 {
 	return m_IsExisting;
 }
+void Collectible::SetIsExisting(bool isExisting)
+{
+	m_IsExisting = isExisting;
+}
+void Collectible::SetIsCollected( bool isCollected )
+{
+	m_IsCollected = isCollected;
+}
+Rectf Collectible::GetRect( ) const
+{
+	return Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
+}
