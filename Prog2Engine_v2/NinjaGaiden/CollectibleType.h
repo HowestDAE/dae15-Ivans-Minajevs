@@ -1,10 +1,10 @@
 ﻿#pragma once
 enum class CollectibleType
 {
-	bonusBlue,
-	bonusRed,
 	spiritualStrengthBlue,
 	spiritualStrengthRed,
+	bonusBlue,
+	bonusRed,
 	timeFreeze,
 	throwingStar,
 	windmillThrowingStar,

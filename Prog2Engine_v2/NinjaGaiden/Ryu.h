@@ -21,7 +21,7 @@ public:
 	//~Ryu();
 
 	void Draw() const;
-	void Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>> &mapVertices, EnemiesManager* enemiesManagerPtr, LanternsManager* lanternsManagerPtr);
+	void Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>> &mapVertices, CollectiblesManager* collectiblesManagerPtr, EnemiesManager* enemiesManagerPtr, LanternsManager* lanternsManagerPtr);
 	void HandleFloorCollision(const std::vector<std::vector<Point2f>>& vertices);
 	void HandleSignsCollision(const std::vector<std::vector<Point2f>>& vertices);
 	void HandlePlatformsCollision(const std::vector<std::vector<Point2f>>& vertices);

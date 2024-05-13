@@ -7,7 +7,7 @@ public:
 
 private:
 public:
-	void Update(float elapsedSec, const TexturesManager* texturesManagerPtr, Rectf sourceRect);
+	void Update(float elapsedSec, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
 	void Draw() const;
 
 	void Add(Collectible* collectiblePtr);

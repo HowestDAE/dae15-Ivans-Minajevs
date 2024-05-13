@@ -76,7 +76,7 @@ void Katana::ChangePosition(Point2f pos)
 {
 	m_Position = pos;
 }
-void Katana::Update(LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state) const
+void Katana::Update(LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state, CollectiblesManager* collectiblesManagerPtr) const
 {
 	Rectf sourceRect;
 	if (state == MovementDirection::right)
@@ -102,7 +102,7 @@ void Katana::Update(LanternsManager* lanternsManagerPtr, EnemiesManager* enemies
 			if ( lanternPtr != nullptr)
 			{
 				
-				CheckLanternsHit( lanternPtr, sourceRect);
+				CheckLanternsHit( lanternPtr, sourceRect, collectiblesManagerPtr);
 			}
 		}	
 	}
@@ -143,10 +143,11 @@ void Katana::CheckEnemiesHit( Enemy* enemyPtr, Rectf sourceRect) const
 }
 	
 
-void Katana::CheckLanternsHit( Lantern* lanternPtr, Rectf sourceRect ) const 
+void Katana::CheckLanternsHit( Lantern* lanternPtr, Rectf sourceRect, CollectiblesManager* collectibleManagerPtr) const 
 {
 	if (utils::IsOverlapping(lanternPtr->GetSourceRect(), sourceRect))
 	{
+		collectibleManagerPtr->Add(new Collectible(lanternPtr->GetPosition(), lanternPtr->GetCollectibleType()));
 		lanternPtr->SetIsExisting(false);
 		lanternPtr->GetTriggerPointer()->SetIsAvailable(false);
 	}

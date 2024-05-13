@@ -57,6 +57,7 @@ void Game::Initialize( )
 	m_EnemiesManagerPtr = new EnemiesManager();
 	m_TriggersManagerPtr = new TriggersManager();
 	m_LanternsManagerPtr = new LanternsManager();
+	m_CollectiblesManagerPtr = new CollectiblesManager();
 
 	ReadEnemyDataFromFile("enemies_triggers.txt");
 
@@ -212,12 +213,14 @@ void Game::Cleanup( )
 	m_TriggersManagerPtr->DeleteTriggers();
 	m_ParticlesManagerPtr->DeleteParticles();
 	m_LanternsManagerPtr->DeleteLanterns();
+	m_CollectiblesManagerPtr->DeleteCollectibles();
 
 	delete m_LanternsManagerPtr;
 	delete m_TexturesManagerPtr;
 	delete m_ParticlesManagerPtr;
 	delete m_EnemiesManagerPtr;
 	delete m_TriggersManagerPtr;
+	delete m_CollectiblesManagerPtr;
 }
 
 void Game::Update(float elapsedSec)
@@ -291,10 +294,14 @@ void Game::Update(float elapsedSec)
 			}
 		}
 	}
+
 	
 	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
 
-	m_LanternsManagerPtr->Update(elapsedSec,  m_TexturesManagerPtr, m_Camera->GetViewRect());
+	m_LanternsManagerPtr->Update(elapsedSec, m_TexturesManagerPtr, m_Camera->GetViewRect());
+
+	m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices);
+	
 	m_ParticlesManagerPtr->Update(elapsedSec);
 	
 	if (!m_BackgroundMusicPtr->IsPlaying())
@@ -303,7 +310,7 @@ void Game::Update(float elapsedSec)
 	}
 	
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_EnemiesManagerPtr, m_LanternsManagerPtr);
+	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_CollectiblesManagerPtr, m_EnemiesManagerPtr, m_LanternsManagerPtr);
 	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
 	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
 
@@ -324,6 +331,8 @@ void Game::Draw( ) const
 	glPopMatrix();
 
 	m_LanternsManagerPtr->Draw();
+
+	 m_CollectiblesManagerPtr->Draw();
 	
 	m_RyuPtr->Draw();
 

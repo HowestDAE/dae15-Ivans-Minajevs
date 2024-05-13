@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vector>
 
+#include "CollectiblesManager.h"
 #include "Lantern.h"
 #include "TextureManager.h"
 

@@ -17,6 +17,7 @@ class TestingDot;
 class SoundStream;
 class ParticlesManager;
 class TexturesManager;
+class CollectiblesManager;
 class Game : public BaseGame
 {
 public:
@@ -53,6 +54,7 @@ private:
 	TexturesManager* m_TexturesManagerPtr;
 	EnemiesManager* m_EnemiesManagerPtr;
 	LanternsManager* m_LanternsManagerPtr;
+	CollectiblesManager* m_CollectiblesManagerPtr;
 
 	std::vector<std::vector<Point2f>> m_FloorVertices;
 	std::vector<std::vector<Point2f>> m_PlatformsVertices;

@@ -1,17 +1,28 @@
 ﻿#include "pch.h"
 #include "CollectiblesManager.h"
 
-void CollectiblesManager::Update( float elapsedSec, const TexturesManager* texturesManagerPtr, Rectf sourceRect )
+void CollectiblesManager::Update( float elapsedSec, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices) 
 {
-	
+	for ( Collectible*& collectiblePtr : m_CollectiblesPtrArr)
+	{
+		if (collectiblePtr != nullptr)
+		{
+			collectiblePtr->Update(mapVertices, elapsedSec);
+			if (!collectiblePtr->GetIsExisting())
+			{
+				DeleteCollectible(collectiblePtr);
+				collectiblePtr = nullptr;
+			}
+		}
+	}
 }
 void CollectiblesManager::Draw( ) const
 {
-	for ( Collectible* lanternPtr : m_CollectiblesPtrArr)
+	for ( Collectible* collectiblePtr : m_CollectiblesPtrArr)
 	{
-		if (lanternPtr != nullptr)
+		if (collectiblePtr != nullptr)
 		{
-			lanternPtr->Draw();
+			collectiblePtr->Draw();
 		}
 	}
 }
