@@ -73,6 +73,8 @@ private:
 	int m_FrameNr;
 	int	m_MaxFramesOfAnimation;
 
+	//float m_TimeResistentAfterHit { 1.5f };
+
 	int m_JumpActionsCounter;
 	int m_AttackActionCounter;
 

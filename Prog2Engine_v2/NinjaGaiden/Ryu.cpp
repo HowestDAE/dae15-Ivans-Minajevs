@@ -197,7 +197,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 				if (m_State != RyuState::hurt)
 				{
 					m_State = RyuState::hurt;
-					m_Velocity.y = 500.f;
+					m_Velocity.y = 700.f;
 					float intersectMin, intersectMax;
 					utils::IntersectRectLine(enemyPtr->GetSourceRect(), Point2f(m_Position.x - 1.f, m_Position.y),
 											Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y), intersectMin, intersectMax);
@@ -218,14 +218,14 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 	if (m_State != RyuState::hurt)
 	{
 		m_PlannedJumpDirection = m_MovementDirection;
-	if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking)
+		if (m_State != RyuState::attacking && m_State != RyuState::duckAttacking)
 		{
 			if (m_State != RyuState::jumping && m_State != RyuState::climbing)
 			{
 				m_State = RyuState::none;
 				
 			}
-		m_Velocity.x = 0;
+			m_Velocity.x = 0;
 			if (pStates[SDL_SCANCODE_RIGHT])
 			{
 				if (m_State != RyuState::climbing)
