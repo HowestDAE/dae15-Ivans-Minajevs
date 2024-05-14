@@ -6,6 +6,7 @@
 
 #include "CollectibleType.h"
 #include "EnemyType.h"
+#include "TextManager.h"
 #include "Texture.h"
 class LanternsManager;
 class TriggersManager;
@@ -41,9 +42,27 @@ public:
 	
 	const float m_MAP_SCALE{ 3.f };
 
-	static std::unordered_map<std::string, EnemyType> const m_ENEMY_TABLE;
-	static std::unordered_map<std::string, CollectibleType> const m_COLLECTIBLE_TABLE;
+	std::unordered_map<std::string, EnemyType> m_ENEMY_TABLE {
+				{"biker", EnemyType::biker},
+				{"boxer",EnemyType::boxer},
+				{"knifeMan",EnemyType::knifeMan},
+				{"dog",EnemyType::dog}};
+	std::unordered_map<std::string, CollectibleType> m_COLLECTIBLE_TABLE  {
+				{ "bonusBlue", CollectibleType::bonusBlue},
+				{ "bonusRed", CollectibleType::bonusRed},
+				{ "spiritualStrengthBlue", CollectibleType::spiritualStrengthBlue},
+				{ "spiritualStrengthRed", CollectibleType::spiritualStrengthRed},
+				{ "timeFreeze", CollectibleType::timeFreeze},
+				{ "throwingStar", CollectibleType::throwingStar},
+				{ "windmillThrowingStar", CollectibleType::windmillThrowingStar},
+				{ "theArtOfTheFireWheel", CollectibleType::theArtOfTheFireWheel},
+				{ "invincibleFireWheel", CollectibleType::invincibleFireWheel},
+				{ "jumpAndSlashTechnique", CollectibleType::jumpAndSlashTechnique},
+				{ "none", CollectibleType::none}};
 private:
+	float m_Timer { 150.f };
+
+	
 	Ryu* m_RyuPtr;
 	Texture* m_MapTexturePtr;
 	Camera* m_Camera;
@@ -55,12 +74,15 @@ private:
 	EnemiesManager* m_EnemiesManagerPtr;
 	LanternsManager* m_LanternsManagerPtr;
 	CollectiblesManager* m_CollectiblesManagerPtr;
-
+	TextManager* m_TextManagerPtr;
+	
 	std::vector<std::vector<Point2f>> m_FloorVertices;
 	std::vector<std::vector<Point2f>> m_PlatformsVertices;
 	std::vector<std::vector<Point2f>> m_SignsVertices;
 	std::vector<std::vector<Point2f>> m_WallsVertices;
 
+
+	std::string m_Alphabet { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-" };
 	std::vector<std::vector<std::vector<Point2f>>> m_MapVertices;
 
 	

@@ -9,6 +9,7 @@ public:
 	TexturesManager();
 	static TexturesManager* GetInstance();
 	void AddTexture(TextureType textureType, const std::string& fileName);
+	void AddText(TextureType textureType, const std::string& text, const std::string& font, int size, Color4f color);
 	Texture* GetTexture( TextureType textureType ) const;
 	void DeleteTextures();
 private:

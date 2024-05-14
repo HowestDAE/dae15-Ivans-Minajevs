@@ -7,6 +7,7 @@ enum class TextureType
 	katana,
 	map,
 	collectibles,
+	text,
 	count //keep it last
 };
 

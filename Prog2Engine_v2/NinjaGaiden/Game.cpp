@@ -18,24 +18,7 @@
 #include "TriggersManager.h"
 #include "utils.h"
 
-const std::unordered_map<std::string, EnemyType> Game::m_ENEMY_TABLE{
-		{"biker", EnemyType::biker},
-		{"boxer",EnemyType::boxer},
-		{"knifeMan",EnemyType::knifeMan},
-		{"dog",EnemyType::dog} };
 
-	const std::unordered_map<std::string, CollectibleType> Game::m_COLLECTIBLE_TABLE {
-		{ "bonusBlue", CollectibleType::bonusBlue},
-		{ "bonusRed", CollectibleType::bonusRed},
-		{ "spiritualStrengthBlue", CollectibleType::spiritualStrengthBlue},
-		{ "spiritualStrengthRed", CollectibleType::spiritualStrengthRed},
-		{ "timeFreeze", CollectibleType::timeFreeze},
-		{ "throwingStar", CollectibleType::throwingStar},
-		{ "windmillThrowingStar", CollectibleType::windmillThrowingStar},
-		{ "theArtOfTheFireWheel", CollectibleType::theArtOfTheFireWheel},
-		{ "invincibleFireWheel", CollectibleType::invincibleFireWheel},
-		{ "jumpAndSlashTechnique", CollectibleType::jumpAndSlashTechnique},
-		{ "none", CollectibleType::none}};
 
 Game::Game( const Window& window )
 	: BaseGame{ window }
@@ -50,6 +33,7 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
+
 	m_BackgroundMusicPtr = new SoundStream("background_music.mp3");
 
 	m_ParticlesManagerPtr = new ParticlesManager();
@@ -67,6 +51,9 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::particles, "death_particle.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::collectibles, "collectibles_spritesheet.png");
+	m_TexturesManagerPtr->AddText(TextureType::text, m_Alphabet, "ninja_gaiden_nes.ttf", 24, Color4f(1.f, 1.f, 1.f, 1.f));
+
+	m_TextManagerPtr = new TextManager(m_Alphabet);
 
 	//m_LanternsManagerPtr->Add(new Lantern(Point2f(900.f, 160.f), CollectibleType::BonusBlue, m_TexturesManagerPtr));
 
@@ -208,6 +195,8 @@ void Game::Cleanup( )
 	delete m_BackgroundMusicPtr;
 	m_BackgroundMusicPtr = nullptr;
 
+	delete m_TextManagerPtr;
+	
 	m_TexturesManagerPtr->DeleteTextures();
 	m_EnemiesManagerPtr->DeleteEnemies();
 	m_TriggersManagerPtr->DeleteTriggers();
@@ -215,17 +204,20 @@ void Game::Cleanup( )
 	m_LanternsManagerPtr->DeleteLanterns();
 	m_CollectiblesManagerPtr->DeleteCollectibles();
 
+	
 	delete m_LanternsManagerPtr;
 	delete m_TexturesManagerPtr;
 	delete m_ParticlesManagerPtr;
 	delete m_EnemiesManagerPtr;
 	delete m_TriggersManagerPtr;
 	delete m_CollectiblesManagerPtr;
+	
 }
 
 void Game::Update(float elapsedSec)
 {
-
+	m_Timer -= elapsedSec;
+	
 	bool isEnemyCopyFound { false };
 	bool isCollectibleCopyFound { false };
 	
@@ -321,6 +313,7 @@ void Game::Update(float elapsedSec)
 void Game::Draw( ) const
 {
 	ClearBackground( );
+
 	
 	glPushMatrix();
 	{
@@ -332,20 +325,17 @@ void Game::Draw( ) const
 
 	m_LanternsManagerPtr->Draw();
 
-	 m_CollectiblesManagerPtr->Draw();
+	m_CollectiblesManagerPtr->Draw();
 	
 	m_RyuPtr->Draw();
-
-	
-	utils::SetColor(Color4f(0.f, 0.f, 1.f, 1.f));
 	
 	m_EnemiesManagerPtr->Draw();
 	
 	m_ParticlesManagerPtr->Draw();
-
 	
 	m_Camera->Reset();
-	
+
+	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 100.f),std::string("TIMER - " + std::to_string(int(m_Timer))));
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
