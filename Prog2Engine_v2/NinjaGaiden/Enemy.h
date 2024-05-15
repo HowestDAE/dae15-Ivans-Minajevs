@@ -23,7 +23,7 @@ public:
     virtual void UpdateSourceRect() = 0;
     virtual void ChangeFrames(float elapsedSec) = 0;
 
-
+    virtual int GetScoreIfKilled() = 0 ;
     
     void ChangePosition(float elapsedSec);
     void UpdateJump(float elapsedSec);

@@ -10,6 +10,8 @@ public:
 	void UpdateSourceRect() override;
 	void ChangeFrames(float elapsedSec) override;
 	void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override; 
+
+	int GetScoreIfKilled() override;
 	
 	const int m_FRAMES_COUNT{ 6 };
 

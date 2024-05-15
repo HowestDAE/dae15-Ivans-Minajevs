@@ -81,7 +81,7 @@ private:
 	std::vector<std::vector<Point2f>> m_SignsVertices;
 	std::vector<std::vector<Point2f>> m_WallsVertices;
 
-
+	int m_Score{ 0 };
 	std::string m_Alphabet { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-" };
 	std::vector<std::vector<std::vector<Point2f>>> m_MapVertices;
 

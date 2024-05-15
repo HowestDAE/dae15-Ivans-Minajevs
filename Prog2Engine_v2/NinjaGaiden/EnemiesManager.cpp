@@ -19,6 +19,7 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 			
 			else if (!enemyPtr->GetIsAlive())
 			{
+				AddScore(enemyPtr->GetScoreIfKilled());
 				particlesManagerPtr->Add(texturesManagerPtr, ParticleType::enemyDeath,
 									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width / 2.f,
 										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height / 2.f), 0.25f);
@@ -74,4 +75,12 @@ void EnemiesManager::DeleteEnemies( )
 std::vector<Enemy*>& EnemiesManager::GetEnemiesArray( )
 {
 	return m_EnemiesPtrArr;
+}
+int EnemiesManager::GetScore( ) const
+{
+	return m_Score;
+}
+void EnemiesManager::AddScore(int score)
+{
+	m_Score += score;
 }

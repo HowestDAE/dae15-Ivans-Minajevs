@@ -42,4 +42,8 @@ void Dog::ChangeFrames( float elapsedSec )
 		}
 	}
 }
+int Dog::GetScoreIfKilled( )
+{
+	return 200;
+}
 

@@ -11,6 +11,7 @@ public:
 	void ChangeFrames(float elapsedSec) override;
 	
 	//void HandleHorizontalCollision(const std::vector<std::vector<Point2f>>& mapVertices) override;
+	int GetScoreIfKilled() override;
 	
 	const int m_FRAMES_COUNT{ 2 };
 

@@ -41,4 +41,8 @@ void Biker::ChangeFrames( float elapsedSec )
 		}
 	}
 }
+int Biker::GetScoreIfKilled( )
+{
+	return 100;
+}
 

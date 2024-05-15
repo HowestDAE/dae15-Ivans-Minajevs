@@ -26,4 +26,8 @@ void Boxer::UpdateSourceRect( )
 	m_SourceRect.left = (m_FrameNr % m_FRAMES_COUNT) * sourceRectWidth;
 	m_SourceRect.bottom = (static_cast<int>(EnemyType::boxer) + 1) * m_EnemiesTexturePtr->GetHeight() / m_ROWS - m_SourceRect.height;	
 }
+int Boxer::GetScoreIfKilled( )
+{
+	return 200;
+}
 

@@ -17,8 +17,13 @@ public:
 	void DeleteEnemies();
 
 	std::vector<Enemy*>& GetEnemiesArray();
+
+	int GetScore() const;
 	
 	//const std::string m_FILE_PATH { "enemies_spritesheet.png" };
 private:
+	int m_Score { 0 };
 	std::vector<Enemy*> m_EnemiesPtrArr;
+
+	void AddScore(int score);
 };

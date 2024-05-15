@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Game.h"
 #include <fstream>
+#include <iomanip>
+
 #include "Ryu.h"
 #include "Camera.h"
 #include "SvgParser.h"
@@ -308,6 +310,8 @@ void Game::Update(float elapsedSec)
 
 	m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
 	m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect(), m_RyuPtr->GetMovementDirection());
+
+	m_Score = m_EnemiesManagerPtr->GetScore();
 }
 
 void Game::Draw( ) const
@@ -335,7 +339,12 @@ void Game::Draw( ) const
 	
 	m_Camera->Reset();
 
-	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 100.f),std::string("TIMER - " + std::to_string(int(m_Timer))));
+	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 60.f),std::string("TIMER - " + std::to_string(int(m_Timer))));
+	
+	std::ostringstream result;
+	result << std::setw(6) << std::setfill('0') << m_Score;
+	
+	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 30.f),std::string("SCORE - " + result.str()));
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )

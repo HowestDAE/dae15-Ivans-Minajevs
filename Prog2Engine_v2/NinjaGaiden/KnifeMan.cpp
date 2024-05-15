@@ -43,4 +43,8 @@ void KnifeMan::Update( const std::vector<std::vector<std::vector<Point2f>>>& map
 {
 	Enemy::Update(mapVertices, elapsedSec);
 }
+int KnifeMan::GetScoreIfKilled( )
+{
+	return 100;
+}
 

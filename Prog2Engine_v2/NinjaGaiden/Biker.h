@@ -7,6 +7,7 @@ public:
 	void UpdateSourceRect() override;
 	void ChangeFrames(float elapsedSec) override;
 	
+	int GetScoreIfKilled() override;
 	
 	const int m_FRAMES_COUNT{ 3 };
 

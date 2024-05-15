@@ -8,4 +8,7 @@ public:
 	
 	void UpdateSourceRect() override;
 
+	int GetScoreIfKilled() override;
+
+
 };
