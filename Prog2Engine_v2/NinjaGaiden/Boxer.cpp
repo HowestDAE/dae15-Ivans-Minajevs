@@ -10,16 +10,18 @@ Boxer::Boxer(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const
 
 void Boxer::UpdateSourceRect( )
 {
+	m_Velocity.y = 15.f;
 	float sourceRectWidth {m_EnemiesTexturePtr->GetWidth() / m_COLS};
 	float sourceRectHeight { m_EnemiesTexturePtr->GetHeight() / m_ROWS};
 	m_SourceRect.height = sourceRectHeight * 0.8f;
 	if (m_FrameNr == 2)
 	{
-		
+		m_Velocity.x += 50.f;
 		m_SourceRect.width = sourceRectWidth * 0.75f;
 	}
 	else
 	{
+		m_Velocity.x = m_HorizontalVelocity;
 		m_SourceRect.width = sourceRectWidth * 0.5f;
 	}
 	

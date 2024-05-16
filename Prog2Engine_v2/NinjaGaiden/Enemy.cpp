@@ -5,8 +5,10 @@
 #include "utils.h"
 
 Enemy::Enemy(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-	m_Velocity(Point2f(horizontalVelocity, m_VERTICAL_VELOCITY)), m_TriggerPtr(triggerPtr), m_IsAlive(true)
+	m_HorizontalVelocity(horizontalVelocity), m_TriggerPtr(triggerPtr), m_IsAlive(true)
 {
+	m_Velocity = Point2f(m_HorizontalVelocity, m_VERTICAL_VELOCITY);
+	
 	m_EnemyType = m_TriggerPtr->GetEnemyType();
 	m_Position = m_TriggerPtr->GetPosition();
 	m_MovementDirection = m_TriggerPtr->GetInitMovementDirection();

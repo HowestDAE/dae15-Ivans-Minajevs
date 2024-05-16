@@ -53,7 +53,9 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::particles, "death_particle.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::collectibles, "collectibles_spritesheet.png");
-	m_TexturesManagerPtr->AddText(TextureType::text, m_Alphabet, "ninja_gaiden_nes.ttf", 24, Color4f(1.f, 1.f, 1.f, 1.f));
+	m_TexturesManagerPtr->AddTexture(TextureType::boss, "boss_spritesheet.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::boss, "ninja_gaiden_map_stage_boss_8bit.png");
+	m_TexturesManagerPtr->AddText(TextureType::text, m_Alphabet, "ninja_gaiden_nes.ttf", m_FONT_SIZE, Color4f(1.f, 1.f, 1.f, 1.f));
 
 	m_TextManagerPtr = new TextManager(m_Alphabet);
 
@@ -88,6 +90,7 @@ void Game::Initialize( )
 		}
 	}
 }
+
 
 void Game::ReadEnemyDataFromFile(const std::string& filename) const
 {
@@ -339,12 +342,37 @@ void Game::Draw( ) const
 	
 	m_Camera->Reset();
 
-	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 60.f),std::string("TIMER - " + std::to_string(int(m_Timer))));
+	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 70.f),std::string("TIMER-" + std::to_string(int(m_Timer))));
 	
 	std::ostringstream result;
 	result << std::setw(6) << std::setfill('0') << m_Score;
 	
-	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 30.f),std::string("SCORE - " + result.str()));
+	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 40.f),std::string("SCORE-" + result.str()));
+
+	m_TextManagerPtr->Draw(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 40.f),std::string("STAGE-1-" + std::to_string(static_cast<int>(m_StageType))));
+
+	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 100.f),std::string("P-02"));
+
+	DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 70.f),std::string("NINJA-"), m_RyuPtr->GetHealth());
+	DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 100.f),std::string("ENEMY-"), 16);
+	
+	utils::SetColor(Color4f(1.f, 0.5f, 0.7f, 1.f));
+	
+}
+
+void Game::DrawHealth( Point2f pos, const std::string& text,  int health) const
+{
+	m_TextManagerPtr->Draw(pos,text);
+	utils::SetColor(Color4f(1.f, 0.5f, 0.7f, 1.f));
+	
+	float posX { pos.x + text.length() * m_FONT_SIZE };
+	float width { 10.f };
+	
+	for (int healthIndex { 0 }; healthIndex < health; ++healthIndex)
+	{
+		utils::FillRect(posX, pos.y, width, float(m_FONT_SIZE));
+		posX += (width + 5.f);
+	}
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )

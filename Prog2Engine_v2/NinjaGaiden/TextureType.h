@@ -8,6 +8,8 @@ enum class TextureType
 	map,
 	collectibles,
 	text,
+	boss,
+	bossMap,
 	count //keep it last
 };
 

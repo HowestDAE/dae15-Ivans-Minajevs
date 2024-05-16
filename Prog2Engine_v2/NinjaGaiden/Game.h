@@ -6,6 +6,7 @@
 
 #include "CollectibleType.h"
 #include "EnemyType.h"
+#include "StageType.h"
 #include "TextManager.h"
 #include "Texture.h"
 class LanternsManager;
@@ -42,6 +43,8 @@ public:
 	
 	const float m_MAP_SCALE{ 3.f };
 
+	static const int m_INIT_HEALTH { 16 };
+	
 	std::unordered_map<std::string, EnemyType> m_ENEMY_TABLE {
 				{"biker", EnemyType::biker},
 				{"boxer",EnemyType::boxer},
@@ -59,6 +62,8 @@ public:
 				{ "invincibleFireWheel", CollectibleType::invincibleFireWheel},
 				{ "jumpAndSlashTechnique", CollectibleType::jumpAndSlashTechnique},
 				{ "none", CollectibleType::none}};
+
+	const int m_FONT_SIZE { 24 };
 private:
 	float m_Timer { 150.f };
 
@@ -81,12 +86,16 @@ private:
 	std::vector<std::vector<Point2f>> m_SignsVertices;
 	std::vector<std::vector<Point2f>> m_WallsVertices;
 
+	StageType m_StageType { StageType::generalMap };
+
 	int m_Score{ 0 };
+	
 	std::string m_Alphabet { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-" };
 	std::vector<std::vector<std::vector<Point2f>>> m_MapVertices;
 
 	
 	// FUNCTIONS
+	void DrawHealth(Point2f pos, const std::string& text, int health) const;
 	void ReadEnemyDataFromFile(const std::string& filename) const;
 	void Initialize();
 	void Cleanup( );

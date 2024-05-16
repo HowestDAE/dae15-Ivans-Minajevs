@@ -198,6 +198,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ParticleType.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Ryu.h" />
+    <ClInclude Include="StageType.h" />
     <ClInclude Include="TestingDot.h" />
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="TextureManager.h" />

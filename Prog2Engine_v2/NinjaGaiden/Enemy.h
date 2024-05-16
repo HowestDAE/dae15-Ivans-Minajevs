@@ -48,6 +48,8 @@ protected:
     Rectf m_SourceRect;
     MovementDirection m_MovementDirection;
     Texture* m_EnemiesTexturePtr;
+
+    float m_HorizontalVelocity;
    
     float m_AccuSec { 0 };
     

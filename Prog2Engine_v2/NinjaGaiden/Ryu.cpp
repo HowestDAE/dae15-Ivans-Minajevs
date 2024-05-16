@@ -197,6 +197,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 				if (m_State != RyuState::hurt)
 				{
 					m_State = RyuState::hurt;
+					m_Health--;
 					m_Velocity.y = 700.f;
 					float intersectMin, intersectMax;
 					utils::IntersectRectLine(enemyPtr->GetSourceRect(), Point2f(m_Position.x - 1.f, m_Position.y),
@@ -552,6 +553,10 @@ void Ryu::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 	{
 		m_AttackActionCounter = 0;
 	}
+}
+int Ryu::GetHealth( ) const
+{
+	return m_Health;
 }
 
 

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "EnemiesManager.h"
+#include "Game.h"
 #include "LanternsManager.h"
 #include "MovementDirection.h"
 #include "TextureManager.h"
@@ -29,6 +30,8 @@ public:
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
 	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e);
 
+
+	int GetHealth() const;
 	void SetBorders(float posX);
 	Point2f GetPosition() const;
 	MovementDirection GetMovementDirection() const;
@@ -46,13 +49,18 @@ public:
 	const float m_SPEED{ 278.f };
 	const float m_INIT_JUMP_SPEED{ 500.f };
 
+
+	//const int m_INITIAL_HEALTH { 16 };
 	const float m_SCALE{ 3.f };
 
 private:
 	MovementDirection m_MovementDirection;
 	MovementDirection m_PlannedJumpDirection;
 
-	Ryu::RyuState m_State;
+	RyuState m_State;
+	
+	int m_Health { Game::m_INIT_HEALTH};
+	
 	bool m_IsMoving;
 
 	Texture* m_RyuSpriteSheetPtr;
@@ -69,7 +77,7 @@ private:
 	float m_AccuSec;
 	int	  m_FramesPerSec;
 	float m_FrameTime;
-
+	
 	int m_FrameNr;
 	int	m_MaxFramesOfAnimation;
 
