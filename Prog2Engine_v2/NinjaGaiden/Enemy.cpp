@@ -4,7 +4,7 @@
 #include "Trigger.h"
 #include "utils.h"
 
-Enemy::Enemy(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+Enemy::Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
 	m_HorizontalVelocity(horizontalVelocity), m_TriggerPtr(triggerPtr), m_IsAlive(true)
 {
 	m_Velocity = Point2f(m_HorizontalVelocity, m_VERTICAL_VELOCITY);
@@ -103,7 +103,7 @@ void Enemy::HandleHorizontalCollision( const std::vector<std::vector<std::vector
 	utils::HitInfo hitInfoHorizontal;
 	for (const std::vector<std::vector<Point2f>>& vertices : mapVertices)
 	{
-		for (const std::vector<Point2f> vertice : vertices)
+		for (const std::vector<Point2f>& vertice : vertices)
 		{
 			if (utils::Raycast(vertice, Point2f(m_Position.x - 3.f, m_Position.y + 10.f),
 		Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 3.f, m_Position.y + 10.f), hitInfoHorizontal))

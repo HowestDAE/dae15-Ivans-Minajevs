@@ -52,7 +52,6 @@ void EnemiesManager::DeleteEnemy( const Enemy* enemy )
 		{
 			if (enemyPtr == enemy)
 			{
-				
 				delete enemyPtr;
 				enemyPtr = nullptr;
 			}

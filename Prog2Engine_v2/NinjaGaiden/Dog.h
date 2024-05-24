@@ -4,7 +4,7 @@
 class Dog : public Enemy
 {
 public:
-	Dog(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
+	Dog(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
 	//void Draw() const override;
 	//void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
 	void UpdateSourceRect() override;

@@ -54,7 +54,7 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::enemies, "enemies_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::collectibles, "collectibles_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::boss, "boss_spritesheet.png");
-	m_TexturesManagerPtr->AddTexture(TextureType::boss, "ninja_gaiden_map_stage_boss_8bit.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::bossMap, "ninja_gaiden_map_stage_boss_8bit.png");
 	m_TexturesManagerPtr->AddText(TextureType::text, m_Alphabet, "ninja_gaiden_nes.ttf", m_FONT_SIZE, Color4f(1.f, 1.f, 1.f, 1.f));
 
 	m_TextManagerPtr = new TextManager(m_Alphabet);
@@ -63,7 +63,7 @@ void Game::Initialize( )
 
 	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
 	
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 2900.f * m_MAP_SCALE, 70.f);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 	
@@ -221,100 +221,120 @@ void Game::Cleanup( )
 
 void Game::Update(float elapsedSec)
 {
-	m_Timer -= elapsedSec;
-	
-	bool isEnemyCopyFound { false };
-	bool isCollectibleCopyFound { false };
-	
-	for (Trigger* triggerPtr: m_TriggersManagerPtr->GetTriggersArray())
+	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_CollectiblesManagerPtr, m_EnemiesManagerPtr, m_LanternsManagerPtr);
+
+	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 20.f)
 	{
-		if (triggerPtr != nullptr)
+		m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::bossMap);
+		m_RyuPtr->SetPosition(Point2f(100.f, 70.f));
+		m_StageType = StageType::bossRoom;
+		std::cout << "true" << std::endl;
+	}
+
+	
+	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
+	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
+
+	m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
+	
+	if (m_StageType == StageType::generalMap)
+	{
+		m_Timer -= elapsedSec;
+
+		bool isEnemyCopyFound{ false };
+		bool isCollectibleCopyFound{ false };
+
+		for (Trigger* triggerPtr : m_TriggersManagerPtr->GetTriggersArray())
 		{
-			if (triggerPtr->GetIsActivated())
+			if (triggerPtr != nullptr)
 			{
-				if(triggerPtr->GetTriggerType() == TriggerType::enemy)
+				if (triggerPtr->GetIsActivated())
 				{
-					for (Enemy* enemyPtr : m_EnemiesManagerPtr->GetEnemiesArray())
+					if (triggerPtr->GetTriggerType() == TriggerType::enemy)
 					{
-						if (enemyPtr != nullptr)
+						for (Enemy* enemyPtr : m_EnemiesManagerPtr->GetEnemiesArray())
 						{
-							if (enemyPtr->GetTriggerPointer() == triggerPtr)
+							if (enemyPtr != nullptr)
 							{
-								isEnemyCopyFound = true;
+								if (enemyPtr->GetTriggerPointer() == triggerPtr)
+								{
+									isEnemyCopyFound = true;
+									break;
+								}
+							}
+						}
+						if (!isEnemyCopyFound)
+						{
+							switch (triggerPtr->GetEnemyType())
+							{
+							case EnemyType::biker:
+								m_EnemiesManagerPtr->Add(new Biker(m_TexturesManagerPtr, triggerPtr, 50.f));
+								break;
+							case EnemyType::boxer:
+								m_EnemiesManagerPtr->Add(new Boxer(m_TexturesManagerPtr, triggerPtr, 40.f));
+								break;
+							case EnemyType::dog:
+								m_EnemiesManagerPtr->Add(new Dog(m_TexturesManagerPtr, triggerPtr, 400.f));
+								break;
+							case EnemyType::knifeMan:
+								m_EnemiesManagerPtr->Add(new KnifeMan(m_TexturesManagerPtr, triggerPtr, 30.f));
+								break;
+							case EnemyType::none:
 								break;
 							}
 						}
 					}
-					if (!isEnemyCopyFound)
+					if (triggerPtr->GetTriggerType() == TriggerType::collectible)
 					{
-						switch (triggerPtr->GetEnemyType())
+						for (Lantern* lanternPtr : m_LanternsManagerPtr->GetLanternsArray())
 						{
-						case EnemyType::biker:
-							m_EnemiesManagerPtr->Add(new Biker(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 50.f));
-							break;
-						case EnemyType::boxer:
-							m_EnemiesManagerPtr->Add(new Boxer(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 40.f));
-							break;
-						case EnemyType::dog:
-							m_EnemiesManagerPtr->Add(new Dog(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 400.f));
-							break;
-						case EnemyType::knifeMan:
-							m_EnemiesManagerPtr->Add(new KnifeMan(m_RyuPtr, m_TexturesManagerPtr, triggerPtr, 30.f));
-							break;
-						case EnemyType::none:
-							break;
-						}
-					}
-				}
-				if (triggerPtr->GetTriggerType() == TriggerType::collectible)
-				{
-					for (Lantern* lanternPtr : m_LanternsManagerPtr->GetLanternsArray())
-					{
-						if (lanternPtr != nullptr)
-						{
-							if (lanternPtr->GetTriggerPointer() == triggerPtr)
+							if (lanternPtr != nullptr)
 							{
-								isCollectibleCopyFound = true;
-								break;
+								if (lanternPtr->GetTriggerPointer() == triggerPtr)
+								{
+									isCollectibleCopyFound = true;
+									break;
+								}
+
 							}
-							
 						}
-					}
-					if (!isCollectibleCopyFound)
-					{
-						if (triggerPtr->GetIsAvailable())
+						if (!isCollectibleCopyFound)
 						{
-							m_LanternsManagerPtr->Add(new Lantern(triggerPtr->GetPosition(), triggerPtr->GetCollectibleType(), triggerPtr, m_TexturesManagerPtr));
+							if (triggerPtr->GetIsAvailable())
+							{
+								m_LanternsManagerPtr->Add(new Lantern(triggerPtr->GetPosition(), triggerPtr->GetCollectibleType(), triggerPtr, m_TexturesManagerPtr));
+							}
 						}
 					}
 				}
 			}
 		}
+
+
+		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
+
+		m_LanternsManagerPtr->Update(elapsedSec, m_TexturesManagerPtr, m_Camera->GetViewRect());
+
+		m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices);
+
+		m_ParticlesManagerPtr->Update(elapsedSec);
+
+		if (!m_BackgroundMusicPtr->IsPlaying())
+		{
+			m_BackgroundMusicPtr->Play(true);
+		}
 	}
-
 	
-	m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
-
-	m_LanternsManagerPtr->Update(elapsedSec, m_TexturesManagerPtr, m_Camera->GetViewRect());
-
-	m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices);
 	
-	m_ParticlesManagerPtr->Update(elapsedSec);
 	
-	if (!m_BackgroundMusicPtr->IsPlaying())
-	{
-		m_BackgroundMusicPtr->Play(true);
-	}
-	
-	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_CollectiblesManagerPtr, m_EnemiesManagerPtr, m_LanternsManagerPtr);
-	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
-	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
-
-	m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
 	m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect(), m_RyuPtr->GetMovementDirection());
 
 	m_Score = m_EnemiesManagerPtr->GetScore();
+
+
+	
+	
 }
 
 void Game::Draw( ) const

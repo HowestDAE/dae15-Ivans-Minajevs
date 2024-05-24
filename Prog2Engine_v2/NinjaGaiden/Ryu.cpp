@@ -554,6 +554,12 @@ void Ryu::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 		m_AttackActionCounter = 0;
 	}
 }
+
+void Ryu::SetPosition( const Point2f pos)
+{
+	m_Position = pos;
+}
+
 int Ryu::GetHealth( ) const
 {
 	return m_Health;

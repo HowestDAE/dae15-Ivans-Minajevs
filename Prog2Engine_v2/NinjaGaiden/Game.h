@@ -65,9 +65,8 @@ public:
 
 	const int m_FONT_SIZE { 24 };
 private:
-	float m_Timer { 150.f };
-
 	
+	float m_Timer { 150.f };
 	Ryu* m_RyuPtr;
 	Texture* m_MapTexturePtr;
 	Camera* m_Camera;

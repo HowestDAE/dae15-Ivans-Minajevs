@@ -30,6 +30,7 @@ public:
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
 	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e);
 
+	void SetPosition(Point2f pos);
 
 	int GetHealth() const;
 	void SetBorders(float posX);

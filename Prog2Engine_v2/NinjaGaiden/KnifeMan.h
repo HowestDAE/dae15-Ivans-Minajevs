@@ -4,7 +4,7 @@
 class KnifeMan : public Enemy
 {
 public:
-	KnifeMan(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
+	KnifeMan(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
 	//void Draw() const override;
 	//void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
 	void UpdateSourceRect() override;

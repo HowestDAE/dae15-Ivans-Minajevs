@@ -4,7 +4,7 @@
 class Boxer : public Biker
 {
 public:
-	Boxer(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
+	Boxer(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
 	
 	void UpdateSourceRect() override;
 

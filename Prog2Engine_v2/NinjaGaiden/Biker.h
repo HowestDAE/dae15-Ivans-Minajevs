@@ -3,7 +3,7 @@
 class Biker : public Enemy
 {
 public:
-	Biker(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
+	Biker(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
 	void UpdateSourceRect() override;
 	void ChangeFrames(float elapsedSec) override;
 	

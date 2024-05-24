@@ -2,8 +2,8 @@
 #include "Boxer.h"
 
 #include "EnemyType.h"
-Boxer::Boxer(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-	Biker(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
+Boxer::Boxer( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+	Biker(texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
 	//m_Velocity = Point2f( 30.f, m_VERTICAL_VELOCITY);
 }

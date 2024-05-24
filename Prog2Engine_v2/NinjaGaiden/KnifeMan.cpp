@@ -2,8 +2,8 @@
 #include "KnifeMan.h"
 
 #include "EnemyType.h"
-KnifeMan::KnifeMan(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-	Enemy(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
+KnifeMan::KnifeMan(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
 }
 void KnifeMan::UpdateSourceRect( )

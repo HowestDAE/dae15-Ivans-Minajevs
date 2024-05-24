@@ -2,8 +2,8 @@
 #include "Biker.h"
 
 #include "EnemyType.h"
-Biker::Biker(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-	Enemy(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
+Biker::Biker(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity):
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
 	//m_Velocity = Point2f( );
 }

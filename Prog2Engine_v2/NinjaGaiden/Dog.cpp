@@ -3,8 +3,8 @@
 
 #include "EnemyType.h"
 #include "utils.h"
-Dog::Dog(const Ryu* ryuPtr, const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-	Enemy(ryuPtr, texturesManagerPtr, triggerPtr, horizontalVelocity)
+Dog::Dog( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
 }
 
