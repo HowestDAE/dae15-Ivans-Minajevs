@@ -20,9 +20,22 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 			else if (!enemyPtr->GetIsAlive())
 			{
 				AddScore(enemyPtr->GetScoreIfKilled());
-				particlesManagerPtr->Add(texturesManagerPtr, ParticleType::enemyDeath,
+				if (enemyPtr -> GetEnemyType() != EnemyType::boss)
+				{
+					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::enemyDeath,
 									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width / 2.f,
 										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height / 2.f), 0.25f);
+				}
+				else
+				{
+					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
+									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width * 3.f / 4.f,
+										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height  / 4.f), 3.f);
+					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
+									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width  / 4.f,
+										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height * 3.f / 4.f), 3.f);
+				}	
+				
 				DeleteEnemy(enemyPtr);
 			}
 		}

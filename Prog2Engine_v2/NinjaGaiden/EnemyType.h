@@ -1,6 +1,6 @@
 ﻿#pragma once
 enum class EnemyType
 {
-	biker, knifeMan, boxer, dog, none
+	biker, knifeMan, boxer, dog, boss, none
 };
 

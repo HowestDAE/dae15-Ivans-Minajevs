@@ -10,6 +10,7 @@
 #include "ParticlesManager.h"
 #include <iostream>
 #include "Biker.h"
+#include "Boss.h"
 #include "Boxer.h"
 #include "Dog.h"
 #include "EnemiesManager.h"
@@ -224,7 +225,7 @@ void Game::Update(float elapsedSec)
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_CollectiblesManagerPtr, m_EnemiesManagerPtr, m_LanternsManagerPtr);
 
-	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 20.f)
+	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 60.f && m_StageType == StageType::generalMap)
 	{
 		m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::bossMap);
 		m_RyuPtr->SetPosition(Point2f(100.f, 70.f));
@@ -232,19 +233,9 @@ void Game::Update(float elapsedSec)
 		std::cout << "true" << std::endl;
 	}
 
-	
-	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
-	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f) m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 5.f);
-
-	m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
-	
-	if (m_StageType == StageType::generalMap)
-	{
-		m_Timer -= elapsedSec;
-
-		bool isEnemyCopyFound{ false };
+	bool isEnemyCopyFound{ false };
 		bool isCollectibleCopyFound{ false };
-
+		
 		for (Trigger* triggerPtr : m_TriggersManagerPtr->GetTriggersArray())
 		{
 			if (triggerPtr != nullptr)
@@ -280,6 +271,14 @@ void Game::Update(float elapsedSec)
 							case EnemyType::knifeMan:
 								m_EnemiesManagerPtr->Add(new KnifeMan(m_TexturesManagerPtr, triggerPtr, 30.f));
 								break;
+							case EnemyType::boss:
+								if (m_StageType == StageType::bossRoom)
+								{
+									//std::cout << "Boss" << std::endl;
+									m_EnemiesManagerPtr->Add(new Boss(m_TexturesManagerPtr, triggerPtr, 30.f));
+									m_TriggersManagerPtr->DeleteTrigger(triggerPtr);
+								}
+								break;	
 							case EnemyType::none:
 								break;
 							}
@@ -311,9 +310,29 @@ void Game::Update(float elapsedSec)
 			}
 		}
 
+	
+	if (m_RyuPtr->GetPosition().x < 5.f) m_RyuPtr->SetBorders(5.f);
+	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - m_RyuPtr->GetRect().width)
+	{
+		m_RyuPtr->SetBorders(m_MapTexturePtr->GetWidth() * m_MAP_SCALE - m_RyuPtr->GetRect().width);
+	}
 
-		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr, m_Camera->GetViewRect());
 
+	if (m_StageType == StageType::bossRoom)
+	{
+		const Rectf srcRect { Rectf(0.f, 0.f, m_MapTexturePtr->GetWidth() * m_MAP_SCALE,  m_MapTexturePtr->GetHeight() * m_MAP_SCALE)};
+		m_TriggersManagerPtr->UpdateTrigger( srcRect, m_RyuPtr->GetMovementDirection());
+		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  srcRect);
+		m_ParticlesManagerPtr->Update(elapsedSec);
+	}
+	if (m_StageType == StageType::generalMap)
+	{
+		m_Timer -= elapsedSec;
+
+		m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
+		m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect(), m_RyuPtr->GetMovementDirection());
+
+		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  m_Camera->GetViewRect());
 		m_LanternsManagerPtr->Update(elapsedSec, m_TexturesManagerPtr, m_Camera->GetViewRect());
 
 		m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices);
@@ -326,9 +345,8 @@ void Game::Update(float elapsedSec)
 		}
 	}
 	
+
 	
-	
-	m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect(), m_RyuPtr->GetMovementDirection());
 
 	m_Score = m_EnemiesManagerPtr->GetScore();
 
@@ -344,7 +362,13 @@ void Game::Draw( ) const
 	
 	glPushMatrix();
 	{
+		if (m_StageType == StageType::bossRoom)
+		{
+			glTranslatef((GetViewPort().width - m_MapTexturePtr->GetWidth() * m_MAP_SCALE) / 2.f, 0.f, 0.f);
+		}
 		glScalef(m_MAP_SCALE, m_MAP_SCALE, 1.f);
+		
+		
 
 		m_MapTexturePtr->Draw();
 	}
@@ -374,7 +398,7 @@ void Game::Draw( ) const
 	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 100.f),std::string("P-02"));
 
 	DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 70.f),std::string("NINJA-"), m_RyuPtr->GetHealth());
-	DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 100.f),std::string("ENEMY-"), 16);
+	DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 100.f),std::string("ENEMY-"), Boss::GetHealth());
 	
 	utils::SetColor(Color4f(1.f, 0.5f, 0.7f, 1.f));
 	

@@ -87,6 +87,12 @@
     <ClCompile Include="LanternsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -177,6 +183,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TriggerType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StageType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

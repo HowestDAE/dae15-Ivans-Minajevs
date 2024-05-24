@@ -2,6 +2,7 @@
 enum class TriggerType
 {
 	enemy,
-	collectible
+	collectible,
+	boss
 };
 

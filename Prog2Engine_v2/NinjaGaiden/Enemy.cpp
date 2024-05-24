@@ -13,7 +13,15 @@ Enemy::Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPt
 	m_Position = m_TriggerPtr->GetPosition();
 	m_MovementDirection = m_TriggerPtr->GetInitMovementDirection();
 
-	m_EnemiesTexturePtr = texturesManagerPtr->GetTexture(TextureType::enemies);
+	if (m_EnemyType != EnemyType::boss)
+	{
+		m_EnemiesTexturePtr = texturesManagerPtr->GetTexture(TextureType::enemies);
+	}
+	else
+	{
+		m_EnemiesTexturePtr = texturesManagerPtr->GetTexture(TextureType::boss);
+	}
+	
 
 	m_SourceRect = Rectf();
 }
@@ -37,8 +45,9 @@ void Enemy::Draw( ) const
 	//utils::DrawRect(GetSourceRect(), 2.f);
 }
 
-void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
+void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec ) 
 {
+	
 	ChangeFrames(elapsedSec);
 	UpdateSourceRect();
 	
@@ -161,4 +170,9 @@ MovementDirection Enemy::GetDirection( ) const
 {
 	return m_MovementDirection;
 }
+EnemyType Enemy::GetEnemyType( ) const
+{
+	return m_EnemyType;
+}
+
 

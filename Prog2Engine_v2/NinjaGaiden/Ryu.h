@@ -34,7 +34,9 @@ public:
 
 	int GetHealth() const;
 	void SetBorders(float posX);
+	
 	Point2f GetPosition() const;
+	Rectf GetRect() const;
 	MovementDirection GetMovementDirection() const;
 
 	const int m_ROWS{ 8 };
@@ -63,6 +65,7 @@ private:
 	int m_Health { Game::m_INIT_HEALTH};
 	
 	bool m_IsMoving;
+	bool m_IsAttacking { false };
 
 	Texture* m_RyuSpriteSheetPtr;
 	Rectf m_SourceRect;

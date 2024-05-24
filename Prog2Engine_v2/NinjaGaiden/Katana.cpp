@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Katana.h"
 
+#include "Boss.h"
 #include "utils.h"
 
 Katana::Katana( const TexturesManager* texturesManager, Point2f pos)  : m_Position(pos)
@@ -76,7 +77,7 @@ void Katana::ChangePosition(Point2f pos)
 {
 	m_Position = pos;
 }
-void Katana::Update(LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state, CollectiblesManager* collectiblesManagerPtr) const
+void Katana::Update(LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state, CollectiblesManager* collectiblesManagerPtr)
 {
 	Rectf sourceRect;
 	if (state == MovementDirection::right)
@@ -132,13 +133,27 @@ void Katana::SetIsActive(bool isActive)
 {
 	m_IsActive = isActive;
 }
+bool Katana::GetIsActivated( ) const
+{
+	return m_IsActive;
+}
 
-void Katana::CheckEnemiesHit( Enemy* enemyPtr, Rectf sourceRect) const
+void Katana::CheckEnemiesHit( Enemy* enemyPtr, Rectf sourceRect)
 {
 	
 	if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
 	{
-		enemyPtr->SetIsAlive(false);
+		
+		if ( enemyPtr->GetEnemyType() == EnemyType::boss)
+		{
+			Boss::Hit();
+			m_IsActive = false;
+			//dynamic_cast<Boss*>(enemyPtr)->IsAttacked(false);
+		}
+		else
+		{
+			enemyPtr->SetIsAlive(false);
+		}
 	}
 }
 	

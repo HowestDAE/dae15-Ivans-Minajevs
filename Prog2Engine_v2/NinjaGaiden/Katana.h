@@ -14,7 +14,7 @@ public:
 	void Draw(MovementDirection state) const;
 	void ChangePosition(Point2f pos);
 
-	void Update( LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state, CollectiblesManager* collectiblesManagerPtr) const;
+	void Update( LanternsManager* lanternsManagerPtr, EnemiesManager* enemiesManagerPtr, MovementDirection state, CollectiblesManager* collectiblesManagerPtr);
 
 	Rectf GetSourceRect() const;
 	float GetScale() const;
@@ -24,7 +24,8 @@ public:
 	void ChangeFrames(int frameNr);
 
 	void SetIsActive(bool isActive);
-	void CheckEnemiesHit(Enemy* enemyPtr, Rectf sourceRect) const;
+	bool GetIsActivated() const;
+	void CheckEnemiesHit(Enemy* enemyPtr, Rectf sourceRect);
 	void CheckLanternsHit(Lantern* lanternPtr,  Rectf sourceRect, CollectiblesManager* collectibleManagerPtr) const;
 
 	//~Katana();

@@ -49,7 +49,8 @@ public:
 				{"biker", EnemyType::biker},
 				{"boxer",EnemyType::boxer},
 				{"knifeMan",EnemyType::knifeMan},
-				{"dog",EnemyType::dog}};
+				{"dog",EnemyType::dog},
+				{"boss", EnemyType::boss}};
 	std::unordered_map<std::string, CollectibleType> m_COLLECTIBLE_TABLE  {
 				{ "bonusBlue", CollectibleType::bonusBlue},
 				{ "bonusRed", CollectibleType::bonusRed},

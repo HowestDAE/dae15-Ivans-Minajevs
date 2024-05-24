@@ -570,6 +570,10 @@ Point2f Ryu::GetPosition() const
 {
 	return m_Position;
 }
+Rectf Ryu::GetRect( ) const
+{
+	return Rectf(m_Position.x, m_Position.y, m_SourceRect.width, m_SourceRect.height);
+}
 MovementDirection Ryu::GetMovementDirection( ) const
 {
 	return m_MovementDirection;
@@ -615,11 +619,16 @@ void Ryu::ChangeFrames(float elapsedSec)
 	}
 	if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr > 0)
 	{
-		m_KatanaPtr->SetIsActive(true);
+		if (!m_IsAttacking)
+		{
+			m_KatanaPtr->SetIsActive(true);
+		}
+		m_IsAttacking = true;
 		m_KatanaPtr->ChangeFrames(m_FrameNr - 1);
 	}
 	else
 	{
+		m_IsAttacking = false;
 		m_KatanaPtr->SetIsActive(false);
 	}
 }

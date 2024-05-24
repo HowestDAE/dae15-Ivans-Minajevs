@@ -27,14 +27,14 @@ void TriggersManager::DeleteTriggers(  )
 }
 void TriggersManager::DeleteTrigger(const Trigger* triggerPtr )
 {
-	for (Trigger*& enemyPtr : m_TriggersPtrArr)
+	for (Trigger*& triggerSrcPtr : m_TriggersPtrArr)
 	{
-		if (enemyPtr != nullptr && triggerPtr != nullptr)
+		if (triggerSrcPtr != nullptr && triggerPtr != nullptr)
 		{
-			if (enemyPtr == triggerPtr)
+			if (triggerSrcPtr == triggerPtr)
 			{
-				delete triggerPtr;
-				triggerPtr = nullptr;
+				delete triggerSrcPtr;
+				triggerSrcPtr = nullptr;
 			}
 		}
 	}
@@ -46,18 +46,31 @@ void TriggersManager::UpdateTrigger( Rectf sourceRect, MovementDirection ryuDire
 	{
 		if (triggerPtr != nullptr)
 		{
+			if (!triggerPtr->GetIsActivated())
+			{
+				triggerPtr->SetActivated(true);
+			}
+			else if (triggerPtr->GetIsActivated())
+			{
+				triggerPtr->SetActivated(false);
+			}
 			if (triggerPtr->GetTriggerType() == TriggerType::enemy)
 			{
+				
 				if (
 			
-				(triggerPtr->GetEnemyType() != EnemyType::dog &&
+				(triggerPtr->GetEnemyType() != EnemyType::dog && triggerPtr->GetEnemyType() != EnemyType::boss &&
 				(ryuDirection == MovementDirection::left && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left, sourceRect.bottom, 10.f, sourceRect.height ) )||
 				 ryuDirection == MovementDirection::right && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left + sourceRect.width - 10.f, sourceRect.bottom, 10.f, sourceRect.height ))))
 	
 				|| triggerPtr->GetEnemyType() == EnemyType::dog &&
 				(triggerPtr->GetInitMovementDirection() == MovementDirection::right && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left, sourceRect.bottom, 10.f, sourceRect.height ) ))||
 				(triggerPtr->GetInitMovementDirection() == MovementDirection::left && utils::IsPointInRect(triggerPtr->GetPosition(), Rectf(sourceRect.left + sourceRect.width - 10.f, sourceRect.bottom, 10.f, sourceRect.height )))
-	
+
+				|| triggerPtr->GetEnemyType() == EnemyType::boss &&
+				(
+					utils::IsPointInRect(triggerPtr->GetPosition(), sourceRect)	
+				)
 				)
 				{
 					if (!triggerPtr->GetIsActivated())

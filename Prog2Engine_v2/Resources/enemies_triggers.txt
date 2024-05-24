@@ -1,3 +1,4 @@
+enemy,570,75,boss,left
 enemy,850,75,biker,left
 enemy,950,75,biker,left
 enemy,1030,75,biker,left

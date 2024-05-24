@@ -34,7 +34,9 @@ public:
     bool GetIsAlive() const;
     void SetIsAlive(bool isAlive);
     MovementDirection GetDirection() const;
-    
+
+    EnemyType GetEnemyType() const;
+
     const float m_SCALE { 3.f };
     const float m_VERTICAL_VELOCITY { -32.f };
     const int m_COLS{ 6 };
