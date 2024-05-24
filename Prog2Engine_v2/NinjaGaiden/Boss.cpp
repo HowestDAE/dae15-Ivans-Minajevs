@@ -84,6 +84,10 @@ int Boss::GetHealth( )
 {
 	return m_Health;
 }
+void Boss::ResetHealth( )
+{
+	m_Health = Game::m_INIT_HEALTH;
+}
 
 void Boss::IsAttacked(bool isAttacked)
 {

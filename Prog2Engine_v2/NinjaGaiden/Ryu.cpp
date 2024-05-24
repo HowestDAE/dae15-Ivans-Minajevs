@@ -553,6 +553,11 @@ void Ryu::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 	{
 		m_AttackActionCounter = 0;
 	}
+
+}
+void Ryu::ResetHealth( )
+{
+	m_Health = Game::m_INIT_HEALTH;
 }
 
 void Ryu::SetPosition( const Point2f pos)

@@ -225,12 +225,11 @@ void Game::Update(float elapsedSec)
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_RyuPtr->Update(elapsedSec, pStates, m_MapVertices, m_CollectiblesManagerPtr, m_EnemiesManagerPtr, m_LanternsManagerPtr);
 
-	if (m_RyuPtr->GetPosition().x > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 60.f && m_StageType == StageType::generalMap)
+	if (m_RyuPtr->GetPosition().x + m_RyuPtr->GetRect().width > m_MapTexturePtr->GetWidth() * m_MAP_SCALE - 60.f && m_StageType == StageType::generalMap)
 	{
 		m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::bossMap);
 		m_RyuPtr->SetPosition(Point2f(100.f, 70.f));
 		m_StageType = StageType::bossRoom;
-		std::cout << "true" << std::endl;
 	}
 
 	bool isEnemyCopyFound{ false };
@@ -352,6 +351,24 @@ void Game::Update(float elapsedSec)
 
 
 	
+	if ((m_RyuPtr->GetHealth() == 0 || Boss::GetHealth() == 0 ))
+	{
+		bool isParticlesManagerEmpty { true };
+		for (Particle* particlePtr : m_ParticlesManagerPtr->GetParticlesArray())
+		{
+			if (particlePtr != nullptr)
+			{
+				isParticlesManagerEmpty = false;
+			}
+		}
+		if (isParticlesManagerEmpty)
+		{
+			m_StageType = StageType::dead;
+			m_EnemiesManagerPtr->DeleteEnemies();
+		}
+	
+	}
+	
 	
 }
 
@@ -359,48 +376,57 @@ void Game::Draw( ) const
 {
 	ClearBackground( );
 
-	
-	glPushMatrix();
+	if (m_StageType != StageType::dead)
 	{
-		if (m_StageType == StageType::bossRoom)
+		glPushMatrix();
 		{
-			glTranslatef((GetViewPort().width - m_MapTexturePtr->GetWidth() * m_MAP_SCALE) / 2.f, 0.f, 0.f);
+			if (m_StageType == StageType::bossRoom)
+			{
+				glTranslatef((GetViewPort().width - m_MapTexturePtr->GetWidth() * m_MAP_SCALE) / 2.f, 0.f, 0.f);
+			}
+			glScalef(m_MAP_SCALE, m_MAP_SCALE, 1.f);
+		
+		
+
+			m_MapTexturePtr->Draw();
 		}
-		glScalef(m_MAP_SCALE, m_MAP_SCALE, 1.f);
-		
-		
+		glPopMatrix();
 
-		m_MapTexturePtr->Draw();
+		m_LanternsManagerPtr->Draw();
+
+		m_CollectiblesManagerPtr->Draw();
+	
+		m_RyuPtr->Draw();
+	
+		m_EnemiesManagerPtr->Draw();
+	
+		m_ParticlesManagerPtr->Draw();
+	
+		m_Camera->Reset();
+
+		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 70.f),std::string("TIMER-" + std::to_string(int(m_Timer))));
+	
+		std::ostringstream result;
+		result << std::setw(6) << std::setfill('0') << m_Score;
+	
+		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 40.f),std::string("SCORE-" + result.str()));
+
+		m_TextManagerPtr->Draw(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 40.f),std::string("STAGE-1-" + std::to_string(static_cast<int>(m_StageType))));
+
+		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 100.f),std::string("P-02"));
+
+		DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 70.f),std::string("NINJA-"), m_RyuPtr->GetHealth());
+		DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 100.f),std::string("ENEMY-"), Boss::GetHealth());
+	
+		utils::SetColor(Color4f(1.f, 0.5f, 0.7f, 1.f));
 	}
-	glPopMatrix();
-
-	m_LanternsManagerPtr->Draw();
-
-	m_CollectiblesManagerPtr->Draw();
+	else
+	{
+		m_Camera->Reset();
+		m_TextManagerPtr->Draw(Point2f(200.f, GetViewPort().height / 2.f),std::string("PRESS R TO RESTART"));
+		
+	}
 	
-	m_RyuPtr->Draw();
-	
-	m_EnemiesManagerPtr->Draw();
-	
-	m_ParticlesManagerPtr->Draw();
-	
-	m_Camera->Reset();
-
-	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 70.f),std::string("TIMER-" + std::to_string(int(m_Timer))));
-	
-	std::ostringstream result;
-	result << std::setw(6) << std::setfill('0') << m_Score;
-	
-	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 40.f),std::string("SCORE-" + result.str()));
-
-	m_TextManagerPtr->Draw(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 40.f),std::string("STAGE-1-" + std::to_string(static_cast<int>(m_StageType))));
-
-	m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 100.f),std::string("P-02"));
-
-	DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 70.f),std::string("NINJA-"), m_RyuPtr->GetHealth());
-	DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 100.f),std::string("ENEMY-"), Boss::GetHealth());
-	
-	utils::SetColor(Color4f(1.f, 0.5f, 0.7f, 1.f));
 	
 }
 
@@ -422,6 +448,17 @@ void Game::DrawHealth( Point2f pos, const std::string& text,  int health) const
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	m_RyuPtr->ProcessKeyDownEvent(e);
+	if (m_StageType == StageType::dead)
+	{
+		if (e.keysym.sym == SDLK_r)
+		{
+			m_StageType = StageType::generalMap;
+			m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
+			m_RyuPtr->SetPosition(Point2f(100.f, 70.f ));
+			m_RyuPtr->ResetHealth();
+			Boss::ResetHealth();
+		}
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )

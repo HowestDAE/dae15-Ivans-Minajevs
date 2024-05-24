@@ -39,7 +39,7 @@ void Particle::UpdateSourceRect()
 {
 	m_SourceRect.left = float(m_FrameNr % m_FramesOfAnimation) * m_DeathParticleSpriteSheetPtr->GetWidth() / 5;
 	
-	m_SourceRect.bottom = float(static_cast<int>(m_Type) + 1) * m_DeathParticleSpriteSheetPtr->GetHeight() / 2 - m_SourceRect.height; //check if can be optimised
+	m_SourceRect.bottom = float(static_cast<int>(m_Type) + 1) * m_DeathParticleSpriteSheetPtr->GetHeight() / 2 - m_SourceRect.height;
 }
 
 void Particle::Update(float elapsedSec)

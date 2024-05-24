@@ -34,6 +34,10 @@ void ParticlesManager::Add(const TexturesManager* texturesManager, ParticleType 
 {
 	m_ParticlesArr.push_back(new Particle(texturesManager, particleType, pos, timeAlive));
 }
+std::vector<Particle*>& ParticlesManager::GetParticlesArray( )
+{
+	return m_ParticlesArr;
+}
 
 void ParticlesManager::DeleteParticles()
 {

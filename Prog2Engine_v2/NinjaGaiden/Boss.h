@@ -18,6 +18,7 @@ public:
 	bool GetIsAttacked () const;
 	
 	static int GetHealth();
+	static void ResetHealth();
 
 	const int m_FRAMES_COUNT{ 8 };
 	
