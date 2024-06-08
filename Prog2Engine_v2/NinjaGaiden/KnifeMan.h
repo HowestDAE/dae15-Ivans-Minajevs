@@ -1,17 +1,17 @@
 ﻿#pragma once
 #include "Enemy.h"
 
-class KnifeMan : public Enemy
+class KnifeMan final : public Enemy
 {
 public:
 	KnifeMan(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
 	//void Draw() const override;
 	//void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
-	void UpdateSourceRect() override;
-	void ChangeFrames(float elapsedSec) override;
-	void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override; 
+	virtual void UpdateSourceRect() override;
+	virtual void ChangeFrames(float elapsedSec) override;
+	virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
 
-	int GetScoreIfKilled() override;
+	virtual int GetScoreIfKilled() override;
 	
 	const int m_FRAMES_COUNT{ 6 };
 

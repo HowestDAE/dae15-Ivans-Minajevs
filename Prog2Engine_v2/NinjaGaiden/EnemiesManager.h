@@ -3,7 +3,7 @@
 #include "ParticlesManager.h"
 
 class Enemy;
-class EnemiesManager
+class EnemiesManager final
 {
 public:
 	void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec,

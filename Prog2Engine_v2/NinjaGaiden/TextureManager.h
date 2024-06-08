@@ -3,7 +3,7 @@
 #include "TextureType.h"
 #include <vector>
 
-class TexturesManager
+class TexturesManager final
 {
 public:
 	TexturesManager();

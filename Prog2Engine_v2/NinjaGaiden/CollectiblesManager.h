@@ -1,11 +1,8 @@
 ﻿#pragma once
 #include "Collectible.h"
 
-class CollectiblesManager
+class CollectiblesManager final
 {
-public:
-
-private:
 public:
 	void Update(float elapsedSec, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
 	void Draw() const;

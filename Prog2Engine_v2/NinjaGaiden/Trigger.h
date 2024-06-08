@@ -7,6 +7,13 @@
 class Trigger
 {
 public:
+	virtual ~Trigger() = default;
+	Trigger() = default;
+	Trigger(const Trigger&) = delete;
+	Trigger& operator=(const Trigger&) = delete;
+	Trigger(Trigger&&) = delete;
+	Trigger& operator=(Trigger&&) = delete;
+	
 	Trigger(Point2f pos, TriggerType type);
 
 	void SetActivated(bool isActivated);

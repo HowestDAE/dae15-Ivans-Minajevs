@@ -12,9 +12,9 @@ Particle::Particle(const TexturesManager* texturesManager, ParticleType particle
 	if (particleType == ParticleType::enemyDeath)
 	{
 		m_FramesOfAnimation = 5;
-		m_FramesPerSec = m_FramesOfAnimation / m_TimeAlive; 
+		m_FramesPerSec = int(float(m_FramesOfAnimation) / m_TimeAlive); 
 	}
-	if (particleType == ParticleType::bossDeath)
+	else // if (particleType == ParticleType::bossDeath)
 	{
 		m_FramesOfAnimation = 2;
 		m_FramesPerSec = 5;
@@ -23,7 +23,7 @@ Particle::Particle(const TexturesManager* texturesManager, ParticleType particle
 
 	
 	
-	m_FrameTime	= 1.f / m_FramesPerSec;
+	m_FrameTime	= 1.f / float(m_FramesPerSec);
 	m_FrameNr = 0;
 };
 

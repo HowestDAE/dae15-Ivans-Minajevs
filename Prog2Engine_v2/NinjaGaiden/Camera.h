@@ -1,6 +1,6 @@
 #pragma once
-#include "TriggersManager.h"
-class Camera
+
+class Camera final
 {
 public:
 	explicit Camera(float screenWidth, float screenHeight);

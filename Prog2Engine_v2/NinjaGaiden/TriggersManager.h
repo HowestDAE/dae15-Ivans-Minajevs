@@ -8,7 +8,7 @@
 #include "Trigger.h"
 #include "TriggerType.h"
 
-class TriggersManager
+class TriggersManager final
 {
 public:
 	void AddTrigger(Trigger* triggerPtr);

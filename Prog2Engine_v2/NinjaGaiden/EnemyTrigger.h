@@ -1,15 +1,15 @@
 ﻿#pragma once
 #include "Trigger.h"
 
-class EnemyTrigger : public Trigger
+class EnemyTrigger final : public Trigger
 {
 public:
 	EnemyTrigger( Point2f pos, EnemyType enemyType , MovementDirection initMovementDirection);
 
-	EnemyType GetEnemyType() const override;
-	MovementDirection GetInitMovementDirection() const override;
+	virtual EnemyType GetEnemyType() const override;
+	virtual MovementDirection GetInitMovementDirection() const override;
 
-	CollectibleType GetCollectibleType( ) const override;
+	virtual CollectibleType GetCollectibleType( ) const override;
 private	:
 	EnemyType m_Type;
 	MovementDirection m_InitMovementDirection;

@@ -2,15 +2,15 @@
 #include "CollectibleType.h"
 #include "Trigger.h"
 
-class CollectibleTrigger : public Trigger
+class CollectibleTrigger final : public Trigger
 {
 public:
 	CollectibleTrigger(Point2f pos, CollectibleType collectibleType);
-	
-	EnemyType GetEnemyType() const override ;
-	MovementDirection GetInitMovementDirection() const override;
-	
-	CollectibleType GetCollectibleType() const override;
+
+	virtual EnemyType GetEnemyType() const override ;
+	virtual MovementDirection GetInitMovementDirection() const override;
+
+	virtual CollectibleType GetCollectibleType() const override;
 private:
 	CollectibleType m_Type;
 	

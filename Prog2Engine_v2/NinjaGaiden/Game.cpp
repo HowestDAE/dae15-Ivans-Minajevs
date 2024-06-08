@@ -64,7 +64,7 @@ void Game::Initialize( )
 
 	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
 	
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 2900.f * m_MAP_SCALE, 70.f);
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f * m_MAP_SCALE, 70.f);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 	

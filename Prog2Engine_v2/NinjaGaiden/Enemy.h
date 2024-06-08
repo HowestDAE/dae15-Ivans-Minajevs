@@ -10,7 +10,12 @@
 class Enemy
 {
 public:
-    
+    virtual ~Enemy() = default;
+    Enemy(const Enemy&) = delete;
+    Enemy& operator=(const Enemy&) = delete;
+    Enemy(Enemy&&) = delete;
+    Enemy& operator=(Enemy&&) = delete;
+
     Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
     
     virtual void Draw() const;

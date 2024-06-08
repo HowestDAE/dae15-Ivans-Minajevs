@@ -2,17 +2,18 @@
 
 #include "Enemy.h"
 
-class Boss : public Enemy
+class Boss final : public Enemy
 {
 public:
 	Boss(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
-	void UpdateSourceRect() override;
-	void ChangeFrames(float elapsedSec) override;
+	
+	virtual void UpdateSourceRect() override;
+	virtual void ChangeFrames(float elapsedSec) override;
 
-	void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
+	virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
 
 	static void Hit();
-	int GetScoreIfKilled() override;
+	virtual int GetScoreIfKilled() override;
 
 	void IsAttacked( bool isAttacked );
 	bool GetIsAttacked () const;

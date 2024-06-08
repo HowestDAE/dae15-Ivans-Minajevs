@@ -4,7 +4,7 @@
 #include "TextureManager.h"
 
 class Particle;
-class ParticlesManager
+class ParticlesManager final
 {
 public:
 	void Update(float elapsedSec);

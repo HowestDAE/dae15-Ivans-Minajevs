@@ -4,7 +4,7 @@
 #include "TextureManager.h"
 #include "Trigger.h"
 
-class Lantern
+class Lantern final
 {
 public:
 

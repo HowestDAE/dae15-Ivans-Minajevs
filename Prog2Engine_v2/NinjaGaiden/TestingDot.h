@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-class TestingDot
+class TestingDot final
 {
 public:
 	TestingDot(Point2f pos, float size);

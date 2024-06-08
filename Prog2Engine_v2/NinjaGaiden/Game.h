@@ -29,17 +29,17 @@ public:
 	Game( Game&& other) = delete;
 	Game& operator=(Game&& other) = delete;
 	// http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rh-override
-	~Game();
+	~Game() override;
 
-	void Update( float elapsedSec ) override;
-	void Draw( ) const override;
+	virtual void Update( float elapsedSec ) override;
+	virtual void Draw( ) const override;
 
 	// Event handling
-	void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;
-	void ProcessKeyUpEvent( const SDL_KeyboardEvent& e ) override;
-	void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
-	void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
-	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
+	virtual void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;
+	virtual void ProcessKeyUpEvent( const SDL_KeyboardEvent& e ) override;
+	virtual void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
+	virtual void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
+	virtual void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 	
 	const float m_MAP_SCALE{ 3.f };
 

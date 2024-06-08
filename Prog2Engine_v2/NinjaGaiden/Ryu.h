@@ -16,8 +16,11 @@ public:
 	explicit Ryu(const TexturesManager* texturesManager, Point2f pos);
 	explicit Ryu(const TexturesManager* texturesManager, float posX, float posY);
 	~Ryu();
-	//Ryu(const Ryu& other) = default;
-	//Ryu& operator=(const Ryu& rhs) = default;
+
+	Ryu(const Ryu&) = delete;
+	Ryu& operator=(const Ryu&) = delete;
+	Ryu(Ryu&&) = delete;
+	Ryu& operator=(Ryu&&) = delete;
 
 	//~Ryu();
 

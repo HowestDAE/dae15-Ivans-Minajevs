@@ -5,7 +5,7 @@
 #include "Lantern.h"
 #include "TextureManager.h"
 
-class LanternsManager
+class LanternsManager final
 {
 public:
 	void Update(float elapsedSec, const TexturesManager* texturesManagerPtr, Rectf sourceRect);

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 class Texture;
-class TextManager
+class TextManager final
 {
 public:
 	TextManager(const std::string& alphabet);

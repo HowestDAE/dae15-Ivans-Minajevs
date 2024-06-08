@@ -3,6 +3,8 @@
 #include "Katana.h"
 #include <utils.h>
 #include <iostream>
+
+#include "Enemy.h"
 Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 {
 	m_JumpActionsCounter = 0;

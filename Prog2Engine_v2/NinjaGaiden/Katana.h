@@ -1,7 +1,6 @@
 #pragma once
 #include <Texture.h>
 #include "Ryu.h"
-#include "Enemy.h"
 #include "LanternsManager.h"
 class Katana final
 {
