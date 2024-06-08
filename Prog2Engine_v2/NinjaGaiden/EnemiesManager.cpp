@@ -18,7 +18,8 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 		{
 			enemyPtr->Update(mapVertices, elapsedSec);
 			
-			if (!utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
+			if (!utils::IsOverlapping(enemyPtr->GetCollisionRect(), Rectf(sourceRect.left, sourceRect.bottom,
+										sourceRect.width + enemyPtr->GetCollisionRect().width, sourceRect.height)))
 			{
 				DeleteEnemy(enemyPtr);
 			}
@@ -29,19 +30,20 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 				if (enemyPtr -> GetEnemyType() != EnemyType::boss)
 				{
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::enemyDeath,
-									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width / 2.f,
-										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height / 2.f), 0.25f);
+									Point2f(enemyPtr->GetCollisionRect().left + enemyPtr->GetCollisionRect().width / 2.f,
+										enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().height / 2.f), 0.25f);
 					SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::enemyDeath)->Play(0);
 				}
+				
 				else
 				{
 					ostPtr->Stop(); 
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
-									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width * 3.f / 4.f,
-										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height  / 4.f), 3.f);
+									Point2f(enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().width * 3.f / 4.f,
+										enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().height  / 4.f), 3.f);
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
-									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width  / 4.f,
-										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height * 3.f / 4.f), 3.f);
+									Point2f(enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().width  / 4.f,
+										enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().height * 3.f / 4.f), 3.f);
 					
 					SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::bossDeath)->Play(0);
 					SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::bossDeathMy)->Play(0);

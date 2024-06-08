@@ -2,7 +2,7 @@
 #include "Boss.h"
 int Boss::m_Health = Game::m_INIT_HEALTH;
 
-Boss::Boss( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity ) : Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
+Boss::Boss( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity ) : Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity, m_FRAMES_COUNT)
 {
 
 	
@@ -60,10 +60,14 @@ void Boss::ChangeFrames( float elapsedSec )
 		}
 	}
 }
+void Boss::Draw( ) const
+{
+	Enemy::Draw();
+}
 void Boss::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
 {
 	Enemy::Update(mapVertices, elapsedSec);
-
+	
 	if (m_EnemyType == EnemyType::boss)
 	{
 		if (m_Health == 0)
@@ -71,6 +75,7 @@ void Boss::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVert
 			SetIsAlive(false);
 		}
 	}
+	
 }
 void Boss::Hit( )
 {

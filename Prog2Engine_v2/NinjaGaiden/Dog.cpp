@@ -1,11 +1,14 @@
 ﻿#include "pch.h"
 #include "Dog.h"
 
+#include <iostream>
+
 #include "EnemyType.h"
 #include "utils.h"
 Dog::Dog( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity, m_FRAMES_COUNT)
 {
+	std::cout << "dog";
 }
 
 void Dog::UpdateSourceRect( )

@@ -77,7 +77,7 @@ void Game::Initialize( )
 	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
 
 	//100.f * m_MAP_SCALE
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 3000.f * m_MAP_SCALE, 70.f);
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 	
@@ -285,7 +285,6 @@ void Game::Update(float elapsedSec)
 							case EnemyType::boss:
 								if (m_StageType == StageType::bossRoom)
 								{
-									//std::cout << "Boss" << std::endl;
 									m_EnemiesManagerPtr->Add(new Boss(m_TexturesManagerPtr, triggerPtr, 30.f));
 									m_TriggersManagerPtr->DeleteTrigger(triggerPtr);
 								}
@@ -475,6 +474,7 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 			m_RyuPtr->ResetHealth();
 			Boss::ResetHealth();
 			m_BackgroundMusicPtr->Play(true);
+			m_Score = 0;
 		}
 	}
 }

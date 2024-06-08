@@ -3,7 +3,7 @@
 
 #include "EnemyType.h"
 Biker::Biker(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity):
-	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity, m_FRAMES_COUNT)
 {
 	//m_Velocity = Point2f( );
 }

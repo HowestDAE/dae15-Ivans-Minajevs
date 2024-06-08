@@ -7,9 +7,9 @@ enemy,1575,75,biker,left
 enemy,1905,75,knifeMan,left
 enemy,2250,410,biker,left
 enemy,2300,410,biker,left
-enemy,2250,120,dog,left
+enemy,2250,130,dog,left
 enemy,2900,75,knifeMan,left
-enemy,3300,270,boxer,left
+enemy,3200,270,boxer,left
 enemy,3495,75,dog,right
 enemy,3960,75,biker,left
 enemy,4530,270,biker,left

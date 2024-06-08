@@ -10,6 +10,8 @@ public:
 	virtual void UpdateSourceRect() override;
 	virtual void ChangeFrames(float elapsedSec) override;
 
+	virtual void Draw() const override;
+
 	virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec) override;
 
 	static void Hit();
@@ -21,7 +23,7 @@ public:
 	static int GetHealth();
 	static void ResetHealth();
 
-	const int m_FRAMES_COUNT{ 8 };
+	static const int m_FRAMES_COUNT{ 8 };
 	
 	const float m_FRAMES_PER_SEC { 2 };
 	const float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };

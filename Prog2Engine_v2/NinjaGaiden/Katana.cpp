@@ -141,7 +141,7 @@ bool Katana::GetIsActivated( ) const
 void Katana::CheckEnemiesHit( Enemy* enemyPtr, Rectf sourceRect)
 {
 	
-	if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
+	if (utils::IsOverlapping(enemyPtr->GetCollisionRect(), sourceRect))
 	{
 		
 		if ( enemyPtr->GetEnemyType() == EnemyType::boss)

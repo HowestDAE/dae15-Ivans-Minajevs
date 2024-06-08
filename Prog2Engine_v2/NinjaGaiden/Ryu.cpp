@@ -201,7 +201,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 	{
 		if (enemyPtr != nullptr)
 		{
-			if (utils::IsOverlapping(enemyPtr->GetSourceRect(), sourceRect))
+			if (utils::IsOverlapping(enemyPtr->GetCollisionRect(), sourceRect))
 			{
 				if (m_State != RyuState::hurt)
 				{
@@ -210,7 +210,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 					m_Health--;
 					m_Velocity.y = 700.f;
 					float intersectMin, intersectMax;
-					utils::IntersectRectLine(enemyPtr->GetSourceRect(), Point2f(m_Position.x - 1.f, m_Position.y),
+					utils::IntersectRectLine(enemyPtr->GetCollisionRect(), Point2f(m_Position.x - 1.f, m_Position.y),
 											Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y), intersectMin, intersectMax);
 					if ( intersectMin >= 0)
 					{
@@ -308,6 +308,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 						m_MovementDirection = m_PlannedJumpDirection;
 						m_Velocity.y = m_INIT_JUMP_SPEED;
 						m_State = RyuState::jumping;
+						m_JumpSound->Play(0);
 						if (m_PlannedJumpDirection == MovementDirection::left)
 						{
 							m_Position.x -= 2.f;
@@ -317,7 +318,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 							m_Position.x += 2.f;
 						}
 						m_JumpActionsCounter += 1;
-						m_JumpSound->Play(0);
+						
 					}
 				}
 				if (m_JumpActionsCounter == 0)
@@ -326,9 +327,10 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 					{
 						m_Velocity.y = 893.f;
 						m_State = RyuState::jumping;
+						m_JumpSound->Play(0);
 					}
 					m_JumpActionsCounter += 1;
-					m_JumpSound->Play(0);
+				
 				}
 			}
 		}

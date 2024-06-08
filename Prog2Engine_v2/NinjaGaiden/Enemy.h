@@ -16,7 +16,7 @@ public:
     Enemy(Enemy&&) = delete;
     Enemy& operator=(Enemy&&) = delete;
 
-    Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity);
+    Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity, int framesCount);
     
     virtual void Draw() const;
     virtual void Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec);
@@ -35,7 +35,7 @@ public:
 
     const Trigger * GetTriggerPointer( ) const;
     Point2f GetPosition() const;
-    Rectf GetSourceRect() const;
+    Rectf GetCollisionRect() const;
     bool GetIsAlive() const;
     void SetIsAlive(bool isAlive);
     MovementDirection GetDirection() const;
@@ -57,10 +57,13 @@ protected:
     Texture* m_EnemiesTexturePtr;
 
     float m_HorizontalVelocity;
-   
+
+    float m_TextureCellWidth;
     float m_AccuSec { 0 };
+    Rectf m_CollisionRect;
     
 private:
+    int m_FramesCount;
     const Trigger* m_TriggerPtr;
     bool m_IsAlive;
 };

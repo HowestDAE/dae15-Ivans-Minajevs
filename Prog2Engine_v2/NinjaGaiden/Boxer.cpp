@@ -16,7 +16,7 @@ void Boxer::UpdateSourceRect( )
 	m_SourceRect.height = sourceRectHeight * 0.8f;
 	if (m_FrameNr == 2)
 	{
-		m_Velocity.x += 50.f;
+		m_Velocity.x += 25.f;
 		m_SourceRect.width = sourceRectWidth * 0.75f;
 	}
 	else
