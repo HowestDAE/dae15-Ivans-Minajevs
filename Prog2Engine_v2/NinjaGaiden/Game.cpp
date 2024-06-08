@@ -17,6 +17,7 @@
 #include "Enemy.h"
 #include "KnifeMan.h"
 #include "LanternsManager.h"
+#include "SoundEffectsManager.h"
 #include "TextureManager.h"
 #include "TriggersManager.h"
 #include "utils.h"
@@ -41,6 +42,7 @@ void Game::Initialize( )
 
 	m_ParticlesManagerPtr = new ParticlesManager();
 	m_TexturesManagerPtr = new TexturesManager();
+	m_SoundEffectsManagerPtr = new SoundEffectsManager();
 	m_EnemiesManagerPtr = new EnemiesManager();
 	m_TriggersManagerPtr = new TriggersManager();
 	m_LanternsManagerPtr = new LanternsManager();
@@ -58,13 +60,24 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::bossMap, "ninja_gaiden_map_stage_boss_8bit.png");
 	m_TexturesManagerPtr->AddText(TextureType::text, m_Alphabet, "ninja_gaiden_nes.ttf", m_FONT_SIZE, Color4f(1.f, 1.f, 1.f, 1.f));
 
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::attack, R"(sound_effects\attack.wav)");
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::jump, R"(sound_effects\jump.wav)");
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::ryuHit, R"(sound_effects\ryu_hit.wav)");
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::enemyDeath, R"(sound_effects\enemy_death.wav)");
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::bossDeath, R"(sound_effects\boss_death.wav)");
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::collectibleTake, R"(sound_effects\collectibles.wav)");
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::gameOver, R"(sound_effects\game_over.wav)");
+	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::bossDeathMy, R"(sound_effects\boss_death_my.wav)");
+	
+	m_DeathStageSound = m_SoundEffectsManagerPtr->GetSoundEffect(SoundEffectType::gameOver);
 	m_TextManagerPtr = new TextManager(m_Alphabet);
 
 	//m_LanternsManagerPtr->Add(new Lantern(Point2f(900.f, 160.f), CollectibleType::BonusBlue, m_TexturesManagerPtr));
 
 	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
-	
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f * m_MAP_SCALE, 70.f);
+
+	//100.f * m_MAP_SCALE
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 3000.f * m_MAP_SCALE, 70.f);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 	
@@ -86,7 +99,6 @@ void Game::Initialize( )
 			{
 				point.x = int(point.x) * m_MAP_SCALE;
 				point.y = int(point.y) * m_MAP_SCALE;
-				std::cout << point.x << " " << point.y << std::endl;
 			}
 		}
 	}
@@ -108,19 +120,16 @@ void Game::ReadEnemyDataFromFile(const std::string& filename) const
 		std::string token;
 
 		TriggerType triggerType;
-		if (std::getline(iss, token, ',')) {
+		if (std::getline(iss, token, ','))
+		{
 			if (token == "enemy")
 			{
-				 triggerType = TriggerType::enemy;
+				triggerType = TriggerType::enemy;
 			} else if (token == "collectible")
 			{
 				triggerType = TriggerType::collectible;
 			}
-		} else {
-			std::cerr << "Invalid file format: direction missing" << '\n';
-			continue;
 		}
-		
 		// Retrive position
 		float posX;
 		if (std::getline(iss, token, ',')) {
@@ -187,7 +196,6 @@ void Game::ReadEnemyDataFromFile(const std::string& filename) const
 			m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(posX, posY), collectibleType));
 		}
 	} 
-	file.close();
 }
 
 void Game::Cleanup( )
@@ -202,7 +210,8 @@ void Game::Cleanup( )
 	m_BackgroundMusicPtr = nullptr;
 
 	delete m_TextManagerPtr;
-	
+
+	m_SoundEffectsManagerPtr->DeleteSoundEffects();
 	m_TexturesManagerPtr->DeleteTextures();
 	m_EnemiesManagerPtr->DeleteEnemies();
 	m_TriggersManagerPtr->DeleteTriggers();
@@ -210,13 +219,16 @@ void Game::Cleanup( )
 	m_LanternsManagerPtr->DeleteLanterns();
 	m_CollectiblesManagerPtr->DeleteCollectibles();
 
+
 	
+	delete m_SoundEffectsManagerPtr;
 	delete m_LanternsManagerPtr;
 	delete m_TexturesManagerPtr;
 	delete m_ParticlesManagerPtr;
 	delete m_EnemiesManagerPtr;
 	delete m_TriggersManagerPtr;
 	delete m_CollectiblesManagerPtr;
+	
 	
 }
 
@@ -321,7 +333,7 @@ void Game::Update(float elapsedSec)
 	{
 		const Rectf srcRect { Rectf(0.f, 0.f, m_MapTexturePtr->GetWidth() * m_MAP_SCALE,  m_MapTexturePtr->GetHeight() * m_MAP_SCALE)};
 		m_TriggersManagerPtr->UpdateTrigger( srcRect, m_RyuPtr->GetMovementDirection());
-		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  srcRect);
+		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  srcRect, m_BackgroundMusicPtr);
 		m_ParticlesManagerPtr->Update(elapsedSec);
 	}
 	if (m_StageType == StageType::generalMap)
@@ -331,16 +343,18 @@ void Game::Update(float elapsedSec)
 		m_Camera->Update(m_MapTexturePtr->GetWidth() * m_MAP_SCALE, m_MapTexturePtr->GetHeight() * m_MAP_SCALE, m_RyuPtr->GetPosition());
 		m_TriggersManagerPtr->UpdateTrigger(m_Camera->GetViewRect(), m_RyuPtr->GetMovementDirection());
 
-		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  m_Camera->GetViewRect());
+		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  m_Camera->GetViewRect(), m_BackgroundMusicPtr);
 		m_LanternsManagerPtr->Update(elapsedSec, m_TexturesManagerPtr, m_Camera->GetViewRect());
 
 		m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices);
 
 		m_ParticlesManagerPtr->Update(elapsedSec);
 
+	
 		if (!m_BackgroundMusicPtr->IsPlaying())
 		{
 			m_BackgroundMusicPtr->Play(true);
+			m_BackgroundMusicPtr->Resume();
 		}
 	}
 	
@@ -349,27 +363,29 @@ void Game::Update(float elapsedSec)
 
 	m_Score = m_EnemiesManagerPtr->GetScore();
 
-
-	
-	if ((m_RyuPtr->GetHealth() == 0 || Boss::GetHealth() == 0 ))
+	if (m_StageType != StageType::dead)
 	{
-		bool isParticlesManagerEmpty { true };
-		for (Particle* particlePtr : m_ParticlesManagerPtr->GetParticlesArray())
+		if ((m_RyuPtr->GetHealth() == 0 || Boss::GetHealth() == 0 ))
 		{
-			if (particlePtr != nullptr)
+			bool isParticlesManagerEmpty { true };
+			for (Particle* particlePtr : m_ParticlesManagerPtr->GetParticlesArray())
 			{
-				isParticlesManagerEmpty = false;
+				if (particlePtr != nullptr)
+				{
+					isParticlesManagerEmpty = false;
+				}
 			}
-		}
-		if (isParticlesManagerEmpty)
-		{
-			m_StageType = StageType::dead;
-			m_EnemiesManagerPtr->DeleteEnemies();
-		}
+			if (isParticlesManagerEmpty)
+			{
+				m_BackgroundMusicPtr->Pause();
+				m_StageType = StageType::dead;
+				m_EnemiesManagerPtr->DeleteEnemies();
+				
+				m_DeathStageSound->Play(0);
+			}
 	
+		}
 	}
-	
-	
 }
 
 void Game::Draw( ) const
@@ -455,8 +471,10 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 			m_StageType = StageType::generalMap;
 			m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 			m_RyuPtr->SetPosition(Point2f(100.f, 70.f ));
+			m_Timer =  150.f;
 			m_RyuPtr->ResetHealth();
 			Boss::ResetHealth();
+			m_BackgroundMusicPtr->Play(true);
 		}
 	}
 }

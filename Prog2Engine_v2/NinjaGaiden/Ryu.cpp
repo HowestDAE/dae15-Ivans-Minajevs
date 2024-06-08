@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Enemy.h"
+#include "SoundEffectsManager.h"
 Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 {
 	m_JumpActionsCounter = 0;
@@ -28,6 +29,11 @@ Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 
 	m_Velocity = Vector2f(0.f, 0.f);
 
+	m_AttackSound = SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::attack);
+	m_HitSound =  SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::ryuHit);
+	m_JumpSound =  SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::jump);
+	m_CollectibleTake = SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::collectibleTake);
+	
 	m_KatanaPtr = new Katana(texturesManager, Point2f(m_SourceRect.left + m_SourceRect.bottom, m_SourceRect.bottom + m_SourceRect.height));
 }
 
@@ -175,6 +181,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 			if (utils::IsOverlapping(sourceRect, collectiblePtr->GetRect()))
 			{
 				collectiblePtr->SetIsExisting(false);
+				m_CollectibleTake->Play(0);
 			}
 		}
 	}
@@ -199,6 +206,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 				if (m_State != RyuState::hurt)
 				{
 					m_State = RyuState::hurt;
+					m_HitSound->Play(0);
 					m_Health--;
 					m_Velocity.y = 700.f;
 					float intersectMin, intersectMax;
@@ -309,6 +317,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 							m_Position.x += 2.f;
 						}
 						m_JumpActionsCounter += 1;
+						m_JumpSound->Play(0);
 					}
 				}
 				if (m_JumpActionsCounter == 0)
@@ -319,6 +328,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 						m_State = RyuState::jumping;
 					}
 					m_JumpActionsCounter += 1;
+					m_JumpSound->Play(0);
 				}
 			}
 		}
@@ -536,6 +546,7 @@ void Ryu::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 					{
 						m_State = RyuState::attacking;
 					}
+					m_AttackSound->Play(0);
 					m_AttackActionCounter += 1;
 				}
 			}

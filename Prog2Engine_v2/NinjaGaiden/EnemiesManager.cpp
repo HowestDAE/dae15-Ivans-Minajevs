@@ -3,8 +3,14 @@
 #include "Enemy.h"
 #include "utils.h"
 
+EnemiesManager::EnemiesManager( )
+{
+	m_EnemyDeathSound = SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::enemyDeath);
+	m_BossDeathSound  = SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::bossDeath);
+	m_BossDeathMySound = SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::bossDeathMy);
+}
 void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec,
-							ParticlesManager* particlesManagerPtr, const TexturesManager* texturesManagerPtr, Rectf sourceRect)
+							ParticlesManager* particlesManagerPtr, const TexturesManager* texturesManagerPtr, Rectf sourceRect, SoundStream*& ostPtr)
 {
 	for (Enemy*& enemyPtr : m_EnemiesPtrArr)
 	{
@@ -25,15 +31,20 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::enemyDeath,
 									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width / 2.f,
 										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height / 2.f), 0.25f);
+					SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::enemyDeath)->Play(0);
 				}
 				else
 				{
+					ostPtr->Stop(); 
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
 									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width * 3.f / 4.f,
 										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height  / 4.f), 3.f);
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
 									Point2f(enemyPtr->GetPosition().x + enemyPtr->GetSourceRect().width  / 4.f,
 										enemyPtr->GetPosition().y + enemyPtr->GetSourceRect().height * 3.f / 4.f), 3.f);
+					
+					SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::bossDeath)->Play(0);
+					SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::bossDeathMy)->Play(0);
 				}	
 				
 				DeleteEnemy(enemyPtr);

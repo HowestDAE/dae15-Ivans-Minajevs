@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "LanternsManager.h"
 #include "MovementDirection.h"
+#include "SoundEffect.h"
 #include "TextureManager.h"
 class Katana;
 class Ryu final
@@ -78,6 +79,11 @@ private:
 	Katana* m_KatanaPtr;
 
 
+	SoundEffect* m_AttackSound;
+	SoundEffect* m_JumpSound;
+	SoundEffect* m_HitSound;
+	SoundEffect* m_CollectibleTake;
+	
 	Vector2f m_Velocity;
 	//float m_Acceleration;
 	//float m_VerticalPosBeforeJump;

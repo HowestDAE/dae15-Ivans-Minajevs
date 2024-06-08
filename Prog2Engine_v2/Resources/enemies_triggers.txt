@@ -44,5 +44,3 @@ collectible,6030,210,spiritualStrengthBlue
 collectible,6750,315,windmillThrowingStar
 collectible,6750,165,bonusBlue
 collectible,7710,210,bonusBlue
-
-

@@ -168,6 +168,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="ParticlesManager.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Ryu.cpp" />
+    <ClCompile Include="SoundEffectsManager.cpp" />
     <ClCompile Include="TestingDot.cpp" />
     <ClCompile Include="TextManager.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -200,6 +201,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="ParticleType.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Ryu.h" />
+    <ClInclude Include="SoundEffectsManager.h" />
+    <ClInclude Include="SoundEffectsType.h" />
     <ClInclude Include="StageType.h" />
     <ClInclude Include="TestingDot.h" />
     <ClInclude Include="TextManager.h" />

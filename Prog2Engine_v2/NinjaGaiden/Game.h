@@ -9,6 +9,8 @@
 #include "StageType.h"
 #include "TextManager.h"
 #include "Texture.h"
+class SoundEffectsManager;
+class SoundEffect;
 class LanternsManager;
 class TriggersManager;
 class EnemiesManager;
@@ -73,13 +75,15 @@ private:
 	Camera* m_Camera;
 	//TestingDot* m_TestingDotPtr;
 	TriggersManager* m_TriggersManagerPtr;
-	SoundStream* m_BackgroundMusicPtr;
 	ParticlesManager* m_ParticlesManagerPtr;
 	TexturesManager* m_TexturesManagerPtr;
 	EnemiesManager* m_EnemiesManagerPtr;
 	LanternsManager* m_LanternsManagerPtr;
 	CollectiblesManager* m_CollectiblesManagerPtr;
 	TextManager* m_TextManagerPtr;
+
+	SoundStream* m_BackgroundMusicPtr;
+	SoundEffectsManager* m_SoundEffectsManagerPtr;
 	
 	std::vector<std::vector<Point2f>> m_FloorVertices;
 	std::vector<std::vector<Point2f>> m_PlatformsVertices;
@@ -93,8 +97,10 @@ private:
 	std::string m_Alphabet { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-" };
 	std::vector<std::vector<std::vector<Point2f>>> m_MapVertices;
 
-	
+	SoundEffect* m_DeathStageSound;
 	// FUNCTIONS
+
+	
 	void DrawHealth(Point2f pos, const std::string& text, int health) const;
 	void ReadEnemyDataFromFile(const std::string& filename) const;
 	void Initialize();
