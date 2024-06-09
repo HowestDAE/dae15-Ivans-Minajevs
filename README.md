@@ -50,7 +50,7 @@ TODO: add screenshot
 
 Here's why:
 TODO: describe why you chose this game 
-* I am a huge fan of NES console and enjoy japanese setting
+* I am a huge fan of NES console and enjoy Japanese setting
 * The game has an immersive gameplay I wanted to recreate
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -70,24 +70,23 @@ This section gives a clear and detailed overview of which parts of the original 
 
 ### What I plan to create if I have enough time left:
 * Level transition animation when: 1) character is dead or 2) character moves from one location to another.
-* Cut-scene in the beggining of the game. 
+* Cut-scene in the beginning of the game. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Detailed instructions on how to run your game project are in this section.
 
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
+* 7Zip or WinWAR
 * Visual Studio 2022
-
+  
 ### How to run the project
-
-Explain which project (version) must be run.
-* any extra steps if required 
+* Unpack the project
+* Open the project in Visual Studio Enterprise
+* Set dependencies to the Engine
+* Run the project
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -95,13 +94,27 @@ Explain which project (version) must be run.
 
 <!-- HOW TO PLAY -->
 ## How to play
+Once you have been spawned on the map, you can move forward/back by using arrow keys.
+Once you see enemy, you can attack it using Z (or jump over it using X).
+You can climb/stick to the wall automatically after jump.
+On the map you will find lanterns. Break them and collectible will appear.
+You can collect those collectibles. Some have instantaneous effect (+XP, +Energy).
+Some are saved in characters pocket, so you can use/throw them later on (Shuriken).
+To use these kind of collectibles - first, you need to activate the throwing ability by holding down UP arrow key.
+Then perform a simple attack (and the Shuriken will be thrown)
+There is a Boss in the end of the level. You are able to throw Shuriken at the Boss as well (but its a secret tactic).
+If you lose 16HP - you lose.
+If Boss end up without 16HP - you win.
 
-Use this space to show useful examples of how a game can be played. 
-Additional screenshots and demos work well in this space. 
 
 ### Controls
-* keys, .. 
-* .. 
+* LEFT arrow - move left
+* RIGHT arrow - move right,
+* DOWN arrow - duck,
+* UP arrow - activate throw
+
+* Z - attack
+* X - jump 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -134,8 +147,8 @@ Explain where you applied inheritance (mandatory).
 - [x] week 04 topics applied
 - [x] week 05 topics applied
 - [x] week 06 topics applied
-- [ ] week 07 topics applied
-- [ ] week 08 topics applied
+- [x] week 07 topics applied
+- [x] week 08 topics applied
 - [x] week 09 topics applied (optional)
 - [ ] week 10 topics applied (optional)
 
@@ -154,10 +167,10 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. 
-
-* [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
-* [Example 2: cpp reference on std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map)
+* [C++ core guideline on the rule of five in base classes]((https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c21-if-you-define-or-delete-any-copy-move-or-destructor-function-define-or-delete-them-all))
+* [C++ reference on std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map)
+* [C++ reference on operator precedence]((https://en.cppreference.com/w/cpp/language/operator_precedence))
+* [Game Programming Patterns Singleton](https://gameprogrammingpatterns.com/singleton.html)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
