@@ -25,8 +25,6 @@ void Collectible::Draw( ) const
 		m_CollectibleTexturePtr->Draw(Point2f(), m_SourceRect);
 	
 	glPopMatrix();
-
-	utils::DrawRect(m_Position, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
 }
 void Collectible::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec)
 {

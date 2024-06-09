@@ -32,7 +32,7 @@ void ThrowingWeaponsManager::Update( float elapsedSec, Rectf viewRect,  Ryu* ryu
 				{
 					if (utils::IsOverlapping(throwingWeaponPtr->GetCollisionRect(), enemyPtr->GetCollisionRect()) && throwingWeaponPtr->GetIsFriendly())
 					{
-						if (enemyPtr->GetTriggerPointer()->GetEnemyType() == EnemyType::boss)
+						if (enemyPtr->GetEnemyType() == EnemyType::boss)
 						{
 							Boss::Hit();
 						}

@@ -341,7 +341,7 @@ void Game::Update(float elapsedSec)
 		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  srcRect, m_BackgroundMusicPtr);
 		m_ParticlesManagerPtr->Update(elapsedSec);
 		m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices, m_RyuPtr);
-		m_ThrowingWeaponsManager->Update(elapsedSec, m_Camera->GetViewRect(), m_RyuPtr, m_EnemiesManagerPtr);
+		m_ThrowingWeaponsManager->Update(elapsedSec, srcRect, m_RyuPtr, m_EnemiesManagerPtr);
 	}
 	if (m_StageType == StageType::generalMap)
 	{
@@ -373,7 +373,7 @@ void Game::Update(float elapsedSec)
 
 	if (m_StageType != StageType::dead)
 	{
-		if ((m_RyuPtr->GetHealth() == 0 || Boss::GetHealth() == 0 ))
+		if (((m_RyuPtr->GetHealth() == 0 || Boss::GetHealth() == 0 )) || m_Timer < 0)
 		{
 			bool isParticlesManagerEmpty { true };
 			for (Particle* particlePtr : m_ParticlesManagerPtr->GetParticlesArray())
