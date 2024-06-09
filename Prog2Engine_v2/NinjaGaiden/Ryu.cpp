@@ -6,7 +6,7 @@
 
 #include "Enemy.h"
 #include "SoundEffectsManager.h"
-Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
+Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos, ThrowingWeaponsManager* throwingWeaponsManagerPtr)
 {
 	m_JumpActionsCounter = 0;
 	m_AttackActionCounter = 0;
@@ -17,9 +17,8 @@ Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 	m_RyuSpriteSheetPtr	= texturesManager->GetTexture(TextureType::ryu);
 	InitializeSourceRect();
 	
-
 	m_Position			= pos;
-
+	m_ThrowingWeaponsManagerPtr = throwingWeaponsManagerPtr;
 	m_AccuSec			= 0;
 	m_FramesPerSec		= 12;
 	m_FrameTime			= 1.f / float(m_FramesPerSec);
@@ -37,13 +36,13 @@ Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos)
 	m_KatanaPtr = new Katana(texturesManager, Point2f(m_SourceRect.left + m_SourceRect.bottom, m_SourceRect.bottom + m_SourceRect.height));
 }
 
-Ryu::Ryu(const TexturesManager* texturesManager, float posX, float posY) : Ryu(texturesManager, Point2f{posX, posY})
+Ryu::Ryu(const TexturesManager* texturesManager, float posX, float posY, ThrowingWeaponsManager* throwingWeaponsManagerPtr) :
+   Ryu(texturesManager, Point2f{posX, posY}, throwingWeaponsManagerPtr)
 {
 }
 
 Ryu::~Ryu()
 {
-
 	delete m_KatanaPtr;
 }
 
@@ -150,11 +149,47 @@ void Ryu::ChangeDirection(MovementDirection direction)
 {
 	m_MovementDirection = direction;
 }
+void Ryu::EnemyHit( const Enemy* enemyPtr )
+{
+	m_State = RyuState::hurt;
+	m_HitSound->Play(0);
+	m_Health--;
+	m_Velocity.y = 700.f;
+	float intersectMin, intersectMax;
+	utils::IntersectRectLine(enemyPtr->GetCollisionRect(), Point2f(m_Position.x - 1.f, m_Position.y),
+							Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y), intersectMin, intersectMax);
+	if ( intersectMin >= 0)
+	{
+		m_Velocity.x = -150.f;
+	} else if (intersectMin < 0)
+	{
+		m_Velocity.x = 150.f;
+	}
+}
+
+void Ryu::ThrowingWeaponHit(Vector2f throwingWeaponVelocity)
+{
+	if (m_State != RyuState::hurt)
+	{
+		m_State = RyuState::hurt;
+		m_HitSound->Play(0);
+		m_Health--;
+		m_Velocity.y = 700.f;
+		if ( throwingWeaponVelocity.x <= 0)
+		{
+			m_Velocity.x = -150.f;
+		} else if ( throwingWeaponVelocity.x > 0)
+		{
+			m_Velocity.x = 150.f;
+		}
+	}
+
+}
 
 
 void Ryu::Draw() const
 {
-	if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr > 0) m_KatanaPtr->Draw(m_MovementDirection);
+	if (((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr > 0) && !m_IsThrowing) m_KatanaPtr->Draw(m_MovementDirection);
 	glPushMatrix();
 	if (m_MovementDirection == MovementDirection::left)
 	{
@@ -180,7 +215,9 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 		{
 			if (utils::IsOverlapping(sourceRect, collectiblePtr->GetRect()))
 			{
+				collectiblePtr->SetIsCollected(true);
 				collectiblePtr->SetIsExisting(false);
+				
 				m_CollectibleTake->Play(0);
 			}
 		}
@@ -205,20 +242,7 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 			{
 				if (m_State != RyuState::hurt)
 				{
-					m_State = RyuState::hurt;
-					m_HitSound->Play(0);
-					m_Health--;
-					m_Velocity.y = 700.f;
-					float intersectMin, intersectMax;
-					utils::IntersectRectLine(enemyPtr->GetCollisionRect(), Point2f(m_Position.x - 1.f, m_Position.y),
-											Point2f(m_Position.x + m_SourceRect.width * m_SCALE + 1.f, m_Position.y), intersectMin, intersectMax);
-					if ( intersectMin >= 0)
-					{
-						m_Velocity.x = -150.f;
-					} else if (intersectMin < 0)
-					{
-						m_Velocity.x = 150.f;
-					}
+					EnemyHit(enemyPtr);
 				}
 			}	
 		}
@@ -345,8 +369,93 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 
 	UpdateJump(elapsedSec);
 	UpdateSourceRect();
-	m_KatanaPtr->Update(lanternsManagerPtr, enemiesManagerPtr, m_MovementDirection, collectiblesManagerPtr);
-	m_KatanaPtr->UpdateSourceRect();
+
+	m_IsThrowing = false;
+	if (pStates[SDL_SCANCODE_UP])
+	{
+		m_IsThrowing = true;
+		if (m_CollectiblePtr != nullptr)
+		{
+			if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr == 1)
+			{
+				if (!m_IsAttacking)
+				{
+					m_IsAttacking = true;
+					switch (m_CollectiblePtr->GetCollectibleType())
+					{
+					case CollectibleType::throwingStar:
+						m_ThrowingWeaponsManagerPtr->Add(ThrowingWeaponType::shurikenSmall, Point2f(m_Position.x +  m_SCALE * m_SourceRect.width / 2.f,
+														m_Position.y + m_SCALE * m_SourceRect.height * 0.6f), Vector2f((m_MovementDirection == MovementDirection::right) ? 400.f : -400.f, 0.f), true);
+						//collectiblesManagerPtr->DeleteCollectible(m_CollectiblePtr);
+						//m_CollectiblePtr = nullptr;
+						break;
+					case CollectibleType::windmillThrowingStar:
+						m_ThrowingWeaponsManagerPtr->Add(ThrowingWeaponType::shurikenBig, Point2f(m_Position.x +  m_SCALE * m_SourceRect.width / 2.f,
+														m_Position.y + m_SCALE * m_SourceRect.height * 0.6f), Vector2f((m_MovementDirection == MovementDirection::right) ? 400.f : -400.f, 0.f), true);
+						//collectiblesManagerPtr->DeleteCollectible(m_CollectiblePtr);
+						//m_CollectiblePtr = nullptr;
+						break;
+					}	
+				}
+			}
+			else
+			{
+				m_IsAttacking = false;
+			}
+		}
+	}
+	else
+	{
+		if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr > 0)
+		{
+			if (!m_IsAttacking)
+			{
+				m_KatanaPtr->SetIsActive(true);
+			}
+			m_IsAttacking = true;
+			m_KatanaPtr->ChangeFrames(m_FrameNr - 1);
+		}
+		else
+		{
+			m_IsAttacking = false;
+			m_KatanaPtr->SetIsActive(false);
+		}
+		m_KatanaPtr->Update(lanternsManagerPtr, enemiesManagerPtr, m_MovementDirection, collectiblesManagerPtr);
+		m_KatanaPtr->UpdateSourceRect();
+
+
+		if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking))
+	{
+		if (m_FrameNr == 1)
+		{
+			if (m_MovementDirection == MovementDirection::right)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 1.f,
+										                 m_Position.y + m_SourceRect.height * m_SCALE * 3.f / 5.f));	
+			} else if (m_MovementDirection == MovementDirection::left)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x ,
+													 m_Position.y + m_SourceRect.height * m_SCALE * 3.f / 5.f));	
+			}
+			
+		}
+		else 
+		{
+			//m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width / 2.f, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height + 10.f));
+			if (m_MovementDirection == MovementDirection::right)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 0.7f,
+														 m_Position.y + m_SourceRect.height * m_SCALE * 2.f / 3.f));	
+			} else if (m_MovementDirection == MovementDirection::left)
+			{
+				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 0.3f ,
+													 m_Position.y + m_SourceRect.height * m_SCALE * 2.f / 3.f));	
+			}
+		}
+	}
+	}
+	
+	
 
 
 	HandleFloorCollision(mapVertices[0]);
@@ -570,6 +679,15 @@ void Ryu::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 	}
 
 }
+void Ryu::AddCollectible( Collectible*& collectiblePtr )
+{
+	m_CollectiblePtr = collectiblePtr;
+}
+Collectible* Ryu::GetOwnedCollectiblePtr( ) const
+{
+	return m_CollectiblePtr;
+}
+
 void Ryu::ResetHealth( )
 {
 	m_Health = Game::m_INIT_HEALTH;
@@ -592,7 +710,7 @@ Point2f Ryu::GetPosition() const
 }
 Rectf Ryu::GetRect( ) const
 {
-	return Rectf(m_Position.x, m_Position.y, m_SourceRect.width, m_SourceRect.height);
+	return Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
 }
 MovementDirection Ryu::GetMovementDirection( ) const
 {
@@ -637,20 +755,7 @@ void Ryu::ChangeFrames(float elapsedSec)
 			m_FrameNr = 0;
 		}
 	}
-	if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr > 0)
-	{
-		if (!m_IsAttacking)
-		{
-			m_KatanaPtr->SetIsActive(true);
-		}
-		m_IsAttacking = true;
-		m_KatanaPtr->ChangeFrames(m_FrameNr - 1);
-	}
-	else
-	{
-		m_IsAttacking = false;
-		m_KatanaPtr->SetIsActive(false);
-	}
+	
 }
 
 
@@ -661,38 +766,11 @@ void Ryu::ChangePosition(float elapsedSec)
 	m_Position.y += m_Velocity.y * elapsedSec;
 
 
-	if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking))
-	{
-		if (m_FrameNr == 1)
-		{
-			if (m_MovementDirection == MovementDirection::right)
-			{
-				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 1.f,
-										                 m_Position.y + m_SourceRect.height * m_SCALE * 3.f / 5.f));	
-			} else if (m_MovementDirection == MovementDirection::left)
-			{
-				m_KatanaPtr->ChangePosition(Point2f(m_Position.x ,
-													 m_Position.y + m_SourceRect.height * m_SCALE * 3.f / 5.f));	
-			}
-			
-		}
-		else 
-		{
-			//m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width / 2.f, m_Position.y + m_SourceRect.height * m_SCALE - m_KatanaPtr->GetSourceRect().height + 10.f));
-			if (m_MovementDirection == MovementDirection::right)
-			{
-				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 0.7f,
-														 m_Position.y + m_SourceRect.height * m_SCALE * 2.f / 3.f));	
-			} else if (m_MovementDirection == MovementDirection::left)
-			{
-				m_KatanaPtr->ChangePosition(Point2f(m_Position.x + m_SourceRect.width * m_SCALE * 0.3f ,
-													 m_Position.y + m_SourceRect.height * m_SCALE * 2.f / 3.f));	
-			}
-		}
-	}
+	
 }
 
 void Ryu::UpdateJump(float elapsedSec)
 {
 	m_Velocity.y -= 2500.f * (elapsedSec);
 }
+

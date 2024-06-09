@@ -14,8 +14,8 @@ class Ryu final
 {
 public: 
 	enum class RyuState { none, walking, attacking, ducking, duckAttacking, hurt, jumping, climbing };
-	explicit Ryu(const TexturesManager* texturesManager, Point2f pos);
-	explicit Ryu(const TexturesManager* texturesManager, float posX, float posY);
+	explicit Ryu(const TexturesManager* texturesManager, Point2f pos, ThrowingWeaponsManager* throwingWeaponsManagerPtr);
+	explicit Ryu(const TexturesManager* texturesManager, float posX, float posY, ThrowingWeaponsManager* throwingWeaponsManagerPtr);
 	~Ryu();
 
 	Ryu(const Ryu&) = delete;
@@ -26,7 +26,8 @@ public:
 	//~Ryu();
 
 	void Draw() const;
-	void Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>> &mapVertices, CollectiblesManager* collectiblesManagerPtr, EnemiesManager* enemiesManagerPtr, LanternsManager* lanternsManagerPtr);
+	void Update(float elapsedSec, const Uint8* pStates, const std::vector<std::vector<std::vector<Point2f>>> &mapVertices, CollectiblesManager* collectiblesManagerPtr,
+				EnemiesManager* enemiesManagerPtr, LanternsManager* lanternsManagerPtr);
 	void HandleFloorCollision(const std::vector<std::vector<Point2f>>& vertices);
 	void HandleSignsCollision(const std::vector<std::vector<Point2f>>& vertices);
 	void HandlePlatformsCollision(const std::vector<std::vector<Point2f>>& vertices);
@@ -34,6 +35,11 @@ public:
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
 	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e);
 
+	void AddCollectible(Collectible*& collectiblePtr);
+	Collectible* GetOwnedCollectiblePtr() const;
+	
+	void ThrowingWeaponHit(Vector2f throwingWeaponVelocity);
+	
 	void ResetHealth();
 	void SetPosition(Point2f pos);
 
@@ -78,6 +84,8 @@ private:
 	Point2f m_Position;
 	Katana* m_KatanaPtr;
 
+	Collectible* m_CollectiblePtr { nullptr };
+	ThrowingWeaponsManager* m_ThrowingWeaponsManagerPtr;
 
 	SoundEffect* m_AttackSound;
 	SoundEffect* m_JumpSound;
@@ -100,6 +108,7 @@ private:
 	int m_JumpActionsCounter;
 	int m_AttackActionCounter;
 
+	bool m_IsThrowing{ false };
 	void InitializeSourceRect();
 	void UpdateSourceRect();
 	void ChangeMaxFramesOfAnimation();
@@ -107,6 +116,8 @@ private:
 	void ChangePosition(float elapsedSec);
 	void UpdateJump(float elapsedSec);
 	void ChangeDirection(MovementDirection direction);
-	
+
+
+	void EnemyHit(const Enemy* enemyPtr);
 };
 

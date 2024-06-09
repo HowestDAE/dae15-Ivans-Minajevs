@@ -59,7 +59,7 @@ protected:
     float m_HorizontalVelocity;
 
     float m_TextureCellWidth;
-    float m_AccuSec { 0 };
+    float m_AccuSec { 0.f };
     Rectf m_CollisionRect;
     
 private:

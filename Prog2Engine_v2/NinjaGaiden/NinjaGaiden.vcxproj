@@ -172,6 +172,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="TestingDot.cpp" />
     <ClCompile Include="TextManager.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="ThrowingWeapon.cpp" />
+    <ClCompile Include="ThrowingWeaponsManager.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersManager.cpp" />
   </ItemGroup>
@@ -208,6 +210,9 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TextureType.h" />
+    <ClInclude Include="ThrowingWeapon.h" />
+    <ClInclude Include="ThrowingWeaponsManager.h" />
+    <ClInclude Include="ThrowingWeaponType.h" />
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TriggersManager.h" />
     <ClInclude Include="TriggerType.h" />

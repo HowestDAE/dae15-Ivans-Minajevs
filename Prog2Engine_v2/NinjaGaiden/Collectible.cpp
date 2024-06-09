@@ -28,7 +28,7 @@ void Collectible::Draw( ) const
 
 	utils::DrawRect(m_Position, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
 }
-void Collectible::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
+void Collectible::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec)
 {
 	m_TimeAlive -= elapsedSec;
 	
@@ -97,7 +97,19 @@ void Collectible::SetIsCollected( bool isCollected )
 {
 	m_IsCollected = isCollected;
 }
+void Collectible::SetPosition(Point2f position )
+{
+	m_Position = position;
+}
 Rectf Collectible::GetRect( ) const
 {
 	return Rectf(m_Position.x, m_Position.y, m_SourceRect.width * m_SCALE, m_SourceRect.height * m_SCALE);
+}
+CollectibleType Collectible::GetCollectibleType( ) const
+{
+	return m_Type;
+}
+bool Collectible::GetIsCollected( ) const
+{
+	return m_IsCollected;
 }

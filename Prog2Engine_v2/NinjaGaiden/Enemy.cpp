@@ -155,7 +155,7 @@ void Enemy::ChangeDirection( )
 	if (m_MovementDirection == MovementDirection::left)
 	{
 		m_MovementDirection = MovementDirection::right;
-		m_Position.x = m_CollisionRect.left +  m_TextureCellWidth;
+		m_Position.x = m_CollisionRect.left +  m_TextureCellWidth + 3.f;
 
 	}
 	else if (m_MovementDirection == MovementDirection::right)

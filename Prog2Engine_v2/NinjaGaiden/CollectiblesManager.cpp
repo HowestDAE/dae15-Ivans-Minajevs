@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include "CollectiblesManager.h"
 
-void CollectiblesManager::Update( float elapsedSec, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices) 
+#include "Ryu.h"
+
+void CollectiblesManager::Update( float elapsedSec, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, Ryu* ryuPtr) 
 {
 	for ( Collectible*& collectiblePtr : m_CollectiblesPtrArr)
 	{
@@ -10,8 +12,16 @@ void CollectiblesManager::Update( float elapsedSec, const std::vector<std::vecto
 			collectiblePtr->Update(mapVertices, elapsedSec);
 			if (!collectiblePtr->GetIsExisting())
 			{
-				DeleteCollectible(collectiblePtr);
-				collectiblePtr = nullptr;
+				if (collectiblePtr->GetCollectibleType() == CollectibleType::throwingStar || collectiblePtr->GetCollectibleType() == CollectibleType::windmillThrowingStar
+					 && collectiblePtr -> GetIsCollected())
+				{
+					ryuPtr->AddCollectible(collectiblePtr);
+				}
+				else
+				{
+					DeleteCollectible(collectiblePtr);
+					collectiblePtr = nullptr;
+				}
 			}
 		}
 	}
@@ -48,12 +58,12 @@ void CollectiblesManager::DeleteCollectible( const Collectible* collectible )
 
 void CollectiblesManager::DeleteCollectibles( )
 {
-	for (Collectible*& lanternPtr : m_CollectiblesPtrArr)
+	for (Collectible*& collectiblePtr : m_CollectiblesPtrArr)
 	{
-		if (lanternPtr != nullptr)
+		if (collectiblePtr != nullptr)
 		{
-			delete lanternPtr;
-			lanternPtr = nullptr;
+			delete collectiblePtr;
+			collectiblePtr = nullptr;
 		}
 	}
 }

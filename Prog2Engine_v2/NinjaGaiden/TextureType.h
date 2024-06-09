@@ -10,6 +10,7 @@ enum class TextureType
 	text,
 	boss,
 	bossMap,
+	throwingWeapon,
 	count //keep it last
 };
 

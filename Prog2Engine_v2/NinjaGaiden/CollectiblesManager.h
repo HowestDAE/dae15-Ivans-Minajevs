@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include "Collectible.h"
 
+class Ryu;
 class CollectiblesManager final
 {
 public:
-	void Update(float elapsedSec, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices);
+	void Update(float elapsedSec, const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, Ryu* ryuPtr);
 	void Draw() const;
 
 	void Add(Collectible* collectiblePtr);

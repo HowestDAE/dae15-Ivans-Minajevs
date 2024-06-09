@@ -47,6 +47,7 @@ void Game::Initialize( )
 	m_TriggersManagerPtr = new TriggersManager();
 	m_LanternsManagerPtr = new LanternsManager();
 	m_CollectiblesManagerPtr = new CollectiblesManager();
+	m_ThrowingWeaponsManager = new ThrowingWeaponsManager();
 
 	ReadEnemyDataFromFile("enemies_triggers.txt");
 
@@ -58,6 +59,7 @@ void Game::Initialize( )
 	m_TexturesManagerPtr->AddTexture(TextureType::collectibles, "collectibles_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::boss, "boss_spritesheet.png");
 	m_TexturesManagerPtr->AddTexture(TextureType::bossMap, "ninja_gaiden_map_stage_boss_8bit.png");
+	m_TexturesManagerPtr->AddTexture(TextureType::throwingWeapon, "weapons_spritesheet.png");
 	m_TexturesManagerPtr->AddText(TextureType::text, m_Alphabet, "ninja_gaiden_nes.ttf", m_FONT_SIZE, Color4f(1.f, 1.f, 1.f, 1.f));
 
 	m_SoundEffectsManagerPtr->AddSoundEffect(SoundEffectType::attack, R"(sound_effects\attack.wav)");
@@ -72,12 +74,14 @@ void Game::Initialize( )
 	m_DeathStageSound = m_SoundEffectsManagerPtr->GetSoundEffect(SoundEffectType::gameOver);
 	m_TextManagerPtr = new TextManager(m_Alphabet);
 
+
+	
 	//m_LanternsManagerPtr->Add(new Lantern(Point2f(900.f, 160.f), CollectibleType::BonusBlue, m_TexturesManagerPtr));
 
 	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
 
 	//100.f * m_MAP_SCALE
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f);
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f, m_ThrowingWeaponsManager);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 	
@@ -218,8 +222,7 @@ void Game::Cleanup( )
 	m_ParticlesManagerPtr->DeleteParticles();
 	m_LanternsManagerPtr->DeleteLanterns();
 	m_CollectiblesManagerPtr->DeleteCollectibles();
-
-
+	m_ThrowingWeaponsManager->DeleteWeapons();
 	
 	delete m_SoundEffectsManagerPtr;
 	delete m_LanternsManagerPtr;
@@ -228,7 +231,7 @@ void Game::Cleanup( )
 	delete m_EnemiesManagerPtr;
 	delete m_TriggersManagerPtr;
 	delete m_CollectiblesManagerPtr;
-	
+	delete m_ThrowingWeaponsManager;
 	
 }
 
@@ -280,7 +283,7 @@ void Game::Update(float elapsedSec)
 								m_EnemiesManagerPtr->Add(new Dog(m_TexturesManagerPtr, triggerPtr, 400.f));
 								break;
 							case EnemyType::knifeMan:
-								m_EnemiesManagerPtr->Add(new KnifeMan(m_TexturesManagerPtr, triggerPtr, 30.f));
+								m_EnemiesManagerPtr->Add(new KnifeMan(m_TexturesManagerPtr, triggerPtr, 30.f, m_ThrowingWeaponsManager));
 								break;
 							case EnemyType::boss:
 								if (m_StageType == StageType::bossRoom)
@@ -345,8 +348,9 @@ void Game::Update(float elapsedSec)
 		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  m_Camera->GetViewRect(), m_BackgroundMusicPtr);
 		m_LanternsManagerPtr->Update(elapsedSec, m_TexturesManagerPtr, m_Camera->GetViewRect());
 
-		m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices);
+		m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices, m_RyuPtr);
 
+		m_ThrowingWeaponsManager->Update(elapsedSec, m_Camera->GetViewRect(), m_RyuPtr, m_EnemiesManagerPtr);
 		m_ParticlesManagerPtr->Update(elapsedSec);
 
 	
@@ -414,7 +418,9 @@ void Game::Draw( ) const
 		m_RyuPtr->Draw();
 	
 		m_EnemiesManagerPtr->Draw();
-	
+
+		m_ThrowingWeaponsManager->Draw();
+		
 		m_ParticlesManagerPtr->Draw();
 	
 		m_Camera->Reset();
@@ -434,6 +440,13 @@ void Game::Draw( ) const
 		DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 100.f),std::string("ENEMY-"), Boss::GetHealth());
 	
 		utils::SetColor(Color4f(1.f, 0.5f, 0.7f, 1.f));
+
+		Collectible* collectiblePtr = m_RyuPtr->GetOwnedCollectiblePtr();
+		if (collectiblePtr != nullptr)
+		{
+			collectiblePtr->SetPosition(Point2f(250.f, GetViewPort().height- 100.f));
+			collectiblePtr->Draw();
+		}
 	}
 	else
 	{
@@ -441,6 +454,7 @@ void Game::Draw( ) const
 		m_TextManagerPtr->Draw(Point2f(200.f, GetViewPort().height / 2.f),std::string("PRESS R TO RESTART"));
 		
 	}
+
 	
 	
 }

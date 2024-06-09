@@ -9,6 +9,7 @@
 #include "StageType.h"
 #include "TextManager.h"
 #include "Texture.h"
+#include "ThrowingWeaponsManager.h"
 class SoundEffectsManager;
 class SoundEffect;
 class LanternsManager;
@@ -80,6 +81,7 @@ private:
 	EnemiesManager* m_EnemiesManagerPtr;
 	LanternsManager* m_LanternsManagerPtr;
 	CollectiblesManager* m_CollectiblesManagerPtr;
+	ThrowingWeaponsManager* m_ThrowingWeaponsManager;
 	TextManager* m_TextManagerPtr;
 
 	SoundStream* m_BackgroundMusicPtr;
