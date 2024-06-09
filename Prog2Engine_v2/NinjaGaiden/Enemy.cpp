@@ -36,9 +36,6 @@ Enemy::Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPt
 	
 
 	m_SourceRect = Rectf();
-
-	std::cout << m_TextureCellWidth  << std::endl;
-	
 	
 	m_CollisionRect = Rectf(0.f, 0.f, 0.f, 0.f);
 }

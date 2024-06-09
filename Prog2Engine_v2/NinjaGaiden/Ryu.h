@@ -47,10 +47,13 @@ public:
 	
 	int GetHealth() const;
 	void SetBorders(float posX);
+
+	void DeleteOwnedCollectible(CollectiblesManager* collectibleManagerPtr);
 	
 	Point2f GetPosition() const;
 	Rectf GetRect() const;
 	MovementDirection GetMovementDirection() const;
+	
 	int GetEnergy() const;
 
 	static const int m_ROWS;

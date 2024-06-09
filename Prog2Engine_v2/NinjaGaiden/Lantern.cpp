@@ -31,7 +31,6 @@ void Lantern::Draw( ) const
 
 		m_LanternTexturePtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
-	utils::DrawRect(GetSourceRect());
 }
 void Lantern::UpdateSourceRect( )
 {

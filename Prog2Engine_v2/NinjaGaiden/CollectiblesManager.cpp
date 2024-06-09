@@ -15,7 +15,10 @@ void CollectiblesManager::Update( float elapsedSec, const std::vector<std::vecto
 				if (collectiblePtr->GetCollectibleType() == CollectibleType::throwingStar || collectiblePtr->GetCollectibleType() == CollectibleType::windmillThrowingStar
 					 && collectiblePtr -> GetIsCollected())
 				{
-					ryuPtr->AddCollectible(collectiblePtr);
+					if (collectiblePtr != nullptr)
+					{
+						ryuPtr->AddCollectible(collectiblePtr);
+					}
 				}
 				else
 				{

@@ -84,7 +84,7 @@ void Game::Initialize( )
 	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
 
 	//100.f * m_MAP_SCALE
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 6750.f, 70.f, m_ThrowingWeaponsManager);
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f, m_ThrowingWeaponsManager);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 	
@@ -387,6 +387,7 @@ void Game::Update(float elapsedSec)
 			{
 				m_BackgroundMusicPtr->Pause();
 				m_StageType = StageType::dead;
+				m_RyuPtr->DeleteOwnedCollectible(m_CollectiblesManagerPtr);
 				m_EnemiesManagerPtr->DeleteEnemies();
 				m_ParticlesManagerPtr->DeleteParticles();
 				m_LanternsManagerPtr->DeleteLanterns();

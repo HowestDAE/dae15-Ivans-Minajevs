@@ -498,7 +498,6 @@ void Ryu::HandleFloorCollision(const std::vector<std::vector<Point2f>>& vertices
 			if (m_Velocity.y < 500.f)
 			{
 				m_Position.y = hitInfoHorizontal.intersectPoint.y - 10.f;
-				std::cout << hitInfoHorizontal.lambda << "\n";
 				if ((m_MovementDirection == MovementDirection::left &&  hitInfoHorizontal.lambda <= 0.1f) ||
 					(m_MovementDirection == MovementDirection::right &&  hitInfoHorizontal.lambda >= 0.9f))
 				{
@@ -687,7 +686,6 @@ void Ryu::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 	if (e.keysym.sym == SDLK_x)
 	{
 		m_JumpActionsCounter = 0;
-		std::cout << m_JumpActionsCounter << std::endl;
 		
 	}
 	if (e.keysym.sym == SDLK_z)
@@ -744,6 +742,14 @@ int Ryu::GetEnergy( ) const
 void Ryu::SetBorders(float posX)
 {
 	m_Position.x = posX;
+}
+void Ryu::DeleteOwnedCollectible( CollectiblesManager* collectibleManagerPtr )
+{
+	if (m_CollectiblePtr != nullptr)
+	{
+		collectibleManagerPtr->DeleteCollectible(m_CollectiblePtr);
+	}
+	m_CollectiblePtr = nullptr;
 }
 
 void Ryu::ChangeMaxFramesOfAnimation()

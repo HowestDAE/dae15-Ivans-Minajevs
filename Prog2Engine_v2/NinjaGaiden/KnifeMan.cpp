@@ -45,16 +45,6 @@ void KnifeMan::ChangeFrames( float elapsedSec )
 		m_AccuSec-= m_FRAME_TIME;
 		
 		++m_FrameNr;
-
-	//if (m_State != State::walking)
-	//{
-	//	std::cout << m_FrameNr << std::endl;
-	//	if (m_FrameNr % 2 != 0)
-	//	{
-	//		m_ThrowingWeaponsManagerPtr->Add(ThrowingWeaponType::kunai, Point2f(m_CollisionRect.left + m_CollisionRect.width / 2.f, m_CollisionRect.bottom + m_CollisionRect.height / 2.f),
-	//									Vector2f ((m_MovementDirection == MovementDirection::left) ? -400.f : 400.f, 0.f), false);
-	//	}
-	//}
 		
 		if (m_FrameNr >= static_cast<int>(m_State) + m_FRAMES_COUNT )
 		{
@@ -102,7 +92,6 @@ void KnifeMan::Update( const std::vector<std::vector<std::vector<Point2f>>>& map
 		
 		m_FrameNr = static_cast<int>(m_State);
 	}
-	//std::cout << static_cast<int>(m_State);
 	Enemy::Update(mapVertices, elapsedSec);
 	
 

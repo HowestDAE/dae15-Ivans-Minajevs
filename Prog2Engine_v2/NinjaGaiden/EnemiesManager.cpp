@@ -39,10 +39,10 @@ void EnemiesManager::Update(const std::vector<std::vector<std::vector<Point2f>>>
 				{
 					ostPtr->Stop(); 
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
-									Point2f(enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().width * 3.f / 4.f,
+									Point2f(enemyPtr->GetCollisionRect().left + enemyPtr->GetCollisionRect().width * 3.f / 4.f,
 										enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().height  / 4.f), 3.f);
 					particlesManagerPtr->Add(texturesManagerPtr, ParticleType::bossDeath,
-									Point2f(enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().width  / 4.f,
+									Point2f(enemyPtr->GetCollisionRect().left + enemyPtr->GetCollisionRect().width  / 4.f,
 										enemyPtr->GetCollisionRect().bottom + enemyPtr->GetCollisionRect().height * 3.f / 4.f), 3.f);
 					
 					SoundEffectsManager::GetInstance()->GetSoundEffect(SoundEffectType::bossDeath)->Play(0);
