@@ -24,7 +24,7 @@ public:
 	std::vector<Enemy*>& GetEnemiesArray();
 
 	int GetScore() const;
-	
+	void AddScore(int score);
 	//const std::string m_FILE_PATH { "enemies_spritesheet.png" };
 private:
 	int m_Score { 0 };
@@ -34,5 +34,5 @@ private:
 	SoundEffect* m_EnemyDeathSound;
 	SoundEffect* m_BossDeathSound;
 	SoundEffect* m_BossDeathMySound;
-	void AddScore(int score);
+	
 };

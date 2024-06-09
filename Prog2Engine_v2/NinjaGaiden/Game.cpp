@@ -507,7 +507,7 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 			m_RyuPtr->ResetHealth();
 			Boss::ResetHealth();
 			m_BackgroundMusicPtr->Play(true);
-			m_Score = 0;
+			m_EnemiesManagerPtr->AddScore(-m_Score);
 		}
 	}
 }
