@@ -16,11 +16,11 @@ public:
 
 	virtual int GetScoreIfKilled() override;
 	
-	const int m_FRAMES_COUNT{ 3 };
+	static const int m_FRAMES_COUNT;
 
-	const float m_HORIZONTAL_VELOCITY_BIKER{ 40.f };
-	const float m_FRAMES_PER_SEC { 5 };
-	const float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+	static const float m_HORIZONTAL_VELOCITY_BIKER;
+	static const float m_FRAMES_PER_SEC;
+	static const float m_FRAME_TIME;
 protected:
 	int m_FrameNr { 0 };
 	//EnemyType m_EnemyType { EnemyType::biker };

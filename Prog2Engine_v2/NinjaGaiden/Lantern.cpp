@@ -2,8 +2,16 @@
 #include "Lantern.h"
 
 #include "utils.h"
+
+const float Lantern::m_SCALE{ 2.8f };
+const int Lantern::m_FRAMES_PER_SEC { 4 };
+const float Lantern::m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+const int Lantern::m_COLS { 10 };
+const int Lantern::m_ROWS { 2 };
+const int Lantern::m_FRAMES_COUNT { 2 };
+
 Lantern::Lantern( Point2f position, CollectibleType collectibleType, Trigger* triggerPtr, const TexturesManager* texturesManagerPtr )
-	: m_Position(position), m_CollectibleType(collectibleType), m_TriggerPtr(triggerPtr)
+	: m_TriggerPtr(triggerPtr), m_Position(position), m_CollectibleType(collectibleType)
 {
 	m_LanternTexturePtr = texturesManagerPtr->GetTexture(TextureType::collectibles);
 	UpdateSourceRect( );

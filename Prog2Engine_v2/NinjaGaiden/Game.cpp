@@ -12,9 +12,11 @@
 #include "Biker.h"
 #include "Boss.h"
 #include "Boxer.h"
+#include "CollectibleTrigger.h"
 #include "Dog.h"
 #include "EnemiesManager.h"
 #include "Enemy.h"
+#include "EnemyTrigger.h"
 #include "KnifeMan.h"
 #include "LanternsManager.h"
 #include "SoundEffectsManager.h"
@@ -22,8 +24,9 @@
 #include "TriggersManager.h"
 #include "utils.h"
 
-
-
+const int Game::m_FONT_SIZE{ 24 };
+const float Game::m_MAP_SCALE{ 3.f };
+const int Game::m_INIT_HEALTH { 16 };
 Game::Game( const Window& window )
 	: BaseGame{ window }
 {
@@ -81,7 +84,7 @@ void Game::Initialize( )
 	m_TriggersManagerPtr->AddTrigger(new CollectibleTrigger(Point2f(900.f, 160.f), CollectibleType::bonusBlue ));
 
 	//100.f * m_MAP_SCALE
-	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 100.f, 70.f, m_ThrowingWeaponsManager);
+	m_RyuPtr = new Ryu(TexturesManager::GetInstance(), 6750.f, 70.f, m_ThrowingWeaponsManager);
 	m_MapTexturePtr = m_TexturesManagerPtr->GetTexture(TextureType::map);
 	m_Camera = new Camera(GetViewPort().width, GetViewPort().height);
 	
@@ -337,6 +340,8 @@ void Game::Update(float elapsedSec)
 		m_TriggersManagerPtr->UpdateTrigger( srcRect, m_RyuPtr->GetMovementDirection());
 		m_EnemiesManagerPtr->Update(m_MapVertices, elapsedSec, m_ParticlesManagerPtr, m_TexturesManagerPtr,  srcRect, m_BackgroundMusicPtr);
 		m_ParticlesManagerPtr->Update(elapsedSec);
+		m_CollectiblesManagerPtr->Update(elapsedSec, m_MapVertices, m_RyuPtr);
+		m_ThrowingWeaponsManager->Update(elapsedSec, m_Camera->GetViewRect(), m_RyuPtr, m_EnemiesManagerPtr);
 	}
 	if (m_StageType == StageType::generalMap)
 	{
@@ -383,10 +388,12 @@ void Game::Update(float elapsedSec)
 				m_BackgroundMusicPtr->Pause();
 				m_StageType = StageType::dead;
 				m_EnemiesManagerPtr->DeleteEnemies();
-				
+				m_ParticlesManagerPtr->DeleteParticles();
+				m_LanternsManagerPtr->DeleteLanterns();
+				m_CollectiblesManagerPtr->DeleteCollectibles();
+				m_ThrowingWeaponsManager->DeleteWeapons();
 				m_DeathStageSound->Play(0);
 			}
-	
 		}
 	}
 }
@@ -427,24 +434,35 @@ void Game::Draw( ) const
 
 		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 70.f),std::string("TIMER-" + std::to_string(int(m_Timer))));
 	
-		std::ostringstream result;
-		result << std::setw(6) << std::setfill('0') << m_Score;
+		std::ostringstream score;
+		score << std::setw(6) << std::setfill('0') << m_Score;
 	
-		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 40.f),std::string("SCORE-" + result.str()));
+		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 40.f),std::string("SCORE-" + score.str()));
 
 		m_TextManagerPtr->Draw(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 40.f),std::string("STAGE-1-" + std::to_string(static_cast<int>(m_StageType))));
 
 		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 100.f),std::string("P-02"));
 
+		std::ostringstream energy;
+		energy << std::setw(2) << std::setfill('0') << m_RyuPtr->GetEnergy();
+	
+		m_TextManagerPtr->Draw(Point2f(200.f, GetViewPort().height-  100.f),std::string(energy.str()));
+
+		m_TextManagerPtr->Draw(Point2f(50.f, GetViewPort().height- 40.f),std::string("SCORE-" + score.str()));
+		
 		DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 70.f),std::string("NINJA-"), m_RyuPtr->GetHealth());
 		DrawHealth(Point2f(GetViewPort().width / 2.f + 20.f, GetViewPort().height- 100.f),std::string("ENEMY-"), Boss::GetHealth());
+		
+
+		utils::SetColor(Color4f(1.f, 1.f, 1.f, 1.f));
+		utils::DrawRect(Point2f(298.f, GetViewPort().height- 100.f), 41.f, 40.f, 3.f);
 	
 		utils::SetColor(Color4f(1.f, 0.5f, 0.7f, 1.f));
 
 		Collectible* collectiblePtr = m_RyuPtr->GetOwnedCollectiblePtr();
 		if (collectiblePtr != nullptr)
 		{
-			collectiblePtr->SetPosition(Point2f(250.f, GetViewPort().height- 100.f));
+			collectiblePtr->SetPosition(Point2f(300.f, GetViewPort().height- 100.f));
 			collectiblePtr->Draw();
 		}
 	}

@@ -27,12 +27,12 @@ public:
 	
 	Trigger* GetTriggerPointer( ) const;
 
-	const float m_SCALE{ 2.8f };
-	const int m_FRAMES_PER_SEC { 4 };
-	const float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
-	const int m_COLS { 10 };
-	const int m_ROWS { 2 };
-	const int m_FRAMES_COUNT { 2 };
+	static const float m_SCALE;
+	static const int m_FRAMES_PER_SEC;
+	static const float m_FRAME_TIME ;
+	static const int m_COLS ;
+	static const int m_ROWS;
+	static const int m_FRAMES_COUNT;
 private:
 	Trigger* m_TriggerPtr;
 	Point2f m_Position;

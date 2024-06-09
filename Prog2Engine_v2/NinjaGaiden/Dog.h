@@ -13,10 +13,10 @@ public:
 	//void HandleHorizontalCollision(const std::vector<std::vector<Point2f>>& mapVertices) override;
 	virtual int GetScoreIfKilled() override;
 	
-	static constexpr int m_FRAMES_COUNT{ 2 };
+	static const int m_FRAMES_COUNT;
 
-	static constexpr float m_FRAMES_PER_SEC { 5 };
-	static constexpr float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+	static const float m_FRAMES_PER_SEC;
+	static const float m_FRAME_TIME;
 private:
 	int m_FrameNr { 0 };
 };

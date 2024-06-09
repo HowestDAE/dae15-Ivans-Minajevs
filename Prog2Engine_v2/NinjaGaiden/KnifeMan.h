@@ -18,10 +18,10 @@ public:
 
 	virtual int GetScoreIfKilled() override;
 	
-	const int m_FRAMES_COUNT{ 2 };
+	static const int m_FRAMES_COUNT;
 
-	const float m_FRAMES_PER_SEC { 3 };
-	float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+	static const float m_FRAMES_PER_SEC;
+	static const float m_FRAME_TIME;
 
 	static const float m_TIME_WALKING;
 private:

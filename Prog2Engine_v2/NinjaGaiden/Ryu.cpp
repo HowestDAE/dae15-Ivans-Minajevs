@@ -6,6 +6,21 @@
 
 #include "Enemy.h"
 #include "SoundEffectsManager.h"
+const int Ryu::m_ROWS{ 8 };
+const int Ryu::m_COLS{ 4 };
+
+const int Ryu::m_COLS_MOVING{ 3 };
+const int Ryu::m_COLS_NOT_MOVING{ 1 };
+const int Ryu::m_COLS_JUMPING{ 4 };
+
+const float	Ryu::m_FRAME_WIDTH{ 30.f };
+const float Ryu::m_FRAME_HEIGHT{ 35.f };
+
+const float Ryu::m_SPEED{ 278.f };
+const float Ryu::m_INIT_JUMP_SPEED{ 500.f };
+	
+const float Ryu::m_SCALE{ 3.f };
+
 Ryu::Ryu(const TexturesManager* texturesManager, Point2f pos, ThrowingWeaponsManager* throwingWeaponsManagerPtr)
 {
 	m_JumpActionsCounter = 0;
@@ -376,16 +391,18 @@ void Ryu::Update(float elapsedSec, const Uint8* pStates, const std::vector<std::
 		m_IsThrowing = true;
 		if (m_CollectiblePtr != nullptr)
 		{
-			if ((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr == 1)
+			if (((m_State == RyuState::attacking || m_State == RyuState::duckAttacking) && m_FrameNr == 1) && m_Energy >= 3)
 			{
 				if (!m_IsAttacking)
 				{
 					m_IsAttacking = true;
+					m_Energy -= 3;
 					switch (m_CollectiblePtr->GetCollectibleType())
 					{
 					case CollectibleType::throwingStar:
 						m_ThrowingWeaponsManagerPtr->Add(ThrowingWeaponType::shurikenSmall, Point2f(m_Position.x +  m_SCALE * m_SourceRect.width / 2.f,
 														m_Position.y + m_SCALE * m_SourceRect.height * 0.6f), Vector2f((m_MovementDirection == MovementDirection::right) ? 400.f : -400.f, 0.f), true);
+						
 						//collectiblesManagerPtr->DeleteCollectible(m_CollectiblePtr);
 						//m_CollectiblePtr = nullptr;
 						break;
@@ -697,12 +714,15 @@ void Ryu::SetPosition( const Point2f pos)
 {
 	m_Position = pos;
 }
+void Ryu::IncreaseEnergy( int value )
+{
+	m_Energy += value;
+}
 
 int Ryu::GetHealth( ) const
 {
 	return m_Health;
 }
-
 
 Point2f Ryu::GetPosition() const
 {
@@ -715,6 +735,10 @@ Rectf Ryu::GetRect( ) const
 MovementDirection Ryu::GetMovementDirection( ) const
 {
 	return m_MovementDirection;
+}
+int Ryu::GetEnergy( ) const
+{
+	return m_Energy;
 }
 
 void Ryu::SetBorders(float posX)

@@ -29,8 +29,8 @@ public:
 
 	//~Katana();
 
-	const int m_MAX_FRAMES_OF_ANIMATION{ 2 };
-	const float m_SCALE{ 0.5f };
+	static const int m_MAX_FRAMES_OF_ANIMATION;
+	static const float m_SCALE;
 	//const std::string m_FILE_NAME{ "katana_spritesheet.png" };
 	
 private:

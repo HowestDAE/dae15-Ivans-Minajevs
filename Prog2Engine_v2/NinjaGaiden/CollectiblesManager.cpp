@@ -19,6 +19,19 @@ void CollectiblesManager::Update( float elapsedSec, const std::vector<std::vecto
 				}
 				else
 				{
+					if (collectiblePtr -> GetIsCollected())
+					{
+						switch (collectiblePtr->GetCollectibleType())
+						{
+						case CollectibleType::bonusBlue:
+							ryuPtr->IncreaseEnergy(5);
+							break;
+						case CollectibleType::bonusRed:
+							ryuPtr->IncreaseEnergy(10);
+							break;
+						}
+					}
+					
 					DeleteCollectible(collectiblePtr);
 					collectiblePtr = nullptr;
 				}

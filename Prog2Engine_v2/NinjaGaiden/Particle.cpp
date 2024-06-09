@@ -3,6 +3,9 @@
 #include "ParticleType.h"
 #include "Texture.h"
 
+const float Particle::m_FRAME_SIZE { 48 };
+const float Particle::m_SCALE { 3.f };
+
 Particle::Particle(const TexturesManager* texturesManager, ParticleType particleType, Point2f pos, float timeAlive) :
 		m_Type(particleType), m_TimeAlive(timeAlive), m_Position(pos)
 {

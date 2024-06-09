@@ -7,8 +7,13 @@
 #include "ThrowingWeapon.h"
 
 const float KnifeMan::m_TIME_WALKING { 3.f };
+const int KnifeMan::m_FRAMES_COUNT{ 2 };
+
+const float KnifeMan::m_FRAMES_PER_SEC { 3 };
+const float KnifeMan::m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+
 KnifeMan::KnifeMan(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity, ThrowingWeaponsManager* throwingWeaponsManagerPtr) :
-	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity, m_FRAMES_COUNT), m_ThrowingWeaponsManagerPtr(throwingWeaponsManagerPtr)
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity), m_ThrowingWeaponsManagerPtr(throwingWeaponsManagerPtr)
 {
 	m_StateUpdateTime = m_TIME_WALKING;
 

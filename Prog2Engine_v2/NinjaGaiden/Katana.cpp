@@ -3,6 +3,8 @@
 
 #include "Boss.h"
 #include "utils.h"
+const int Katana::m_MAX_FRAMES_OF_ANIMATION{ 2 };
+const float Katana::m_SCALE{ 0.5f };
 
 Katana::Katana( const TexturesManager* texturesManager, Point2f pos)  : m_Position(pos)
 {

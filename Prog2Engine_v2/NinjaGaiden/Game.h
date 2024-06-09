@@ -44,9 +44,9 @@ public:
 	virtual void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
 	virtual void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 	
-	const float m_MAP_SCALE{ 3.f };
+	static const float m_MAP_SCALE;
 
-	static const int m_INIT_HEALTH { 16 };
+	static const int m_INIT_HEALTH;
 	
 	std::unordered_map<std::string, EnemyType> m_ENEMY_TABLE {
 				{"biker", EnemyType::biker},
@@ -67,7 +67,7 @@ public:
 				{ "jumpAndSlashTechnique", CollectibleType::jumpAndSlashTechnique},
 				{ "none", CollectibleType::none}};
 
-	const int m_FONT_SIZE { 24 };
+	static const int m_FONT_SIZE;
 private:
 	
 	float m_Timer { 150.f };

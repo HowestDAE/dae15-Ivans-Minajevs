@@ -11,11 +11,9 @@ public:
 	void Update(float elpasedSec);
 	void ChangeTimeAlive(float newTimeAlive);
 	float GetTimeAlive() const;
-
-	//const int m_FRAMES_OF_ANIMATION{ 5 };
-	const float m_FRAME_SIZE { 48 };
-	const float m_SCALE { 3.f };
-	//const std::string m_FILE_PATH {"death_particle.png"};
+	
+	static const float m_FRAME_SIZE;
+	static const float m_SCALE;
 
 	
 private:

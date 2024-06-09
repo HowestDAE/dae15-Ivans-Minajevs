@@ -2,8 +2,14 @@
 #include "Biker.h"
 
 #include "EnemyType.h"
+
+const int Biker::m_FRAMES_COUNT{ 3 };
+const float Biker::m_HORIZONTAL_VELOCITY_BIKER{ 40.f };
+const float Biker::m_FRAMES_PER_SEC { 5 };
+const float Biker::m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+
 Biker::Biker(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity):
-	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity, m_FRAMES_COUNT)
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
 	//m_Velocity = Point2f( );
 }

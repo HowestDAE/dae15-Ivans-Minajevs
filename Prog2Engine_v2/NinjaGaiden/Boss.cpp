@@ -2,10 +2,12 @@
 #include "Boss.h"
 int Boss::m_Health = Game::m_INIT_HEALTH;
 
-Boss::Boss( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity ) : Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity, m_FRAMES_COUNT)
-{
+const int Boss::m_FRAMES_COUNT{ 8 };
+const float Boss::m_FRAMES_PER_SEC { 2 };
+const float Boss::m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
 
-	
+Boss::Boss( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity ) : Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
+{
 }
 void Boss::UpdateSourceRect( )
 {
@@ -66,8 +68,17 @@ void Boss::Draw( ) const
 }
 void Boss::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec )
 {
-	Enemy::Update(mapVertices, elapsedSec);
 	
+	Enemy::Update(mapVertices, elapsedSec);
+
+	if (m_FrameNr > 3)
+	{
+		m_Velocity.x  = 0.f;
+	}
+	else
+	{
+		m_Velocity.x = m_HorizontalVelocity;
+	}
 	if (m_EnemyType == EnemyType::boss)
 	{
 		if (m_Health == 0)

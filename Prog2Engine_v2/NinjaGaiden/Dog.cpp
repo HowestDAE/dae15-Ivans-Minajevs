@@ -5,10 +5,14 @@
 
 #include "EnemyType.h"
 #include "utils.h"
+
+const int Dog::m_FRAMES_COUNT { 2 };
+const float Dog::m_FRAMES_PER_SEC { 5 };
+const float Dog::m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+
 Dog::Dog( const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
-	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity, m_FRAMES_COUNT)
+	Enemy(texturesManagerPtr, triggerPtr, horizontalVelocity)
 {
-	std::cout << "dog";
 }
 
 void Dog::UpdateSourceRect( )

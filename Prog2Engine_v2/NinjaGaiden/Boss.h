@@ -23,10 +23,10 @@ public:
 	static int GetHealth();
 	static void ResetHealth();
 
-	static const int m_FRAMES_COUNT{ 8 };
+	static const int m_FRAMES_COUNT;
 	
-	const float m_FRAMES_PER_SEC { 2 };
-	const float m_FRAME_TIME { 1.f / m_FRAMES_PER_SEC };
+	static const float m_FRAMES_PER_SEC;
+	static const float m_FRAME_TIME;
 private:
 	bool m_IsAttacked { false };
 	static int m_Health;

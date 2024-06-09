@@ -1,12 +1,6 @@
 ﻿#pragma once
 #include <vector>
-
-
-#include "CollectibleTrigger.h"
-#include "EnemyTrigger.h"
-#include "LanternsManager.h"
 #include "Trigger.h"
-#include "TriggerType.h"
 
 class TriggersManager final
 {

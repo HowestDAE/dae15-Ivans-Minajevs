@@ -43,29 +43,30 @@ public:
 	void ResetHealth();
 	void SetPosition(Point2f pos);
 
+	void IncreaseEnergy(int value);
+	
 	int GetHealth() const;
 	void SetBorders(float posX);
 	
 	Point2f GetPosition() const;
 	Rectf GetRect() const;
 	MovementDirection GetMovementDirection() const;
+	int GetEnergy() const;
 
-	const int m_ROWS{ 8 };
-	const int m_COLS{ 4 };
+	static const int m_ROWS;
+	static const int m_COLS;
 
-	const int m_COLS_MOVING{ 3 };
-	const int m_COLS_NOT_MOVING{ 1 };
-	const int m_COLS_JUMPING{ 4 };
+	static const int m_COLS_MOVING;
+	static const int m_COLS_NOT_MOVING;
+	static const int m_COLS_JUMPING;
 
-	const float	 m_FRAME_WIDTH{ 30.f };
-	const float  m_FRAME_HEIGHT{ 35.f };
+	static const float	 m_FRAME_WIDTH;
+	static const float  m_FRAME_HEIGHT;
 
-	const float m_SPEED{ 278.f };
-	const float m_INIT_JUMP_SPEED{ 500.f };
-
-
-	//const int m_INITIAL_HEALTH { 16 };
-	const float m_SCALE{ 3.f };
+	static const float m_SPEED;
+	static const float m_INIT_JUMP_SPEED;
+	
+	static const float m_SCALE;
 
 private:
 	MovementDirection m_MovementDirection;
@@ -105,6 +106,7 @@ private:
 
 	//float m_TimeResistentAfterHit { 1.5f };
 
+	int m_Energy{ 0 };
 	int m_JumpActionsCounter;
 	int m_AttackActionCounter;
 

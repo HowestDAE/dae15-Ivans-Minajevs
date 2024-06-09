@@ -6,7 +6,12 @@
 #include "Trigger.h"
 #include "utils.h"
 
-Enemy::Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity, int framesCount) :
+const float Enemy::m_SCALE { 3.f };
+const float Enemy::m_VERTICAL_VELOCITY { -32.f };
+const int Enemy::m_COLS{ 6 };
+const int Enemy::m_ROWS { 4 };
+
+Enemy::Enemy(const TexturesManager* texturesManagerPtr, const Trigger* triggerPtr, float horizontalVelocity) :
 	m_HorizontalVelocity(horizontalVelocity), m_TriggerPtr(triggerPtr), m_IsAlive(true)
 {
 	m_EnemyType = m_TriggerPtr->GetEnemyType();
@@ -55,10 +60,6 @@ void Enemy::Draw( ) const
 		}
 		m_EnemiesTexturePtr->Draw(Point2f(), m_SourceRect);
 	glPopMatrix();
-
-	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
-	utils::DrawRect(m_CollisionRect);
-	//utils::DrawRect(GetSourceRect(), 2.f);
 }
 
 void Enemy::Update( const std::vector<std::vector<std::vector<Point2f>>>& mapVertices, float elapsedSec ) 
@@ -155,7 +156,7 @@ void Enemy::ChangeDirection( )
 	if (m_MovementDirection == MovementDirection::left)
 	{
 		m_MovementDirection = MovementDirection::right;
-		m_Position.x = m_CollisionRect.left +  m_TextureCellWidth + 3.f;
+		m_Position.x = m_CollisionRect.left +  m_TextureCellWidth;
 
 	}
 	else if (m_MovementDirection == MovementDirection::right)

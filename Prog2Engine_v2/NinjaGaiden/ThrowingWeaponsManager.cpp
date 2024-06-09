@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "ThrowingWeaponsManager.h"
 
+#include "Boss.h"
 #include "Enemy.h"
 #include "ThrowingWeapon.h"
 #include "utils.h"
@@ -31,7 +32,14 @@ void ThrowingWeaponsManager::Update( float elapsedSec, Rectf viewRect,  Ryu* ryu
 				{
 					if (utils::IsOverlapping(throwingWeaponPtr->GetCollisionRect(), enemyPtr->GetCollisionRect()) && throwingWeaponPtr->GetIsFriendly())
 					{
-						enemyPtr->SetIsAlive(false);
+						if (enemyPtr->GetTriggerPointer()->GetEnemyType() == EnemyType::boss)
+						{
+							Boss::Hit();
+						}
+						else
+						{
+							enemyPtr->SetIsAlive(false);
+						}
 						DeleteWeapon(throwingWeaponPtr);
 						break;
 					}
