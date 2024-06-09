@@ -49,7 +49,6 @@
 TODO: add screenshot 
 
 Here's why:
-TODO: describe why you chose this game 
 * I am a huge fan of NES console and enjoy japanese setting
 * The game has an immersive gameplay I wanted to recreate
 
@@ -77,17 +76,19 @@ This section gives a clear and detailed overview of which parts of the original 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Detailed instructions on how to run your game project are in this section.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+*7Zip or WinRAR
 * Visual Studio 2022
 
 ### How to run the project
 
-Explain which project (version) must be run.
-* any extra steps if required 
+* Unpack the project
+* Open the sln file in Visual Studio Enterprise
+* Set Dependencies to the Engine
+* Set Game as default
+* Run the project
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -96,12 +97,14 @@ Explain which project (version) must be run.
 <!-- HOW TO PLAY -->
 ## How to play
 
-Use this space to show useful examples of how a game can be played. 
-Additional screenshots and demos work well in this space. 
-
 ### Controls
-* keys, .. 
-* .. 
+* LEFT arrow - move left
+* RIGHT arrow - move right
+* DOWN arrow - move down
+* UP arrow - enable throw
+
+* Z - attack
+* X - jump
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -111,10 +114,11 @@ Additional screenshots and demos work well in this space.
 ## Class structure 
 
 ### Object composition 
-If you applied object composition (optional); explain where and how.
+A Ryu HAS A Katana
 
 ### Inheritance 
-Explain where you applied inheritance (mandatory).
+Biker inherits from Enemy. Boxer inherits from Biker.
+All other enemies inherit from Biker.
 
 ### ..
 
@@ -134,8 +138,8 @@ Explain where you applied inheritance (mandatory).
 - [x] week 04 topics applied
 - [x] week 05 topics applied
 - [x] week 06 topics applied
-- [ ] week 07 topics applied
-- [ ] week 08 topics applied
+- [x] week 07 topics applied
+- [x] week 08 topics applied
 - [x] week 09 topics applied (optional)
 - [ ] week 10 topics applied (optional)
 
@@ -156,8 +160,9 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 
 Use this space to list resources you find helpful and would like to give credit to. 
 
-* [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
-* [Example 2: cpp reference on std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map)
+* [C++ guidline on rule of five](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c21-if-you-define-or-delete-any-copy-move-or-destructor-function-define-or-delete-them-all)
+* [Cpp reference on std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map)
+* [Cpp reference on operator precedence]([https://en.cppreference.com/w/cpp/container/unordered_map](https://en.cppreference.com/w/cpp/language/operator_precedence))
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
